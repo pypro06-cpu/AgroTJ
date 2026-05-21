@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgroTJ — Личный кабинет</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green-dark:#0f2d1a;--green-mid:#1a5c30;--green-light:#2d8a4e;
+  --green-pale:#e8f5ec;--amber:#e8920a;--amber-light:#fdf3e0;
+  --cream:#faf8f3;--text-dark:#111c14;--text-mid:#3d5440;
+  --text-muted:#6b7f6e;--border:#c8dcc9;--white:#fff;--red:#c0392b;
+  --sidebar-w:260px;--header-h:64px;
+  --shadow:0 2px 16px rgba(15,45,26,0.09);
+  --shadow-lg:0 8px 32px rgba(15,45,26,0.13);
+}
+body{font-family:'Montserrat',sans-serif;background:#f2f6f3;color:var(--text-dark);min-height:100vh;display:flex;flex-direction:column}
+a{text-decoration:none;color:inherit}
+input,select,textarea,button{font-family:inherit}
+button{cursor:pointer}
+
+/* ── TOPBAR ── */
+.topbar{
+  position:fixed;top:0;left:0;right:0;height:var(--header-h);z-index:200;
+  background:var(--green-dark);
+  display:flex;align-items:center;padding:0 1.5rem;gap:1rem;
+  box-shadow:0 2px 12px rgba(0,0,0,0.22);
+}
+.topbar-logo{display:flex;align-items:center;gap:10px;width:var(--sidebar-w);flex-shrink:0}
+.logo-icon{width:36px;height:36px;background:var(--amber);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.logo-text{font-size:18px;font-weight:900;color:#fff}
+.logo-text span{color:var(--amber)}
+.topbar-title{color:rgba(255,255,255,0.7);font-size:14px;font-weight:600;flex:1}
+.topbar-actions{display:flex;align-items:center;gap:1rem}
+.notif-btn{position:relative;background:rgba(255,255,255,0.1);border:none;width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;transition:background 0.15s}
+.notif-btn:hover{background:rgba(255,255,255,0.18)}
+.notif-badge{position:absolute;top:5px;right:5px;width:16px;height:16px;background:var(--amber);border-radius:50%;font-size:9px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;border:2px solid var(--green-dark)}
+.user-chip{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.1);border:none;border-radius:10px;padding:6px 12px 6px 6px;color:#fff;font-size:13px;font-weight:600;transition:background 0.15s}
+.user-chip:hover{background:rgba(255,255,255,0.18)}
+.user-avatar{width:30px;height:30px;background:var(--amber);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  position:fixed;top:var(--header-h);left:0;bottom:0;width:var(--sidebar-w);
+  background:var(--white);border-right:1px solid var(--border);z-index:100;
+  overflow-y:auto;padding:24px 0;display:flex;flex-direction:column;
+  box-shadow:var(--shadow);
+}
+.sidebar-profile{padding:0 16px 24px;border-bottom:1px solid var(--border);margin-bottom:16px}
+.profile-avatar-wrap{position:relative;display:inline-block;margin-bottom:12px}
+.profile-avatar{width:64px;height:64px;background:linear-gradient(135deg,var(--green-mid),var(--green-light));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;color:#fff;font-weight:900}
+.profile-edit-btn{position:absolute;bottom:-4px;right:-4px;width:22px;height:22px;background:var(--amber);border:2px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer}
+.profile-name{font-size:15px;font-weight:700;color:var(--text-dark);margin-bottom:2px}
+.profile-type{font-size:12px;color:var(--text-muted);margin-bottom:8px}
+.profile-verified{display:inline-flex;align-items:center;gap:4px;background:var(--green-pale);color:var(--green-mid);font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px}
+.profile-rating{display:flex;align-items:center;gap:6px;margin-top:8px}
+.stars{color:var(--amber);font-size:14px;letter-spacing:1px}
+.rating-num{font-size:13px;font-weight:700;color:var(--text-dark)}
+.rating-count{font-size:12px;color:var(--text-muted)}
+
+.sidebar-nav{padding:0 8px;flex:1}
+.nav-section-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);padding:10px 10px 6px}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;cursor:pointer;transition:all 0.18s;color:var(--text-mid);font-size:14px;font-weight:600;border:none;background:none;width:100%;text-align:left}
+.nav-item:hover{background:var(--green-pale);color:var(--green-mid)}
+.nav-item.active{background:var(--green-pale);color:var(--green-dark);font-weight:700}
+.nav-item .nav-icon{font-size:18px;width:22px;flex-shrink:0;text-align:center}
+.nav-badge{margin-left:auto;background:var(--amber);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px}
+.nav-badge.green{background:var(--green-light)}
+
+.sidebar-bottom{padding:16px;border-top:1px solid var(--border);margin-top:auto}
+.plan-card{background:linear-gradient(135deg,var(--green-dark),#1a5c30);border-radius:12px;padding:14px 16px;color:#fff}
+.plan-card h4{font-size:13px;font-weight:700;margin-bottom:4px}
+.plan-card p{font-size:11px;color:rgba(255,255,255,0.7);margin-bottom:10px}
+.plan-upgrade-btn{background:var(--amber);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;width:100%;cursor:pointer}
+
+/* ── MAIN ── */
+.main{margin-left:var(--sidebar-w);margin-top:var(--header-h);padding:28px;min-height:calc(100vh - var(--header-h))}
+.page-view{display:none}
+.page-view.active{display:block}
+
+/* ── CARDS ── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:20px;box-shadow:var(--shadow)}
+.card-title{font-size:16px;font-weight:700;color:var(--text-dark);margin-bottom:4px}
+.card-subtitle{font-size:13px;color:var(--text-muted);margin-bottom:20px}
+
+/* ── STAT CARDS ── */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.stat-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px;box-shadow:var(--shadow)}
+.stat-icon{font-size:28px;margin-bottom:10px}
+.stat-value{font-size:1.8rem;font-weight:900;color:var(--text-dark);line-height:1}
+.stat-label{font-size:12px;color:var(--text-muted);margin-top:4px;font-weight:600}
+.stat-change{font-size:12px;font-weight:700;margin-top:6px}
+.stat-change.up{color:var(--green-light)}
+.stat-change.down{color:var(--red)}
+
+/* ── CHART BARS ── */
+.chart-wrap{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:20px}
+.chart-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px}
+.chart-bars{display:flex;align-items:flex-end;gap:8px;height:140px;padding-bottom:24px;border-bottom:1px solid var(--border);position:relative}
+.chart-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
+.chart-bar{width:100%;border-radius:6px 6px 0 0;background:var(--green-pale);transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);position:relative;cursor:pointer;min-height:4px}
+.chart-bar:hover{background:var(--green-light)}
+.chart-bar:hover::after{content:attr(data-val);position:absolute;top:-24px;left:50%;transform:translateX(-50%);background:var(--green-dark);color:#fff;font-size:11px;font-weight:700;padding:2px 6px;border-radius:4px;white-space:nowrap}
+.chart-bar.active{background:var(--green-mid)}
+.chart-label{font-size:10px;color:var(--text-muted);font-weight:600;position:absolute;bottom:-20px}
+.chart-months{display:flex;gap:8px;margin-top:10px}
+.chart-month{flex:1;text-align:center;font-size:10px;color:var(--text-muted);font-weight:600}
+
+/* ── LISTINGS TABLE ── */
+.listings-table{width:100%;border-collapse:collapse}
+.listings-table th{text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);padding:10px 14px;border-bottom:1px solid var(--border);background:var(--cream)}
+.listings-table td{padding:14px;border-bottom:1px solid var(--border);vertical-align:middle;font-size:14px}
+.listings-table tr:last-child td{border-bottom:none}
+.listings-table tr:hover td{background:#fafffe}
+.listing-thumb{width:52px;height:44px;border-radius:8px;background:var(--green-pale);display:flex;align-items:center;justify-content:center;font-size:24px}
+.listing-info-cell{display:flex;align-items:center;gap:12px}
+.listing-name{font-weight:700;font-size:14px;color:var(--text-dark)}
+.listing-meta{font-size:12px;color:var(--text-muted);margin-top:2px}
+.status-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px}
+.status-active{background:var(--green-pale);color:var(--green-mid)}
+.status-pending{background:var(--amber-light);color:var(--amber-dark)}
+.status-draft{background:#f0f0f0;color:#888}
+.status-sold{background:#f0e8f0;color:#8b4dad}
+.action-btns{display:flex;gap:6px}
+.action-btn{border:1px solid var(--border);background:var(--white);border-radius:6px;padding:5px 10px;font-size:12px;font-weight:600;color:var(--text-mid);transition:all 0.15s}
+.action-btn:hover{border-color:var(--green-light);color:var(--green-mid)}
+.action-btn.danger:hover{border-color:var(--red);color:var(--red)}
+.action-btn.primary{background:var(--green-mid);color:#fff;border-color:var(--green-mid)}
+.price-cell{font-size:15px;font-weight:700;color:var(--green-mid);white-space:nowrap}
+
+/* ── QUICK POST FORM ── */
+.post-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.form-group{margin-bottom:0}
+.form-label{display:block;font-size:12px;font-weight:700;color:var(--text-mid);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px}
+.form-input,.form-select,.form-textarea{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;color:var(--text-dark);background:var(--cream);outline:none;transition:all 0.18s;font-family:inherit}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--green-light);background:#fff;box-shadow:0 0 0 3px rgba(45,138,78,0.08)}
+.form-textarea{resize:vertical;min-height:90px}
+.form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7f6e' fill='none' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.full-col{grid-column:span 2}
+.upload-zone{border:2px dashed var(--border);border-radius:12px;padding:32px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--cream)}
+.upload-zone:hover{border-color:var(--green-light);background:var(--green-pale)}
+.upload-zone p{font-size:13px;color:var(--text-muted);margin-top:8px}
+.upload-zone strong{font-size:15px;color:var(--text-mid)}
+
+/* ── MESSAGES ── */
+.messages-layout{display:grid;grid-template-columns:300px 1fr;gap:0;border:1px solid var(--border);border-radius:14px;overflow:hidden;height:520px;background:#fff}
+.msg-list{border-right:1px solid var(--border);overflow-y:auto}
+.msg-list-header{padding:16px;border-bottom:1px solid var(--border);font-size:14px;font-weight:700;color:var(--text-dark)}
+.msg-item{padding:14px 16px;cursor:pointer;transition:background 0.15s;border-bottom:1px solid var(--border)}
+.msg-item:hover,.msg-item.active{background:var(--green-pale)}
+.msg-item-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.msg-sender{font-size:13px;font-weight:700;color:var(--text-dark)}
+.msg-time{font-size:11px;color:var(--text-muted)}
+.msg-preview{font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.msg-unread{width:8px;height:8px;background:var(--amber);border-radius:50%;flex-shrink:0}
+.msg-chat{display:flex;flex-direction:column;height:100%}
+.msg-chat-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.msg-chat-avatar{width:38px;height:38px;background:var(--green-pale);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.msg-chat-name{font-size:14px;font-weight:700;color:var(--text-dark)}
+.msg-chat-status{font-size:12px;color:var(--green-light)}
+.msg-chat-body{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px;background:#fafffe}
+.bubble{max-width:72%;padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.55}
+.bubble.in{background:#fff;border:1px solid var(--border);align-self:flex-start;border-radius:4px 14px 14px 14px;color:var(--text-dark)}
+.bubble.out{background:var(--green-mid);color:#fff;align-self:flex-end;border-radius:14px 4px 14px 14px}
+.bubble-meta{font-size:10px;opacity:0.65;margin-top:4px;display:block}
+.msg-input-bar{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:10px;background:#fff}
+.msg-input{flex:1;border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;font-size:13px;outline:none}
+.msg-input:focus{border-color:var(--green-light)}
+.msg-send-btn{background:var(--green-mid);color:#fff;border:none;border-radius:10px;padding:10px 18px;font-size:14px;font-weight:700}
+
+/* ── PROFILE EDIT ── */
+.profile-edit-grid{display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:start}
+.profile-photo-col{display:flex;flex-direction:column;align-items:center;gap:12px}
+.profile-photo-big{width:100px;height:100px;background:linear-gradient(135deg,var(--green-mid),var(--green-light));border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:44px}
+.photo-btn{border:1.5px solid var(--border);background:var(--white);border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;color:var(--text-mid);transition:all 0.15s}
+.photo-btn:hover{border-color:var(--green-light);color:var(--green-mid)}
+
+/* ── SECTION HEADER ── */
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.section-title{font-family:'Merriweather',serif;font-size:1.3rem;font-weight:700;color:var(--text-dark)}
+.btn-sm{border:1.5px solid var(--green-mid);background:var(--green-mid);color:#fff;border-radius:9px;padding:8px 18px;font-size:13px;font-weight:700;transition:all 0.18s}
+.btn-sm:hover{background:var(--green-dark)}
+.btn-sm.outline{background:transparent;color:var(--green-mid)}
+.btn-sm.outline:hover{background:var(--green-pale)}
+.btn-sm.amber{background:var(--amber);border-color:var(--amber)}
+.btn-sm.amber:hover{background:var(--amber-dark)}
+
+/* ── NOTIFICATIONS ── */
+.notif-item{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--border)}
+.notif-item:last-child{border-bottom:none}
+.notif-icon{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.notif-green{background:var(--green-pale)}
+.notif-amber{background:var(--amber-light)}
+.notif-text strong{display:block;font-size:14px;font-weight:700;color:var(--text-dark);margin-bottom:2px}
+.notif-text span{font-size:13px;color:var(--text-muted)}
+.notif-time{font-size:11px;color:var(--text-muted);margin-left:auto;white-space:nowrap}
+.notif-dot{width:8px;height:8px;background:var(--amber);border-radius:50%;flex-shrink:0;margin-top:6px}
+
+/* ── TABS (inner) ── */
+.inner-tabs{display:flex;gap:4px;background:var(--cream);border-radius:10px;padding:4px;margin-bottom:20px;border:1px solid var(--border)}
+.inner-tab{flex:1;padding:8px;text-align:center;font-size:13px;font-weight:700;color:var(--text-muted);border-radius:8px;cursor:pointer;transition:all 0.2s;border:none;background:none}
+.inner-tab.active{background:#fff;color:var(--green-dark);box-shadow:0 1px 4px rgba(15,45,26,0.1)}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:60px 20px;color:var(--text-muted)}
+.empty-state span{font-size:56px;display:block;margin-bottom:14px}
+.empty-state h3{font-size:17px;font-weight:700;color:var(--text-mid);margin-bottom:6px}
+.empty-state p{font-size:14px}
+
+/* ── PROGRESS RING ── */
+.profile-complete{display:flex;align-items:center;gap:12px;background:var(--amber-light);border:1px solid rgba(232,146,10,0.25);border-radius:10px;padding:12px 16px;margin-bottom:20px}
+.profile-complete p{font-size:13px;color:var(--amber-dark);<br>font-weight:600}
+.profile-complete strong{display:block;font-size:14px;font-weight:700;color:var(--amber-dark)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%);transition:transform 0.3s}
+  .sidebar.open{transform:none}
+  .main{margin-left:0}
+  .stat-grid{grid-template-columns:1fr 1fr}
+  .post-grid{grid-template-columns:1fr}
+  .full-col{grid-column:auto}
+  .messages-layout{grid-template-columns:1fr;height:auto}
+  .msg-chat{min-height:400px}
+}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.page-view.active{animation:fadeUp 0.25s ease}
+</style>
+</head>
+<body>
+
+<!-- ══════════ TOPBAR ══════════ -->
+<header class="topbar">
+  <div class="topbar-logo">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">🌾</div>
+      <div class="logo-text">Agro<span>TJ</span></div>
+    </a>
+  </div>
+  <span class="topbar-title">Личный кабинет</span>
+  <div class="topbar-actions">
+    <button class="notif-btn" onclick="showPage('notifications')">
+      🔔
+      <span class="notif-badge">3</span>
+    </button>
+    <button class="user-chip" onclick="showPage('profile')">
+      <div class="user-avatar">Р</div>
+      Рустам
+    </button>
+  </div>
+</header>
+
+<!-- ══════════ SIDEBAR ══════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-profile">
+    <div class="profile-avatar-wrap">
+      <div class="profile-avatar">👨‍🌾</div>
+      <div class="profile-edit-btn">✏️</div>
+    </div>
+    <div class="profile-name">Рустам Ёров</div>
+    <div class="profile-type">🏢 Продавец · Душанбе</div>
+    <div class="profile-verified">✓ Верифицирован</div>
+    <div class="profile-rating">
+      <span class="stars">★★★★★</span>
+      <span class="rating-num">4.9</span>
+      <span class="rating-count">(47 отзывов)</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Главное</div>
+    <button class="nav-item active" onclick="showPage('overview')">
+      <span class="nav-icon">📊</span> Обзор
+    </button>
+    <button class="nav-item" onclick="showPage('listings')">
+      <span class="nav-icon">📢</span> Мои объявления
+      <span class="nav-badge green">12</span>
+    </button>
+    <button class="nav-item" onclick="showPage('post')">
+      <span class="nav-icon">➕</span> Новое объявление
+    </button>
+    <button class="nav-item" onclick="showPage('messages')">
+      <span class="nav-icon">💬</span> Сообщения
+      <span class="nav-badge">5</span>
+    </button>
+
+    <div class="nav-section-label">Аналитика</div>
+    <button class="nav-item" onclick="showPage('stats')">
+      <span class="nav-icon">📈</span> Статистика просмотров
+    </button>
+    <button class="nav-item" onclick="showPage('favorites')">
+      <span class="nav-icon">❤️</span> В избранном
+      <span class="nav-badge">8</span>
+    </button>
+
+    <div class="nav-section-label">Аккаунт</div>
+    <button class="nav-item" onclick="showPage('profile')">
+      <span class="nav-icon">👤</span> Профиль
+    </button>
+    <button class="nav-item" onclick="showPage('notifications')">
+      <span class="nav-icon">🔔</span> Уведомления
+      <span class="nav-badge">3</span>
+    </button>
+    <button class="nav-item" onclick="showPage('settings')">
+      <span class="nav-icon">⚙️</span> Настройки
+    </button>
+    <button class="nav-item" onclick="confirmLogout()">
+      <span class="nav-icon">🚪</span> Выйти
+    </button>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <div class="plan-card">
+      <h4>📦 Базовый план</h4>
+      <p>Осталось 12/30 объявлений · 18 дней бесплатно</p>
+      <button class="plan-upgrade-btn" onclick="showPage('settings')">🚀 Улучшить план</button>
+    </div>
+  </div>
+</aside>
+
+<!-- ══════════ MAIN ══════════ -->
+<main class="main">
+
+  <!-- ──────── OVERVIEW ──────── -->
+  <div class="page-view active" id="page-overview">
+    <div class="section-header">
+      <div>
+        <div class="section-title">Добро пожаловать, Рустам! 👋</div>
+        <p style="font-size:14px;color:var(--text-muted);margin-top:4px">Среда, 20 мая 2026 · Душанбе, Таджикистан</p>
+      </div>
+      <button class="btn-sm amber" onclick="showPage('post')">+ Новое объявление</button>
+    </div>
+
+    <div class="profile-complete">
+      <span style="font-size:24px">⚠️</span>
+      <div>
+        <strong>Профиль заполнен на 70%</strong>
+        <p>Добавьте фото и описание компании, чтобы получать больше доверия от покупателей</p>
+      </div>
+      <button class="btn-sm outline" style="flex-shrink:0" onclick="showPage('profile')">Заполнить</button>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-icon">👁️</div>
+        <div class="stat-value">1 247</div>
+        <div class="stat-label">Просмотров за 7 дней</div>
+        <div class="stat-change up">↑ 23% к прошлой неделе</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">💬</div>
+        <div class="stat-value">34</div>
+        <div class="stat-label">Новых сообщений</div>
+        <div class="stat-change up">↑ 8 новых сегодня</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📢</div>
+        <div class="stat-value">12</div>
+        <div class="stat-label">Активных объявлений</div>
+        <div class="stat-change">из 30 доступных</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">❤️</div>
+        <div class="stat-value">89</div>
+        <div class="stat-label">Добавили в избранное</div>
+        <div class="stat-change up">↑ 12 за неделю</div>
+      </div>
+    </div>
+
+    <div class="chart-wrap">
+      <div class="chart-header">
+        <div>
+          <div class="card-title">Просмотры объявлений</div>
+          <div class="card-subtitle">За последние 6 месяцев</div>
+        </div>
+        <select class="form-select" style="width:auto;padding:7px 30px 7px 12px;font-size:13px">
+          <option>Просмотры</option>
+          <option>Контакты</option>
+          <option>Избранное</option>
+        </select>
+      </div>
+      <div class="chart-bars" id="chart-bars">
+        <!-- generated by JS -->
+      </div>
+      <div class="chart-months" id="chart-months"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-header">
+        <div>
+          <div class="card-title">Последние объявления</div>
+          <div class="card-subtitle">Ваши активные объявления</div>
+        </div>
+        <button class="btn-sm outline" onclick="showPage('listings')">Все объявления</button>
+      </div>
+      <table class="listings-table">
+        <thead>
+          <tr>
+            <th>Товар</th><th>Цена</th><th>Просмотры</th><th>Статус</th><th>Действия</th>
+          </tr>
+        </thead>
+        <tbody id="overview-listings"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ──────── LISTINGS ──────── -->
+  <div class="page-view" id="page-listings">
+    <div class="section-header">
+      <div class="section-title">Мои объявления</div>
+      <button class="btn-sm amber" onclick="showPage('post')">+ Новое объявление</button>
+    </div>
+
+    <div class="inner-tabs">
+      <button class="inner-tab active" onclick="filterListings('all',this)">Все (12)</button>
+      <button class="inner-tab" onclick="filterListings('active',this)">Активные (8)</button>
+      <button class="inner-tab" onclick="filterListings('pending',this)">На проверке (2)</button>
+      <button class="inner-tab" onclick="filterListings('draft',this)">Черновики (1)</button>
+      <button class="inner-tab" onclick="filterListings('sold',this)">Проданные (1)</button>
+    </div>
+
+    <div class="card" style="padding:0;overflow:hidden">
+      <table class="listings-table">
+        <thead>
+          <tr>
+            <th style="width:40%">Объявление</th>
+            <th>Цена</th>
+            <th>Просмотры</th>
+            <th>Статус</th>
+            <th>Дата</th>
+            <th>Действия</th>
+          </tr>
+        </thead>
+        <tbody id="all-listings"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ──────── POST NEW ──────── -->
+  <div class="page-view" id="page-post">
+    <div class="section-header">
+      <div class="section-title">Новое объявление</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📸 Фотографии</div>
+      <div class="card-subtitle">Добавьте до 10 фото — объявления с фото получают в 5 раз больше просмотров</div>
+      <div class="upload-zone" onclick="triggerUpload()">
+        <div style="font-size:40px">📷</div>
+        <strong>Нажмите чтобы добавить фото</strong>
+        <p>или перетащите файлы сюда · JPG, PNG · до 10 МБ каждый</p>
+      </div>
+      <div id="photo-preview" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📋 Основная информация</div>
+      <div class="card-subtitle">Заполните все поля для лучшего ранжирования</div>
+      <div class="post-grid">
+        <div class="form-group full-col">
+          <label class="form-label">Категория *</label>
+          <select class="form-select" id="post-cat" onchange="updateSubcat()">
+            <option value="">Выберите категорию</option>
+            <option>🚜 Тракторы</option>
+            <option>🌾 Комбайны и жатки</option>
+            <option>💧 Ирригация и насосы</option>
+            <option>🌱 Семена</option>
+            <option>🧪 Удобрения</option>
+            <option>⚙️ Мотоблоки</option>
+            <option>🐄 Животноводство</option>
+            <option>🛸 Агро-дроны</option>
+            <option>🔧 Инструменты</option>
+            <option>🛠️ Запчасти</option>
+          </select>
+        </div>
+        <div class="form-group full-col">
+          <label class="form-label">Название объявления *</label>
+          <input class="form-input" type="text" id="post-title" placeholder="Например: Трактор МТЗ-82.1, 2020 г., Б/У, отличное состояние">
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px"><span id="title-len">0</span>/150 символов</div>
+        </div>
+        <div class="form-group full-col">
+          <label class="form-label">Описание *</label>
+          <textarea class="form-textarea" id="post-desc" rows="5" placeholder="Подробно опишите товар: характеристики, состояние, комплектация, причина продажи..." style="min-height:120px"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Состояние</label>
+          <select class="form-select">
+            <option>Новое</option>
+            <option>Б/У — отличное</option>
+            <option>Б/У — хорошее</option>
+            <option>Б/У — удовлетворительное</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Год выпуска</label>
+          <input class="form-input" type="number" placeholder="2020" min="1990" max="2026">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Цена (TJS) *</label>
+          <input class="form-input" type="text" id="post-price" placeholder="85 000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Торг</label>
+          <select class="form-select">
+            <option>Цена фиксированная</option>
+            <option>Возможен торг</option>
+            <option>Обмен рассмотрю</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Регион *</label>
+          <select class="form-select">
+            <option value="">Выберите регион</option>
+            <option selected>Душанбе</option>
+            <option>Согд</option>
+            <option>Хатлон</option>
+            <option>ГБАО</option>
+            <option>РРП</option>
+            <option>Куляб</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Район / Город</label>
+          <input class="form-input" type="text" placeholder="Например: Сино, Фирдавси...">
+        </div>
+        <div class="form-group full-col">
+          <label class="form-label">Контактный телефон *</label>
+          <input class="form-input" type="tel" value="+992 93 500 5050">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🚀 Продвижение</div>
+      <div class="card-subtitle">Получите больше просмотров</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+        <div style="border:1.5px solid var(--border);border-radius:10px;padding:16px;cursor:pointer;transition:all 0.18s" onclick="selectPlan(this)">
+          <div style="font-size:22px;margin-bottom:8px">📌</div>
+          <div style="font-weight:700;font-size:14px;margin-bottom:4px">Стандарт</div>
+          <div style="font-size:13px;color:var(--text-muted);margin-bottom:8px">Базовое размещение</div>
+          <div style="font-weight:900;font-size:16px;color:var(--green-mid)">Бесплатно</div>
+        </div>
+        <div style="border:2px solid var(--amber);border-radius:10px;padding:16px;cursor:pointer;background:var(--amber-light)" onclick="selectPlan(this)">
+          <div style="font-size:22px;margin-bottom:8px">⭐</div>
+          <div style="font-weight:700;font-size:14px;margin-bottom:4px">ТОП объявление</div>
+          <div style="font-size:13px;color:var(--text-muted);margin-bottom:8px">В 5× больше просмотров</div>
+          <div style="font-weight:900;font-size:16px;color:var(--amber-dark)">25 TJS / 7 дней</div>
+        </div>
+        <div style="border:1.5px solid var(--border);border-radius:10px;padding:16px;cursor:pointer" onclick="selectPlan(this)">
+          <div style="font-size:22px;margin-bottom:8px">🏆</div>
+          <div style="font-weight:700;font-size:14px;margin-bottom:4px">Премиум</div>
+          <div style="font-size:13px;color:var(--text-muted);margin-bottom:8px">Баннер + ТОП позиция</div>
+          <div style="font-weight:900;font-size:16px;color:var(--green-mid)">75 TJS / 7 дней</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;justify-content:flex-end">
+      <button class="btn-sm outline" onclick="saveDraft()">💾 Сохранить черновик</button>
+      <button class="btn-sm" onclick="publishListing()">🚀 Опубликовать объявление</button>
+    </div>
+  </div>
+
+  <!-- ──────── MESSAGES ──────── -->
+  <div class="page-view" id="page-messages">
+    <div class="section-header">
+      <div class="section-title">Сообщения</div>
+      <span style="font-size:13px;color:var(--text-muted)">5 непрочитанных</span>
+    </div>
+    <div class="messages-layout">
+      <div class="msg-list">
+        <div class="msg-list-header">Диалоги</div>
+        <div class="msg-item active" onclick="openChat('Алишер К.','🧑','Насчёт трактора — когда можно посмотреть?')">
+          <div class="msg-item-top">
+            <span class="msg-sender">🧑 Алишер К.</span>
+            <span class="msg-time">10:32</span>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <div class="msg-unread"></div>
+            <div class="msg-preview">Насчёт трактора — когда можно посмотреть?</div>
+          </div>
+        </div>
+        <div class="msg-item" onclick="openChat('Фаррух М.','👨','Ещё продаётся мотоблок?')">
+          <div class="msg-item-top">
+            <span class="msg-sender">👨 Фаррух М.</span>
+            <span class="msg-time">09:14</span>
+          </div>
+          <div class="msg-preview">Ещё продаётся мотоблок?</div>
+        </div>
+        <div class="msg-item" onclick="openChat('АгроПром ТД','🏢','Готовы оптом, звоните')">
+          <div class="msg-item-top">
+            <span class="msg-sender">🏢 АгроПром ТД</span>
+            <span class="msg-time">Вчера</span>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <div class="msg-unread"></div>
+            <div class="msg-preview">Готовы оптом, звоните</div>
+          </div>
+        </div>
+        <div class="msg-item" onclick="openChat('Санавбар Р.','👩','Спасибо, трактор в отличном состоянии!')">
+          <div class="msg-item-top">
+            <span class="msg-sender">👩 Санавбар Р.</span>
+            <span class="msg-time">Пн</span>
+          </div>
+          <div class="msg-preview">Спасибо, трактор в отличном состоянии!</div>
+        </div>
+      </div>
+      <div class="msg-chat">
+        <div class="msg-chat-header">
+          <div class="msg-chat-avatar" id="chat-avatar">🧑</div>
+          <div>
+            <div class="msg-chat-name" id="chat-name">Алишер К.</div>
+            <div class="msg-chat-status">🟢 Онлайн · Насчёт: Трактор МТЗ-82.1</div>
+          </div>
+          <button class="btn-sm outline" style="margin-left:auto;padding:6px 12px;font-size:12px">📞 Позвонить</button>
+        </div>
+        <div class="msg-chat-body" id="chat-body">
+          <div class="bubble in">Салом! Видел ваш трактор МТЗ-82.1. Ещё продаётся?<span class="bubble-meta">10:15</span></div>
+          <div class="bubble out">Салом! Да, ещё в продаже. Состояние отличное, пробег 1200 моточасов.<span class="bubble-meta">10:18 ✓✓</span></div>
+          <div class="bubble in">Цена окончательная? Есть ли возможность посмотреть вживую?<span class="bubble-meta">10:28</span></div>
+          <div class="bubble out">Можем немного подвинуться. Приезжайте в любой день — я в Душанбе.<span class="bubble-meta">10:30 ✓✓</span></div>
+          <div class="bubble in">Насчёт трактора — когда можно посмотреть?<span class="bubble-meta">10:32</span></div>
+        </div>
+        <div class="msg-input-bar">
+          <input class="msg-input" type="text" id="msg-input" placeholder="Напишите сообщение..." onkeydown="if(event.key==='Enter')sendMsg()">
+          <button class="msg-send-btn" onclick="sendMsg()">Отправить ↑</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────── STATS ──────── -->
+  <div class="page-view" id="page-stats">
+    <div class="section-header">
+      <div class="section-title">Статистика</div>
+      <select class="form-select" style="width:auto;padding:8px 32px 8px 14px">
+        <option>Последние 7 дней</option>
+        <option>30 дней</option>
+        <option>3 месяца</option>
+      </select>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-icon">👁️</div><div class="stat-value">5 430</div><div class="stat-label">Всего просмотров</div><div class="stat-change up">↑ 31%</div></div>
+      <div class="stat-card"><div class="stat-icon">📞</div><div class="stat-value">89</div><div class="stat-label">Контактов</div><div class="stat-change up">↑ 15%</div></div>
+      <div class="stat-card"><div class="stat-icon">❤️</div><div class="stat-value">234</div><div class="stat-label">В избранном</div><div class="stat-change up">↑ 8%</div></div>
+      <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-value">3</div><div class="stat-label">Сделок</div><div class="stat-change up">Отлично!</div></div>
+    </div>
+    <div class="chart-wrap">
+      <div class="card-title" style="margin-bottom:6px">Топ объявлений по просмотрам</div>
+      <div class="card-subtitle">За последние 30 дней</div>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:16px" id="top-listings-stats"></div>
+    </div>
+  </div>
+
+  <!-- ──────── FAVORITES ──────── -->
+  <div class="page-view" id="page-favorites">
+    <div class="section-title" style="margin-bottom:20px">Избранное</div>
+    <div class="empty-state">
+      <span>❤️</span>
+      <h3>Здесь будут ваши избранные объявления</h3>
+      <p>Нажмите 🤍 на объявлении, чтобы добавить в избранное</p>
+    </div>
+  </div>
+
+  <!-- ──────── PROFILE ──────── -->
+  <div class="page-view" id="page-profile">
+    <div class="section-header">
+      <div class="section-title">Мой профиль</div>
+      <button class="btn-sm" onclick="saveProfile()">💾 Сохранить изменения</button>
+    </div>
+    <div class="card">
+      <div class="profile-edit-grid">
+        <div class="profile-photo-col">
+          <div class="profile-photo-big">👨‍🌾</div>
+          <button class="photo-btn">📷 Сменить фото</button>
+          <button class="photo-btn" style="color:var(--red);border-color:var(--red)">🗑️ Удалить</button>
+        </div>
+        <div class="post-grid">
+          <div class="form-group">
+            <label class="form-label">Имя *</label>
+            <input class="form-input" type="text" value="Рустам">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Фамилия *</label>
+            <input class="form-input" type="text" value="Ёров">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Телефон *</label>
+            <input class="form-input" type="tel" value="+992 93 500 5050">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input class="form-input" type="email" value="rustam@example.com">
+          </div>
+          <div class="form-group full-col">
+            <label class="form-label">Название компании (необязательно)</label>
+            <input class="form-input" type="text" placeholder="АгроТехника ООО">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Регион</label>
+            <select class="form-select"><option selected>Душанбе</option><option>Согд</option><option>Хатлон</option></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Район</label>
+            <input class="form-input" type="text" placeholder="Сино">
+          </div>
+          <div class="form-group full-col">
+            <label class="form-label">О себе / О компании</label>
+            <textarea class="form-textarea" placeholder="Расскажите о своей деятельности, опыте, специализации..."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔒 Безопасность</div>
+      <div class="card-subtitle">Смените пароль или включите двухфакторную аутентификацию</div>
+      <div class="post-grid">
+        <div class="form-group">
+          <label class="form-label">Текущий пароль</label>
+          <input class="form-input" type="password" placeholder="••••••••">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Новый пароль</label>
+          <input class="form-input" type="password" placeholder="Новый пароль">
+        </div>
+      </div>
+      <button class="btn-sm" style="margin-top:12px">🔐 Изменить пароль</button>
+    </div>
+  </div>
+
+  <!-- ──────── NOTIFICATIONS ──────── -->
+  <div class="page-view" id="page-notifications">
+    <div class="section-header">
+      <div class="section-title">Уведомления</div>
+      <button class="btn-sm outline">Отметить всё как прочитанное</button>
+    </div>
+    <div class="card">
+      <div class="notif-item">
+        <div class="notif-icon notif-amber">💬</div>
+        <div class="notif-text">
+          <strong>Новое сообщение от Алишер К.</strong>
+          <span>Насчёт трактора — когда можно посмотреть? Я готов приехать сегодня.</span>
+        </div>
+        <div class="notif-time">10:32</div>
+        <div class="notif-dot"></div>
+      </div>
+      <div class="notif-item">
+        <div class="notif-icon notif-green">❤️</div>
+        <div class="notif-text">
+          <strong>Добавили в избранное</strong>
+          <span>Трактор МТЗ-82.1 добавлен в избранное 12 раз за эту неделю</span>
+        </div>
+        <div class="notif-time">09:00</div>
+        <div class="notif-dot"></div>
+      </div>
+      <div class="notif-item">
+        <div class="notif-icon notif-amber">⭐</div>
+        <div class="notif-text">
+          <strong>Новый отзыв — 5 звёзд!</strong>
+          <span>Санавбар Р. оставила отзыв: «Отличный продавец, трактор именно такой как на фото!»</span>
+        </div>
+        <div class="notif-time">Вчера</div>
+        <div class="notif-dot"></div>
+      </div>
+      <div class="notif-item">
+        <div class="notif-icon notif-green">📢</div>
+        <div class="notif-text">
+          <strong>Объявление опубликовано</strong>
+          <span>Ваш насос Grundfos SP 17-2 прошёл модерацию и опубликован</span>
+        </div>
+        <div class="notif-time">Пн</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────── SETTINGS ──────── -->
+  <div class="page-view" id="page-settings">
+    <div class="section-title" style="margin-bottom:20px">Настройки</div>
+    <div class="card">
+      <div class="card-title">📦 Тарифный план</div>
+      <div class="card-subtitle">Текущий план: Базовый · Бесплатный</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px">
+        <div style="border:1.5px solid var(--border);border-radius:12px;padding:20px;text-align:center">
+          <div style="font-size:28px;margin-bottom:8px">🆓</div>
+          <div style="font-weight:700;font-size:16px;margin-bottom:6px">Базовый</div>
+          <div style="font-size:22px;font-weight:900;color:var(--green-mid);margin-bottom:10px">0 TJS</div>
+          <ul style="list-style:none;font-size:12px;color:var(--text-muted);text-align:left;display:flex;flex-direction:column;gap:6px;margin-bottom:14px">
+            <li>✓ 30 объявлений</li><li>✓ 5 фото на объявление</li><li>✗ ТОП-размещение</li>
+          </ul>
+          <div style="background:var(--green-pale);color:var(--green-mid);border-radius:8px;padding:8px;font-size:13px;font-weight:700">Текущий план</div>
+        </div>
+        <div style="border:2px solid var(--amber);border-radius:12px;padding:20px;text-align:center;background:var(--amber-light)">
+          <div style="font-size:28px;margin-bottom:8px">⭐</div>
+          <div style="font-weight:700;font-size:16px;margin-bottom:6px">Про</div>
+          <div style="font-size:22px;font-weight:900;color:var(--amber-dark);margin-bottom:10px">149 TJS/мес</div>
+          <ul style="list-style:none;font-size:12px;color:var(--text-muted);text-align:left;display:flex;flex-direction:column;gap:6px;margin-bottom:14px">
+            <li>✓ 100 объявлений</li><li>✓ 20 фото</li><li>✓ 3 ТОП в месяц</li>
+          </ul>
+          <button class="btn-sm amber" style="width:100%">Выбрать Про</button>
+        </div>
+        <div style="border:1.5px solid var(--border);border-radius:12px;padding:20px;text-align:center">
+          <div style="font-size:28px;margin-bottom:8px">🏆</div>
+          <div style="font-weight:700;font-size:16px;margin-bottom:6px">Бизнес</div>
+          <div style="font-size:22px;font-weight:900;color:var(--green-mid);margin-bottom:10px">499 TJS/мес</div>
+          <ul style="list-style:none;font-size:12px;color:var(--text-muted);text-align:left;display:flex;flex-direction:column;gap:6px;margin-bottom:14px">
+            <li>✓ Безлимит объявлений</li><li>✓ Баннер на главной</li><li>✓ Приоритет в поиске</li>
+          </ul>
+          <button class="btn-sm" style="width:100%">Выбрать Бизнес</button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔔 Уведомления</div>
+      <div style="display:flex;flex-direction:column;gap:16px;margin-top:8px" id="notif-settings"></div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ── DATA ──
+const listings = [
+  {emoji:'🚜',title:'Трактор МТЗ-82.1 Беларус',spec:'82 л.с. · 2021 г.',price:'85 000',views:342,status:'active',date:'20 май'},
+  {emoji:'💧',title:'Насос Grundfos SP 17-2',spec:'17 м³/ч · Нержавейка',price:'12 500',views:89,status:'active',date:'18 май'},
+  {emoji:'⚙️',title:'Мотоблок Caiman Vario 70S',spec:'7 л.с. · Дизельный',price:'4 800',views:201,status:'active',date:'15 май'},
+  {emoji:'🌱',title:'Семена пшеницы · 1 тонна',spec:'Элита · Урожайность 65 ц/га',price:'3 200',views:156,status:'active',date:'12 май'},
+  {emoji:'🛸',title:'Агро-дрон XAG P100 Pro',spec:'40 л бака · 16 га/ч',price:'58 000',views:412,status:'pending',date:'10 май'},
+  {emoji:'🌾',title:'Культиватор КПС-4',spec:'Б/У хорошее · 2018 г.',price:'22 000',views:67,status:'draft',date:'8 май'},
+  {emoji:'🔧',title:'Опрыскиватель навесной',spec:'600 л · 18 метров',price:'8 500',views:145,status:'sold',date:'1 май'},
+];
+
+function statusBadge(s) {
+  const map = {
+    active:'<span class="status-badge status-active">✓ Активно</span>',
+    pending:'<span class="status-badge status-pending">⏳ На проверке</span>',
+    draft:'<span class="status-badge status-draft">📝 Черновик</span>',
+    sold:'<span class="status-badge status-sold">✅ Продано</span>'
+  };
+  return map[s] || '';
+}
+
+function renderListingRow(l) {
+  return `<tr>
+    <td><div class="listing-info-cell">
+      <div class="listing-thumb">${l.emoji}</div>
+      <div><div class="listing-name">${l.title}</div><div class="listing-meta">${l.spec}</div></div>
+    </div></td>
+    <td><div class="price-cell">${l.price} TJS</div></td>
+    <td><span style="font-weight:600">${l.views}</span></td>
+    <td>${statusBadge(l.status)}</td>
+    <td style="color:var(--text-muted);font-size:13px">${l.date}</td>
+    <td><div class="action-btns">
+      <button class="action-btn primary">✏️ Ред.</button>
+      <button class="action-btn">🔝 Поднять</button>
+      <button class="action-btn danger">🗑️</button>
+    </div></td>
+  </tr>`;
+}
+
+function initListings() {
+  const overviewTbl = document.getElementById('overview-listings');
+  if(overviewTbl) overviewTbl.innerHTML = listings.slice(0,4).map(l => {
+    return `<tr>
+      <td><div class="listing-info-cell"><div class="listing-thumb">${l.emoji}</div>
+        <div><div class="listing-name">${l.title}</div><div class="listing-meta">${l.spec}</div></div></div></td>
+      <td><div class="price-cell">${l.price} TJS</div></td>
+      <td>${l.views}</td>
+      <td>${statusBadge(l.status)}</td>
+      <td><div class="action-btns"><button class="action-btn primary">✏️</button><button class="action-btn danger">🗑️</button></div></td>
+    </tr>`;
+  }).join('');
+
+  const allTbl = document.getElementById('all-listings');
+  if(allTbl) allTbl.innerHTML = listings.map(renderListingRow).join('');
+}
+
+function filterListings(type, btn) {
+  document.querySelectorAll('.inner-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  const tbl = document.getElementById('all-listings');
+  const filtered = type === 'all' ? listings : listings.filter(l => l.status === type);
+  tbl.innerHTML = filtered.length
+    ? filtered.map(renderListingRow).join('')
+    : `<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted)">Нет объявлений в этой категории</td></tr>`;
+}
+
+// ── CHART ──
+const months = ['Дек','Янв','Фев','Мар','Апр','Май'];
+const vals = [320, 410, 280, 590, 760, 920];
+const maxVal = Math.max(...vals);
+
+function initChart() {
+  const bars = document.getElementById('chart-bars');
+  const monthsEl = document.getElementById('chart-months');
+  if(!bars) return;
+  bars.innerHTML = vals.map((v,i) => `
+    <div class="chart-bar-wrap">
+      <div class="chart-bar${i===5?' active':''}" data-val="${v}" style="height:${Math.round(v/maxVal*100)}%"></div>
+    </div>`).join('');
+  monthsEl.innerHTML = months.map(m => `<div class="chart-month">${m}</div>`).join('');
+}
+
+// ── TOP STATS ──
+function initTopStats() {
+  const el = document.getElementById('top-listings-stats');
+  if(!el) return;
+  const sorted = [...listings].sort((a,b) => b.views-a.views).slice(0,5);
+  el.innerHTML = sorted.map(l => `
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="font-size:22px;width:32px;text-align:center">${l.emoji}</div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:700;margin-bottom:4px">${l.title}</div>
+        <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden">
+          <div style="height:100%;background:var(--green-light);width:${Math.round(l.views/maxV*100)}%;border-radius:3px;transition:width 0.8s"></div>
+        </div>
+      </div>
+      <div style="font-size:14px;font-weight:700;color:var(--text-dark);min-width:60px;text-align:right">${l.views} 👁️</div>
+    </div>`).join('');
+  const maxV = Math.max(...sorted.map(l=>l.views));
+}
+
+// ── NOTIF SETTINGS ──
+function initNotifSettings() {
+  const el = document.getElementById('notif-settings');
+  if(!el) return;
+  const items = [
+    {icon:'💬',label:'Новые сообщения',desc:'Уведомлять о входящих сообщениях',on:true},
+    {icon:'❤️',label:'Добавления в избранное',desc:'Когда объявление добавляют в избранное',on:true},
+    {icon:'👁️',label:'Просмотры',desc:'Еженедельный отчёт о просмотрах',on:false},
+    {icon:'📢',label:'Новые объявления в категории',desc:'Уведомлять о новых объявлениях',on:false},
+  ];
+  el.innerHTML = items.map((item,i) => `
+    <div style="display:flex;align-items:center;gap:14px">
+      <span style="font-size:20px">${item.icon}</span>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:700">${item.label}</div>
+        <div style="font-size:12px;color:var(--text-muted)">${item.desc}</div>
+      </div>
+      <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer">
+        <input type="checkbox" ${item.on?'checked':''} style="display:none" onchange="toggleNotif(this,${i})">
+        <span id="toggle-${i}" style="position:absolute;inset:0;border-radius:12px;background:${item.on?'var(--green-mid)':'var(--border)'};transition:background 0.2s">
+          <span style="position:absolute;top:3px;left:${item.on?'23':'3'}px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left 0.2s"></span>
+        </span>
+      </label>
+    </div>`).join('');
+}
+
+function toggleNotif(checkbox, i) {
+  const span = document.getElementById('toggle-'+i);
+  const dot = span.querySelector('span');
+  if(checkbox.checked) {
+    span.style.background='var(--green-mid)'; dot.style.left='23px';
+  } else {
+    span.style.background='var(--border)'; dot.style.left='3px';
+  }
+}
+
+// ── PAGE NAV ──
+function showPage(name) {
+  document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-'+name)?.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if(n.textContent.toLowerCase().includes(name.toLowerCase().replace('-',' '))) n.classList.add('active');
+  });
+  if(name==='overview'||name==='listings') initListings();
+  if(name==='overview') initChart();
+  if(name==='stats') { initTopStats(); }
+  if(name==='settings') initNotifSettings();
+}
+
+// ── MESSAGES ──
+function openChat(name, avatar, preview) {
+  document.querySelectorAll('.msg-item').forEach(i => i.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.getElementById('chat-name').textContent = name;
+  document.getElementById('chat-avatar').textContent = avatar;
+}
+
+function sendMsg() {
+  const input = document.getElementById('msg-input');
+  const text = input.value.trim();
+  if(!text) return;
+  const body = document.getElementById('chat-body');
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble out';
+  bubble.innerHTML = `${text}<span class="bubble-meta">${new Date().toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'})} ✓</span>`;
+  body.appendChild(bubble);
+  body.scrollTop = body.scrollHeight;
+  input.value = '';
+}
+
+// ── FORM ──
+document.getElementById('post-title')?.addEventListener('input', function() {
+  document.getElementById('title-len').textContent = this.value.length;
+});
+
+function triggerUpload() {
+  const previews = ['🚜','💧','⚙️'];
+  const el = document.getElementById('photo-preview');
+  el.innerHTML = previews.map((e,i) => `
+    <div style="width:80px;height:70px;background:var(--green-pale);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:32px;position:relative">
+      ${e}
+      <span style="position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;display:flex;align-items:center;justify-content:center;cursor:pointer" onclick="this.parentElement.remove()">×</span>
+    </div>`).join('');
+}
+
+function selectPlan(el) {
+  document.querySelectorAll('[onclick="selectPlan(this)"]').forEach(e => {
+    e.style.borderWidth='1.5px'; e.style.borderColor='var(--border)'; e.style.background='';
+  });
+  el.style.borderWidth='2px'; el.style.borderColor='var(--amber)'; el.style.background='var(--amber-light)';
+}
+
+function saveDraft() { alert('💾 Черновик сохранён!'); }
+function publishListing() {
+  const title = document.getElementById('post-title').value.trim();
+  if(!title) { alert('⚠️ Введите название объявления!'); return; }
+  alert('🚀 Объявление отправлено на модерацию!\n\nОбычно проверка занимает до 2 часов.');
+  showPage('listings');
+}
+
+function saveProfile() { alert('✅ Профиль сохранён!'); }
+function confirmLogout() {
+  if(confirm('Выйти из аккаунта?')) window.location.href='auth.html';
+}
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded', () => {
+  initListings();
+  initChart();
+});
+</script>
+</body>
+</html>

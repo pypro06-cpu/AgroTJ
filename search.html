@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgroTJ — Поиск агротехники</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;900&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gd:#0f2d1a;--gm:#1a5c30;--gl:#2d8a4e;--gp:#e8f5ec;
+  --amb:#e8920a;--ambl:#fdf3e0;--ambd:#b86e00;
+  --cream:#faf8f3;--td:#111c14;--tm:#3d5440;--tmut:#6b7f6e;
+  --bdr:#c8dcc9;--wh:#fff;--red:#c0392b;
+  --r:12px;--sh:0 2px 12px rgba(15,45,26,0.09);
+  --sh2:0 6px 28px rgba(15,45,26,0.14);
+}
+body{font-family:'Montserrat',sans-serif;background:#f0f4f1;color:var(--td);min-height:100vh}
+a{text-decoration:none;color:inherit}
+button,input,select{font-family:inherit;cursor:pointer}
+img{display:block;max-width:100%}
+
+/* ── HEADER ── */
+.header{background:var(--gd);padding:0 2rem;position:sticky;top:0;z-index:200;box-shadow:0 2px 16px rgba(0,0,0,.22)}
+.hinner{max-width:1400px;margin:0 auto;display:flex;align-items:center;height:64px;gap:1.25rem}
+.logo{display:flex;align-items:center;gap:9px;flex-shrink:0}
+.li{width:36px;height:36px;background:var(--amb);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.lt{font-size:19px;font-weight:900;color:#fff}.lt span{color:var(--amb)}
+.hsearch{flex:1;display:flex;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:10px;overflow:hidden;max-width:640px}
+.hsearch input{flex:1;background:transparent;border:none;outline:none;padding:9px 14px;color:#fff;font-size:14px;font-weight:500}
+.hsearch input::placeholder{color:rgba(255,255,255,.5)}
+.hsearch button{background:var(--amb);border:none;padding:0 18px;color:#fff;font-size:16px;transition:background .15s}
+.hsearch button:hover{background:var(--ambd)}
+.hactions{display:flex;gap:.75rem;margin-left:auto;flex-shrink:0}
+.hbtn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:7px 16px;border-radius:8px;font-size:13px;font-weight:600;transition:all .15s}
+.hbtn:hover{background:rgba(255,255,255,.18)}
+.hbtn.amber{background:var(--amb);border-color:var(--amb)}
+.hbtn.amber:hover{background:var(--ambd)}
+
+/* ── BREADCRUMB ── */
+.breadcrumb-bar{background:var(--wh);border-bottom:1px solid var(--bdr);padding:0 2rem}
+.breadcrumb-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;height:44px;gap:6px;font-size:13px;color:var(--tmut)}
+.breadcrumb-inner a{color:var(--gl);font-weight:600}
+.breadcrumb-inner a:hover{color:var(--gm)}
+.bc-sep{color:var(--bdr)}
+
+/* ── LAYOUT ── */
+.layout{max-width:1400px;margin:0 auto;padding:24px 2rem 48px;display:grid;grid-template-columns:290px 1fr;gap:24px;align-items:start}
+
+/* ── SIDEBAR FILTERS ── */
+.filters-panel{background:var(--wh);border:1px solid var(--bdr);border-radius:16px;overflow:hidden;position:sticky;top:88px}
+.fp-header{background:var(--gd);padding:16px 20px;display:flex;align-items:center;justify-content:space-between}
+.fp-title{font-size:15px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px}
+.fp-clear{font-size:12px;font-weight:700;color:var(--amb);background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:6px;transition:background .15s}
+.fp-clear:hover{background:rgba(232,146,10,.2)}
+
+.filter-block{border-bottom:1px solid var(--bdr);padding:18px 20px}
+.filter-block:last-child{border-bottom:none}
+.fb-head{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;margin-bottom:14px}
+.fb-label{font-size:13px;font-weight:700;color:var(--td);display:flex;align-items:center;gap:8px}
+.fb-arrow{font-size:11px;color:var(--tmut);transition:transform .2s}
+.fb-arrow.open{transform:rotate(180deg)}
+.fb-body{overflow:hidden;transition:max-height .3s ease}
+
+/* Category pills */
+.cat-pills{display:flex;flex-direction:column;gap:4px}
+.cat-pill{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;transition:all .18s;border:none;background:none;width:100%;text-align:left}
+.cat-pill:hover{background:var(--gp)}
+.cat-pill.active{background:var(--gp);font-weight:700;color:var(--gm)}
+.cat-pill.active .cp-icon-wrap{background:var(--gm)}
+.cp-icon-wrap{width:30px;height:30px;background:var(--gp);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;transition:background .18s}
+.cp-label{font-size:13px;font-weight:600;color:var(--td);flex:1}
+.cp-count{font-size:11px;color:var(--tmut)}
+
+/* Price range */
+.price-inputs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.price-input{border:1.5px solid var(--bdr);border-radius:8px;padding:9px 10px;font-size:13px;color:var(--td);background:var(--cream);outline:none;transition:border-color .18s;width:100%}
+.price-input:focus{border-color:var(--gl)}
+.range-track{position:relative;height:4px;background:var(--bdr);border-radius:2px;margin:8px 4px}
+.range-fill{position:absolute;height:100%;background:var(--gl);border-radius:2px;left:0;right:20%}
+input[type=range]{width:100%;accent-color:var(--gl);cursor:pointer}
+.range-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--tmut);margin-top:4px}
+
+/* Checkboxes */
+.check-list{display:flex;flex-direction:column;gap:8px}
+.check-item{display:flex;align-items:center;gap:9px;cursor:pointer}
+.check-item input[type=checkbox]{width:16px;height:16px;accent-color:var(--gm);cursor:pointer;flex-shrink:0}
+.check-label{font-size:13px;color:var(--td);flex:1}
+.check-count{font-size:11px;color:var(--tmut)}
+
+/* Condition badges */
+.cond-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.cond-btn{border:1.5px solid var(--bdr);background:var(--cream);border-radius:8px;padding:8px 6px;text-align:center;font-size:12px;font-weight:600;color:var(--tm);transition:all .18s;cursor:pointer}
+.cond-btn:hover,.cond-btn.active{border-color:var(--gm);background:var(--gp);color:var(--gm)}
+
+/* Year range */
+.year-row{display:flex;align-items:center;gap:8px}
+.year-input{border:1.5px solid var(--bdr);border-radius:8px;padding:8px 10px;font-size:13px;color:var(--td);background:var(--cream);outline:none;width:100%;transition:border-color .18s}
+.year-input:focus{border-color:var(--gl)}
+.year-sep{font-size:12px;color:var(--tmut);flex-shrink:0}
+
+/* Star rating filter */
+.star-filter{display:flex;flex-direction:column;gap:6px}
+.star-row{display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 0}
+.star-row input[type=radio]{accent-color:var(--amb);cursor:pointer}
+.stars-display{color:var(--amb);font-size:14px;letter-spacing:1px}
+.star-count{font-size:11px;color:var(--tmut)}
+
+/* Apply btn */
+.apply-filters-btn{width:100%;background:var(--gm);color:#fff;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;transition:all .18s;margin-top:4px}
+.apply-filters-btn:hover{background:var(--gd);transform:translateY(-1px)}
+
+/* ── RESULTS COLUMN ── */
+.results-col{}
+
+/* Top bar */
+.results-topbar{background:var(--wh);border:1px solid var(--bdr);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.results-count{font-size:15px;font-weight:700;color:var(--td)}
+.results-count span{color:var(--gl)}
+.active-filters{display:flex;gap:6px;flex-wrap:wrap;flex:1}
+.af-chip{display:flex;align-items:center;gap:6px;background:var(--gp);border:1px solid var(--bdr);color:var(--gm);font-size:12px;font-weight:700;padding:4px 10px;border-radius:100px}
+.af-remove{background:none;border:none;color:var(--gl);font-size:14px;line-height:1;padding:0;cursor:pointer;font-weight:900}
+.af-remove:hover{color:var(--red)}
+.sort-wrap{display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0}
+.sort-label{font-size:13px;color:var(--tmut);font-weight:600}
+.sort-select{border:1.5px solid var(--bdr);border-radius:8px;padding:7px 30px 7px 10px;font-size:13px;font-weight:600;color:var(--td);background:var(--cream) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236b7f6e' fill='none' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 10px center;appearance:none;outline:none;cursor:pointer;transition:border-color .15s}
+.sort-select:focus{border-color:var(--gl)}
+.view-btns{display:flex;gap:4px}
+.view-btn{border:1.5px solid var(--bdr);background:var(--wh);border-radius:7px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .15s}
+.view-btn.active,.view-btn:hover{border-color:var(--gm);background:var(--gp)}
+
+/* ── LISTING CARDS GRID ── */
+.listings-grid{display:grid;gap:16px;grid-template-columns:repeat(3,1fr)}
+.listings-grid.list-view{grid-template-columns:1fr}
+
+/* Card */
+.lcard{background:var(--wh);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;transition:all .22s;cursor:pointer;position:relative;display:flex;flex-direction:column}
+.lcard:hover{border-color:var(--gl);transform:translateY(-3px);box-shadow:var(--sh2)}
+.lcard-img{width:100%;height:185px;background:var(--gp);display:flex;align-items:center;justify-content:center;font-size:72px;position:relative;overflow:hidden;flex-shrink:0}
+.lcard-img .emoji-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:120px;opacity:.08}
+.badge{position:absolute;top:10px;left:10px;font-size:10px;font-weight:700;padding:3px 9px;border-radius:6px;letter-spacing:.5px;text-transform:uppercase}
+.badge-top{background:var(--amb);color:#fff}
+.badge-new{background:var(--gm);color:#fff}
+.badge-hot{background:var(--red);color:#fff}
+.badge-sold{background:#888;color:#fff}
+.fav-btn{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.9);border:none;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .18s;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.fav-btn:hover{background:#fff;transform:scale(1.12)}
+.lcard-body{padding:14px;display:flex;flex-direction:column;flex:1}
+.lcard-cat{font-size:10px;font-weight:700;color:var(--gl);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.lcard-title{font-size:14px;font-weight:700;color:var(--td);line-height:1.35;margin-bottom:4px}
+.lcard-spec{font-size:12px;color:var(--tmut);margin-bottom:10px;line-height:1.4}
+.lcard-price{font-size:19px;font-weight:900;color:var(--gm);margin-top:auto}
+.lcard-price .cur{font-size:12px;font-weight:600}
+.lcard-footer{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--bdr)}
+.lcard-loc{font-size:11px;color:var(--tmut);display:flex;align-items:center;gap:3px}
+.lcard-date{font-size:11px;color:var(--tmut)}
+.lcard-views{font-size:11px;color:var(--tmut);display:flex;align-items:center;gap:3px}
+
+/* List view card */
+.listings-grid.list-view .lcard{flex-direction:row;height:140px}
+.listings-grid.list-view .lcard-img{width:160px;height:140px;flex-shrink:0;border-radius:0}
+.listings-grid.list-view .lcard-body{padding:16px}
+.listings-grid.list-view .lcard-price{font-size:18px;margin-top:0}
+.listings-grid.list-view .lcard-footer{margin-top:auto}
+
+/* ── PAGINATION ── */
+.pagination{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:28px}
+.page-btn{width:38px;height:38px;border:1.5px solid var(--bdr);border-radius:9px;background:var(--wh);font-size:14px;font-weight:600;color:var(--tm);display:flex;align-items:center;justify-content:center;transition:all .18s}
+.page-btn:hover{border-color:var(--gl);color:var(--gm);background:var(--gp)}
+.page-btn.active{background:var(--gm);border-color:var(--gm);color:#fff}
+.page-btn.disabled{opacity:.35;pointer-events:none}
+.page-dots{font-size:14px;color:var(--tmut);padding:0 4px}
+
+/* ── NO RESULTS ── */
+.no-results{text-align:center;padding:72px 20px;background:var(--wh);border-radius:var(--r);border:1px solid var(--bdr)}
+.no-results span{font-size:56px;display:block;margin-bottom:16px}
+.no-results h3{font-size:18px;font-weight:700;margin-bottom:8px;color:var(--tm)}
+.no-results p{font-size:14px;color:var(--tmut);max-width:340px;margin:0 auto 24px;line-height:1.6}
+
+/* ── LOADING SKELETON ── */
+.skeleton{border-radius:var(--r);overflow:hidden;background:var(--wh);border:1px solid var(--bdr)}
+.skel-img{height:185px;background:linear-gradient(90deg,#f0f4f1 25%,#e8f0ea 50%,#f0f4f1 75%);background-size:200% 100%;animation:shimmer 1.4s infinite}
+.skel-line{height:14px;border-radius:6px;background:linear-gradient(90deg,#f0f4f1 25%,#e8f0ea 50%,#f0f4f1 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;margin:12px 14px}
+.skel-line.short{width:60%;margin-right:auto}
+.skel-line.tall{height:20px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* ── COMPARE BAR ── */
+.compare-bar{position:fixed;bottom:0;left:0;right:0;background:var(--gd);padding:12px 2rem;display:none;align-items:center;gap:16px;z-index:300;box-shadow:0 -4px 20px rgba(0,0,0,.25)}
+.compare-bar.show{display:flex}
+.compare-slots{display:flex;gap:10px;flex:1}
+.compare-slot{width:80px;height:52px;border:2px dashed rgba(255,255,255,.25);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;transition:all .2s;background:rgba(255,255,255,.06)}
+.compare-slot.filled{border-style:solid;border-color:var(--amb);background:rgba(232,146,10,.1)}
+.compare-info{color:rgba(255,255,255,.7);font-size:13px}
+.compare-info strong{display:block;color:#fff;font-size:14px}
+.compare-actions{display:flex;gap:8px}
+.cbtn{border:none;border-radius:9px;padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
+.cbtn.primary{background:var(--amb);color:#fff}
+.cbtn.outline{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.25)}
+.cbtn:hover{transform:translateY(-1px)}
+
+/* ── MAP TOGGLE ── */
+.map-toggle-btn{display:flex;align-items:center;gap:7px;background:var(--wh);border:1.5px solid var(--bdr);border-radius:8px;padding:7px 14px;font-size:13px;font-weight:700;color:var(--tm);transition:all .15s}
+.map-toggle-btn:hover{border-color:var(--gl);color:var(--gm)}
+
+/* ── SUGGESTED SEARCHES ── */
+.suggested{margin-bottom:16px}
+.sug-label{font-size:12px;font-weight:700;color:var(--tmut);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px}
+.sug-tags{display:flex;gap:6px;flex-wrap:wrap}
+.sug-tag{border:1px solid var(--bdr);background:var(--wh);color:var(--tm);font-size:12px;font-weight:600;padding:5px 12px;border-radius:100px;transition:all .15s}
+.sug-tag:hover{border-color:var(--gl);background:var(--gp);color:var(--gm)}
+
+/* ── MOBILE FILTER TOGGLE ── */
+.mobile-filter-btn{display:none;align-items:center;gap:8px;background:var(--gm);color:#fff;border:none;border-radius:10px;padding:10px 18px;font-size:14px;font-weight:700;margin-bottom:16px}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1080px){.listings-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr;padding:16px 1rem}
+  .filters-panel{position:fixed;top:0;left:0;bottom:0;width:300px;z-index:500;transform:translateX(-100%);transition:transform .3s;border-radius:0;overflow-y:auto}
+  .filters-panel.open{transform:none;box-shadow:4px 0 32px rgba(0,0,0,.2)}
+  .mobile-filter-btn{display:flex}
+  .filter-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:499}
+  .filter-overlay.show{display:block}
+  .listings-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){.listings-grid{grid-template-columns:1fr}}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.lcard{animation:fadeUp .35s ease both}
+</style>
+</head>
+<body>
+
+<!-- ══════ HEADER ══════ -->
+<header class="header">
+  <div class="hinner">
+    <a href="index.html" class="logo">
+      <div class="li">🌾</div>
+      <div class="lt">Agro<span>TJ</span></div>
+    </a>
+    <div class="hsearch">
+      <input type="text" id="main-search" placeholder="Трактор МТЗ, насос, семена пшеницы..." value="Трактор">
+      <button onclick="doSearch()">🔍</button>
+    </div>
+    <div class="hactions">
+      <a href="auth.html"><button class="hbtn">Войти</button></a>
+      <a href="auth.html"><button class="hbtn amber">+ Объявление</button></a>
+    </div>
+  </div>
+</header>
+
+<!-- ══════ BREADCRUMB ══════ -->
+<div class="breadcrumb-bar">
+  <div class="breadcrumb-inner">
+    <a href="index.html">Главная</a>
+    <span class="bc-sep">›</span>
+    <span id="bc-cat">Тракторы</span>
+    <span class="bc-sep">·</span>
+    <span id="bc-count" style="color:var(--tmut)">248 объявлений</span>
+  </div>
+</div>
+
+<!-- ══════ OVERLAY ══════ -->
+<div class="filter-overlay" id="filter-overlay" onclick="closeFilters()"></div>
+
+<!-- ══════ LAYOUT ══════ -->
+<div class="layout">
+
+  <!-- ════════════════════
+       FILTERS SIDEBAR
+  ════════════════════ -->
+  <aside class="filters-panel" id="filters-panel">
+    <div class="fp-header">
+      <span class="fp-title">🎛️ Фильтры</span>
+      <button class="fp-clear" onclick="clearAllFilters()">Сбросить всё</button>
+    </div>
+
+    <!-- CATEGORIES -->
+    <div class="filter-block">
+      <div class="fb-head" onclick="toggleBlock(this)">
+        <span class="fb-label">📂 Категория</span>
+        <span class="fb-arrow open">▼</span>
+      </div>
+      <div class="fb-body">
+        <div class="cat-pills" id="cat-pills">
+          <button class="cat-pill active" onclick="setCategory(this,'Все',0)">
+            <div class="cp-icon-wrap">🌿</div>
+            <span class="cp-label">Все категории</span>
+            <span class="cp-count">3124</span>
+          </button>
+          <button class="cat-pill" onclick="setCategory(this,'Тракторы',248)">
+            <div class="cp-icon-wrap">🚜</div>
+            <span class="cp-label">Тракторы</span>
+            <span class="cp-count">248</span>
+          </button>
+          <button class="cat-pill" onclick="setCategory(this,'Комбайны',87)">
+            <div class="cp-icon-wrap">🌾</div>
+            <span class="cp-label">Комбайны и жатки</span>
+            <span class="cp-count">87</span>
+          </button>
+          <button class="cat-pill" onclick="setCategory(this,'Ирригация',193)">
+            <div class="cp-icon-wrap">💧</div>
+            <span class="cp-label">Ирригация и насосы</span>
+            <span class="cp-count">193</span>
+          </button>
+          <button class="cat-pill" onclick="setCategory(this,'Семена',412)">
+            <div class="cp-icon-wrap">🌱</div>
+            <span class="cp-label">Семена</span>
+            <span class="cp-count">412</span>
+          </button>
+          <button class="cat-pill" onclick="setCategory(this,'Удобрения',156)">
+            <div class="cp-icon-wrap">🧪</div>
+            <span class="cp-label">Удобрения</span>
+            <span class="cp-count">156</span>
+          </button>
+          <button class="cat-pill" onclick="setCategory(this,'Мотоблоки',134)">
+            <div class="cp-icon-wrap">⚙️</div>
+            <span class="cp-label">Мотоблоки</span>
+            <span class="cp-count">134</span>
+          </button>
+          <button class="cat-pill" onclick="setCategory(this,'Дроны',32)">
+            <div class="cp-icon-wrap">🛸</div>
+            <span class="cp-label">Агро-дроны</span>
+            <span class="cp-count">32</span>
+          </button>
+          <button class="cat-pill" onclick="setCategory(this,'Запчасти',567)">
+            <div class="cp-icon-wrap">🛠️</div>
+            <span class="cp-label">Запчасти</span>
+            <span class="cp-count">567</span>
+          </button>
+          <button class="cat-pill" onclick="setCategory(this,'Услуги',203)">
+            <div class="cp-icon-wrap">👨‍🌾</div>
+            <span class="cp-label">Услуги</span>
+            <span class="cp-count">203</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRICE -->
+    <div class="filter-block">
+      <div class="fb-head" onclick="toggleBlock(this)">
+        <span class="fb-label">💰 Цена (TJS)</span>
+        <span class="fb-arrow open">▼</span>
+      </div>
+      <div class="fb-body">
+        <div class="price-inputs">
+          <input class="price-input" type="number" id="price-min" placeholder="От" min="0" oninput="updatePriceFilter()">
+          <input class="price-input" type="number" id="price-max" placeholder="До" oninput="updatePriceFilter()">
+        </div>
+        <div style="padding:4px 0">
+          <input type="range" id="price-slider" min="0" max="1000000" value="500000" step="5000" oninput="syncPriceSlider(this.value)" style="width:100%">
+          <div class="range-labels">
+            <span>0</span>
+            <span>500 000</span>
+            <span>1 000 000+</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">
+          <button class="cond-btn" onclick="setQuickPrice(0,10000)">до 10 000</button>
+          <button class="cond-btn" onclick="setQuickPrice(10000,50000)">10-50K</button>
+          <button class="cond-btn" onclick="setQuickPrice(50000,200000)">50-200K</button>
+          <button class="cond-btn" onclick="setQuickPrice(200000,999999999)">от 200K</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONDITION -->
+    <div class="filter-block">
+      <div class="fb-head" onclick="toggleBlock(this)">
+        <span class="fb-label">🏷️ Состояние</span>
+        <span class="fb-arrow open">▼</span>
+      </div>
+      <div class="fb-body">
+        <div class="cond-grid">
+          <button class="cond-btn active" onclick="toggleCond(this,'new')">✨ Новое</button>
+          <button class="cond-btn" onclick="toggleCond(this,'excellent')">⭐ Отличное Б/У</button>
+          <button class="cond-btn" onclick="toggleCond(this,'good')">👍 Хорошее Б/У</button>
+          <button class="cond-btn" onclick="toggleCond(this,'fair')">👌 Удовл. Б/У</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- REGION -->
+    <div class="filter-block">
+      <div class="fb-head" onclick="toggleBlock(this)">
+        <span class="fb-label">📍 Регион</span>
+        <span class="fb-arrow open">▼</span>
+      </div>
+      <div class="fb-body">
+        <div class="check-list">
+          <label class="check-item"><input type="checkbox" onchange="updateFilters()"><span class="check-label">🏙️ Душанбе</span><span class="check-count">842</span></label>
+          <label class="check-item"><input type="checkbox" onchange="updateFilters()"><span class="check-label">🌄 Согд (Худжанд)</span><span class="check-count">617</span></label>
+          <label class="check-item"><input type="checkbox" onchange="updateFilters()"><span class="check-label">🌾 Хатлон</span><span class="check-count">589</span></label>
+          <label class="check-item"><input type="checkbox" onchange="updateFilters()"><span class="check-label">🏞️ РРП</span><span class="check-count">378</span></label>
+          <label class="check-item"><input type="checkbox" onchange="updateFilters()"><span class="check-label">🌿 Куляб</span><span class="check-count">245</span></label>
+          <label class="check-item"><input type="checkbox" onchange="updateFilters()"><span class="check-label">⛰️ ГБАО</span><span class="check-count">143</span></label>
+          <label class="check-item"><input type="checkbox" onchange="updateFilters()"><span class="check-label">🌊 Вахш</span><span class="check-count">198</span></label>
+          <label class="check-item"><input type="checkbox" onchange="updateFilters()"><span class="check-label">🏔️ Хорог</span><span class="check-count">112</span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- YEAR -->
+    <div class="filter-block">
+      <div class="fb-head" onclick="toggleBlock(this)">
+        <span class="fb-label">📅 Год выпуска</span>
+        <span class="fb-arrow open">▼</span>
+      </div>
+      <div class="fb-body">
+        <div class="year-row">
+          <input class="year-input" type="number" id="year-from" placeholder="От" min="1990" max="2026">
+          <span class="year-sep">—</span>
+          <input class="year-input" type="number" id="year-to" placeholder="До" min="1990" max="2026">
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">
+          <button class="cond-btn" onclick="setYears(2022,2026)">2022+</button>
+          <button class="cond-btn" onclick="setYears(2018,2021)">2018–21</button>
+          <button class="cond-btn" onclick="setYears(2010,2017)">2010–17</button>
+          <button class="cond-btn" onclick="setYears(1990,2009)">до 2010</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BRAND -->
+    <div class="filter-block">
+      <div class="fb-head" onclick="toggleBlock(this)">
+        <span class="fb-label">🏭 Марка / Производитель</span>
+        <span class="fb-arrow open">▼</span>
+      </div>
+      <div class="fb-body">
+        <input class="price-input" type="text" placeholder="Поиск марки..." id="brand-search" oninput="filterBrands(this.value)" style="width:100%;margin-bottom:10px">
+        <div class="check-list" id="brand-list">
+          <label class="check-item"><input type="checkbox"><span class="check-label">МТЗ / Беларус</span><span class="check-count">134</span></label>
+          <label class="check-item"><input type="checkbox"><span class="check-label">John Deere</span><span class="check-count">48</span></label>
+          <label class="check-item"><input type="checkbox"><span class="check-label">CLAAS</span><span class="check-count">31</span></label>
+          <label class="check-item"><input type="checkbox"><span class="check-label">Case IH</span><span class="check-count">27</span></label>
+          <label class="check-item"><input type="checkbox"><span class="check-label">New Holland</span><span class="check-count">22</span></label>
+          <label class="check-item"><input type="checkbox"><span class="check-label">Fendt</span><span class="check-count">18</span></label>
+          <label class="check-item"><input type="checkbox"><span class="check-label">Ростсельмаш</span><span class="check-count">43</span></label>
+          <label class="check-item"><input type="checkbox"><span class="check-label">Grundfos</span><span class="check-count">56</span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SELLER TYPE -->
+    <div class="filter-block">
+      <div class="fb-head" onclick="toggleBlock(this)">
+        <span class="fb-label">👤 Тип продавца</span>
+        <span class="fb-arrow open">▼</span>
+      </div>
+      <div class="fb-body">
+        <div class="check-list">
+          <label class="check-item"><input type="checkbox" onchange="updateFilters()"><span class="check-label">🏢 Компания / Дилер</span><span class="check-count">412</span></label>
+          <label class="check-item"><input type="checkbox" onchange="updateFilters()"><span class="check-label">👨‍🌾 Частное лицо</span><span class="check-count">2712</span></label>
+          <label class="check-item"><input type="checkbox" onchange="updateFilters()"><span class="check-label">✓ Только верифицированные</span><span class="check-count">847</span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- RATING -->
+    <div class="filter-block">
+      <div class="fb-head" onclick="toggleBlock(this)">
+        <span class="fb-label">⭐ Рейтинг продавца</span>
+        <span class="fb-arrow open">▼</span>
+      </div>
+      <div class="fb-body">
+        <div class="star-filter">
+          <label class="star-row"><input type="radio" name="rating" value="all" checked onchange="updateFilters()"><span class="check-label">Любой рейтинг</span></label>
+          <label class="star-row"><input type="radio" name="rating" value="4.5" onchange="updateFilters()"><span class="stars-display">★★★★★</span><span class="star-count">4.5+ (623 продавца)</span></label>
+          <label class="star-row"><input type="radio" name="rating" value="4.0" onchange="updateFilters()"><span class="stars-display">★★★★☆</span><span class="star-count">4.0+ (891 продавец)</span></label>
+          <label class="star-row"><input type="radio" name="rating" value="3.0" onchange="updateFilters()"><span class="stars-display">★★★☆☆</span><span class="star-count">3.0+ (1024 продавца)</span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADDITIONAL -->
+    <div class="filter-block">
+      <div class="fb-head" onclick="toggleBlock(this)">
+        <span class="fb-label">✅ Дополнительно</span>
+        <span class="fb-arrow open">▼</span>
+      </div>
+      <div class="fb-body">
+        <div class="check-list">
+          <label class="check-item"><input type="checkbox" onchange="updateFilters()"><span class="check-label">📸 Только с фото</span></label>
+          <label class="check-item"><input type="checkbox" onchange="updateFilters()"><span class="check-label">💬 Торг уместен</span></label>
+          <label class="check-item"><input type="checkbox" onchange="updateFilters()"><span class="check-label">📜 Есть документы</span></label>
+          <label class="check-item"><input type="checkbox" onchange="updateFilters()"><span class="check-label">🚚 Возможна доставка</span></label>
+          <label class="check-item"><input type="checkbox" onchange="updateFilters()"><span class="check-label">🏆 ТОП объявления</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding:16px">
+      <button class="apply-filters-btn" onclick="applyFilters()">🔍 Применить фильтры</button>
+    </div>
+  </aside>
+
+  <!-- ════════════════════
+       RESULTS
+  ════════════════════ -->
+  <div class="results-col">
+
+    <!-- Mobile filter button -->
+    <button class="mobile-filter-btn" onclick="openFilters()">🎛️ Фильтры <span id="filter-badge" style="background:var(--amb);border-radius:100px;padding:1px 7px;font-size:11px;display:none">3</span></button>
+
+    <!-- Suggested searches -->
+    <div class="suggested">
+      <div class="sug-label">Популярные запросы</div>
+      <div class="sug-tags">
+        <button class="sug-tag" onclick="setSearch('Трактор МТЗ-82')">🚜 МТЗ-82</button>
+        <button class="sug-tag" onclick="setSearch('Мотоблок дизельный')">⚙️ Мотоблок</button>
+        <button class="sug-tag" onclick="setSearch('Насос для полива')">💧 Насос</button>
+        <button class="sug-tag" onclick="setSearch('Семена хлопка')">🌱 Семена хлопка</button>
+        <button class="sug-tag" onclick="setSearch('Комбайн зерновой')">🌾 Комбайн</button>
+        <button class="sug-tag" onclick="setSearch('Агро-дрон')">🛸 Дрон</button>
+        <button class="sug-tag" onclick="setSearch('Запчасти МТЗ')">🔧 Запчасти</button>
+      </div>
+    </div>
+
+    <!-- Top bar -->
+    <div class="results-topbar">
+      <div class="results-count">Найдено: <span id="result-count">248</span> объявлений</div>
+
+      <div class="active-filters" id="active-filters">
+        <!-- Active filter chips injected here -->
+      </div>
+
+      <div class="sort-wrap">
+        <button class="map-toggle-btn" onclick="toggleMap()">🗺️ Карта</button>
+        <span class="sort-label">Сортировка:</span>
+        <select class="sort-select" id="sort-select" onchange="sortResults(this.value)">
+          <option value="date">По дате</option>
+          <option value="price_asc">Цена ↑</option>
+          <option value="price_desc">Цена ↓</option>
+          <option value="views">Популярные</option>
+          <option value="rating">По рейтингу</option>
+        </select>
+        <div class="view-btns">
+          <button class="view-btn active" id="grid-btn" onclick="setView('grid')" title="Сетка">⊞</button>
+          <button class="view-btn" id="list-btn" onclick="setView('list')" title="Список">☰</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skeletons (loading state) -->
+    <div class="listings-grid" id="skeletons" style="display:none">
+      <div class="skeleton"><div class="skel-img"></div><div class="skel-line tall"></div><div class="skel-line short"></div><div class="skel-line"></div></div>
+      <div class="skeleton"><div class="skel-img"></div><div class="skel-line tall"></div><div class="skel-line short"></div><div class="skel-line"></div></div>
+      <div class="skeleton"><div class="skel-img"></div><div class="skel-line tall"></div><div class="skel-line short"></div><div class="skel-line"></div></div>
+    </div>
+
+    <!-- Listings grid -->
+    <div class="listings-grid" id="listings-grid"></div>
+
+    <!-- No results -->
+    <div class="no-results" id="no-results" style="display:none">
+      <span>🔍</span>
+      <h3>Ничего не найдено</h3>
+      <p>Попробуйте изменить фильтры или поисковый запрос. Новые объявления появляются каждый день!</p>
+      <button class="apply-filters-btn" style="max-width:240px;margin:0 auto" onclick="clearAllFilters()">Сбросить все фильтры</button>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" id="pagination">
+      <button class="page-btn disabled">‹</button>
+      <button class="page-btn active" onclick="goPage(1)">1</button>
+      <button class="page-btn" onclick="goPage(2)">2</button>
+      <button class="page-btn" onclick="goPage(3)">3</button>
+      <span class="page-dots">…</span>
+      <button class="page-btn" onclick="goPage(12)">12</button>
+      <button class="page-btn" onclick="goPage(2)">›</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ COMPARE BAR ══════ -->
+<div class="compare-bar" id="compare-bar">
+  <div class="compare-slots" id="compare-slots">
+    <div class="compare-slot" id="slot-0">➕</div>
+    <div class="compare-slot" id="slot-1">➕</div>
+    <div class="compare-slot" id="slot-2">➕</div>
+  </div>
+  <div class="compare-info">
+    <strong>Сравнение товаров</strong>
+    <span id="compare-count-label">Добавьте до 3 объявлений</span>
+  </div>
+  <div class="compare-actions">
+    <button class="cbtn outline" onclick="clearCompare()">Очистить</button>
+    <button class="cbtn primary" onclick="goCompare()">Сравнить →</button>
+  </div>
+</div>
+
+<script>
+// ── LISTINGS DATA ──
+const ALL_LISTINGS = [
+  {id:1,  emoji:'🚜', cat:'Тракторы',    title:'Трактор МТЗ-82.1 Беларус',         spec:'82 л.с. · 2021 г. · 1 200 м/ч',   price:85000,  region:'Душанбе',  cond:'excellent', year:2021, brand:'МТЗ',       views:342, badge:'top',  seller:'🏢', rating:4.9},
+  {id:2,  emoji:'🚜', cat:'Тракторы',    title:'Трактор John Deere 5075E',          spec:'75 л.с. · 2019 г. · Кондиционер', price:245000, region:'Согд',     cond:'good',      year:2019, brand:'John Deere', views:189, badge:'',    seller:'🏢', rating:4.7},
+  {id:3,  emoji:'🚜', cat:'Тракторы',    title:'Трактор МТЗ-1221 Беларус',          spec:'120 л.с. · 2020 г.',               price:138000, region:'Хатлон',   cond:'new',       year:2020, brand:'МТЗ',       views:210, badge:'new', seller:'👨‍🌾', rating:4.5},
+  {id:4,  emoji:'🌾', cat:'Комбайны',    title:'Комбайн CLAAS Tucano 450',          spec:'335 л.с. · 2019 г. · GPS',        price:620000, region:'Согд',     cond:'good',      year:2019, brand:'CLAAS',     views:412, badge:'top', seller:'🏢', rating:5.0},
+  {id:5,  emoji:'💧', cat:'Ирригация',   title:'Насосная станция Grundfos SP 17-2', spec:'17 м³/ч · Глубина 80м',           price:12500,  region:'Хатлон',   cond:'new',       year:2023, brand:'Grundfos',  views:89,  badge:'new', seller:'🏢', rating:4.8},
+  {id:6,  emoji:'⚙️', cat:'Мотоблоки',   title:'Мотоблок Caiman Vario 70S TWK+',   spec:'7 л.с. · Дизельный · Фреза',      price:4800,   region:'Куляб',    cond:'new',       year:2024, brand:'Caiman',    views:201, badge:'hot', seller:'👨‍🌾', rating:4.3},
+  {id:7,  emoji:'🛸', cat:'Дроны',       title:'Агро-дрон XAG P100 Pro',            spec:'40 л бака · 16 га/ч · GPS',       price:58000,  region:'Душанбе',  cond:'new',       year:2023, brand:'XAG',       views:456, badge:'new', seller:'🏢', rating:4.9},
+  {id:8,  emoji:'🌱', cat:'Семена',      title:'Семена пшеницы Карабалинская-3',    spec:'Элита · 1 тонна · Сертификат',    price:3200,   region:'Вахш',     cond:'new',       year:2024, brand:'',          views:156, badge:'',    seller:'👨‍🌾', rating:4.6},
+  {id:9,  emoji:'🚜', cat:'Тракторы',    title:'Трактор Case IH Farmall 75A',       spec:'75 л.с. · 2018 г. · Кабина',     price:180000, region:'РРП',      cond:'good',      year:2018, brand:'Case IH',   views:134, badge:'',    seller:'🏢', rating:4.4},
+  {id:10, emoji:'🔧', cat:'Запчасти',    title:'Двигатель Д-240 для МТЗ-80/82',    spec:'Новый в упаковке · Гарантия 1 г', price:22000,  region:'Душанбе',  cond:'new',       year:2024, brand:'МТЗ',       views:98,  badge:'',    seller:'🏢', rating:4.7},
+  {id:11, emoji:'🏡', cat:'Теплицы',     title:'Теплица поликарбонатная 6×12м',    spec:'8 мм · Каркас оцинк. · Монтаж',  price:9500,   region:'Согд',     cond:'new',       year:2024, brand:'',          views:267, badge:'',    seller:'👨‍🌾', rating:4.2},
+  {id:12, emoji:'🧪', cat:'Удобрения',   title:'Аммиачная селитра · 1 тонна',       spec:'N-34.4% · Мешки по 50 кг',       price:2800,   region:'Хатлон',   cond:'new',       year:2024, brand:'',          views:312, badge:'hot', seller:'🏢', rating:4.6},
+  {id:13, emoji:'🚜', cat:'Тракторы',    title:'Трактор Fendt 516 Vario',           spec:'155 л.с. · 2017 г. · Автопилот', price:890000, region:'Душанбе',  cond:'excellent', year:2017, brand:'Fendt',     views:523, badge:'top', seller:'🏢', rating:5.0},
+  {id:14, emoji:'💧', cat:'Ирригация',   title:'Система капельного полива 5 га',   spec:'Израильская технология · Таймер', price:15000,  region:'Вахш',     cond:'new',       year:2024, brand:'Netafim',   views:178, badge:'new', seller:'🏢', rating:4.8},
+  {id:15, emoji:'🐄', cat:'Животноводство', title:'Доильный аппарат АДУ-1',        spec:'1 место · 60 циклов/мин',        price:4200,   region:'ГБАО',     cond:'good',      year:2020, brand:'',          views:67,  badge:'',    seller:'👨‍🌾', rating:4.1},
+  {id:16, emoji:'⚙️', cat:'Мотоблоки',   title:'Мотоблок Агат МБ-9Д',              spec:'9 л.с. · Ременной привод',        price:3600,   region:'Хатлон',   cond:'fair',      year:2019, brand:'Агат',      views:45,  badge:'',    seller:'👨‍🌾', rating:3.8},
+  {id:17, emoji:'🌾', cat:'Комбайны',    title:'Жатка зерновая ЖКН-4',             spec:'4 м · Б/У хорошее · 2016 г.',    price:28000,  region:'Согд',     cond:'good',      year:2016, brand:'',          views:89,  badge:'',    seller:'👨‍🌾', rating:4.3},
+  {id:18, emoji:'🛸', cat:'Дроны',       title:'Дрон-опрыскиватель DJI Agras T40', spec:'40 кг · 43 га/ч · Radar',        price:120000, region:'Душанбе',  cond:'new',       year:2023, brand:'DJI',       views:634, badge:'top', seller:'🏢', rating:5.0},
+];
+
+let currentListings = [...ALL_LISTINGS];
+let compareItems = [];
+let currentView = 'grid';
+let activeFilters = {};
+
+// ── RENDER CARDS ──
+function renderCard(l, i) {
+  const badgeHtml = l.badge === 'top' ? '<span class="badge badge-top">ТОП</span>'
+    : l.badge === 'new' ? '<span class="badge badge-new">НОВОЕ</span>'
+    : l.badge === 'hot' ? '<span class="badge badge-hot">АКЦИЯ</span>' : '';
+  const stars = '★'.repeat(Math.round(l.rating)) + '☆'.repeat(5-Math.round(l.rating));
+  return `
+    <div class="lcard" style="animation-delay:${i*0.05}s" onclick="openListing(${l.id})">
+      <div class="lcard-img">
+        <span class="emoji-bg">${l.emoji}</span>
+        <span style="position:relative;z-index:1;font-size:72px">${l.emoji}</span>
+        ${badgeHtml}
+        <button class="fav-btn" onclick="event.stopPropagation();toggleFav(this,${l.id})">🤍</button>
+      </div>
+      <div class="lcard-body">
+        <div class="lcard-cat">${l.emoji} ${l.cat}</div>
+        <div class="lcard-title">${l.title}</div>
+        <div class="lcard-spec">${l.spec}</div>
+        <div class="lcard-price"><span class="cur">TJS </span>${l.price.toLocaleString('ru')}</div>
+        <div class="lcard-footer">
+          <span class="lcard-loc">📍 ${l.region}</span>
+          <span class="lcard-views">👁️ ${l.views}</span>
+          <span style="font-size:11px;color:var(--amb)">${stars.substring(0,1+Math.round(l.rating/1))}</span>
+        </div>
+        <div style="margin-top:8px;display:flex;gap:6px">
+          <button style="flex:1;background:var(--gm);color:#fff;border:none;border-radius:7px;padding:7px 0;font-size:12px;font-weight:700;transition:background .15s" onclick="event.stopPropagation();contactSeller(${l.id})">💬 Написать</button>
+          <button style="background:var(--cream);border:1.5px solid var(--bdr);border-radius:7px;padding:7px 10px;font-size:12px;font-weight:600;color:var(--tm);transition:all .15s" onclick="event.stopPropagation();addCompare(${l.id})" title="Сравнить">⚖️</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderListings(items) {
+  const grid = document.getElementById('listings-grid');
+  const noRes = document.getElementById('no-results');
+  const pag = document.getElementById('pagination');
+  document.getElementById('result-count').textContent = items.length;
+  document.getElementById('bc-count').textContent = items.length + ' объявлений';
+  if(!items.length) {
+    grid.style.display = 'none';
+    noRes.style.display = 'block';
+    pag.style.display = 'none';
+    return;
+  }
+  grid.style.display = 'grid';
+  noRes.style.display = 'none';
+  pag.style.display = 'flex';
+  grid.innerHTML = items.map((l,i) => renderCard(l,i)).join('');
+}
+
+// ── CATEGORY ──
+function setCategory(el, name, count) {
+  document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('bc-cat').textContent = name === 'Все' ? 'Все категории' : name;
+  activeFilters.cat = name === 'Все' ? null : name;
+  applyAllFilters();
+  addFilterChip('cat', name === 'Все' ? null : name + ' (' + count + ')');
+}
+
+// ── PRICE ──
+function updatePriceFilter() {
+  const min = +document.getElementById('price-min').value || 0;
+  const max = +document.getElementById('price-max').value || Infinity;
+  activeFilters.priceMin = min; activeFilters.priceMax = max;
+}
+function syncPriceSlider(val) {
+  document.getElementById('price-max').value = val;
+  activeFilters.priceMax = +val;
+}
+function setQuickPrice(min, max) {
+  document.getElementById('price-min').value = min || '';
+  document.getElementById('price-max').value = max < 999999999 ? max : '';
+  activeFilters.priceMin = min; activeFilters.priceMax = max;
+  document.querySelectorAll('.cond-btn').forEach(b => {
+    if(b.onclick && b.onclick.toString().includes('setQuickPrice')) b.classList.remove('active');
+  });
+  event.target.classList.add('active');
+  addFilterChip('price', (min?min.toLocaleString('ru'):'0') + ' – ' + (max<999999999?max.toLocaleString('ru'):'∞') + ' TJS');
+  applyAllFilters();
+}
+
+// ── CONDITION ──
+function toggleCond(btn, val) {
+  btn.classList.toggle('active');
+  const active = [...document.querySelectorAll('.cond-btn.active')]
+    .map(b => b.textContent.trim().replace(/^[^\s]+\s/,''));
+  activeFilters.conds = active;
+}
+
+// ── YEAR ──
+function setYears(from, to) {
+  document.getElementById('year-from').value = from;
+  document.getElementById('year-to').value = to;
+  activeFilters.yearFrom = from; activeFilters.yearTo = to;
+  addFilterChip('year', from + '–' + to);
+  applyAllFilters();
+}
+
+// ── APPLY ALL FILTERS ──
+function applyAllFilters() {
+  let results = [...ALL_LISTINGS];
+  if(activeFilters.cat) results = results.filter(l => l.cat === activeFilters.cat);
+  if(activeFilters.priceMin) results = results.filter(l => l.price >= activeFilters.priceMin);
+  if(activeFilters.priceMax) results = results.filter(l => l.price <= activeFilters.priceMax);
+  if(activeFilters.yearFrom) results = results.filter(l => l.year >= activeFilters.yearFrom);
+  if(activeFilters.yearTo) results = results.filter(l => l.year <= activeFilters.yearTo);
+  const q = document.getElementById('main-search').value.trim().toLowerCase();
+  if(q) results = results.filter(l => l.title.toLowerCase().includes(q) || l.cat.toLowerCase().includes(q) || l.spec.toLowerCase().includes(q));
+  currentListings = results;
+  renderListings(results);
+  closeFilters();
+}
+
+function applyFilters() { applyAllFilters(); }
+function updateFilters() {}
+
+function clearAllFilters() {
+  activeFilters = {};
+  document.querySelectorAll('.cat-pill').forEach((p,i) => p.classList.toggle('active', i===0));
+  document.querySelectorAll('.cond-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('input[type=checkbox]').forEach(c => c.checked = false);
+  document.querySelectorAll('input[type=radio]')[0]?.click();
+  document.getElementById('price-min').value=''; document.getElementById('price-max').value='';
+  document.getElementById('year-from').value=''; document.getElementById('year-to').value='';
+  document.getElementById('main-search').value='';
+  document.getElementById('active-filters').innerHTML='';
+  document.getElementById('bc-cat').textContent = 'Все категории';
+  renderListings(ALL_LISTINGS);
+}
+
+// ── ACTIVE FILTER CHIPS ──
+function addFilterChip(key, label) {
+  if(!label) return removeFilterChip(key);
+  const container = document.getElementById('active-filters');
+  const existing = container.querySelector('[data-key="'+key+'"]');
+  const html = `<span class="af-chip" data-key="${key}">${label}<button class="af-remove" onclick="removeFilterChip('${key}')">×</button></span>`;
+  if(existing) existing.outerHTML = html;
+  else container.insertAdjacentHTML('beforeend', html);
+}
+function removeFilterChip(key) {
+  document.querySelector(`[data-key="${key}"]`)?.remove();
+  delete activeFilters[key];
+  applyAllFilters();
+}
+
+// ── SORT ──
+function sortResults(by) {
+  const sorted = [...currentListings];
+  if(by==='price_asc') sorted.sort((a,b)=>a.price-b.price);
+  else if(by==='price_desc') sorted.sort((a,b)=>b.price-a.price);
+  else if(by==='views') sorted.sort((a,b)=>b.views-a.views);
+  else if(by==='rating') sorted.sort((a,b)=>b.rating-a.rating);
+  else sorted.sort((a,b)=>b.id-a.id);
+  renderListings(sorted);
+}
+
+// ── VIEW TOGGLE ──
+function setView(v) {
+  currentView = v;
+  document.getElementById('listings-grid').className = 'listings-grid' + (v==='list'?' list-view':'');
+  document.getElementById('grid-btn').classList.toggle('active', v==='grid');
+  document.getElementById('list-btn').classList.toggle('active', v==='list');
+}
+
+// ── FAV ──
+function toggleFav(btn, id) {
+  btn.textContent = btn.textContent === '🤍' ? '❤️' : '🤍';
+}
+
+// ── COMPARE ──
+function addCompare(id) {
+  if(compareItems.includes(id)) { compareItems = compareItems.filter(i=>i!==id); }
+  else if(compareItems.length < 3) { compareItems.push(id); }
+  else { alert('Можно сравнить максимум 3 объявления'); return; }
+  updateCompareBar();
+}
+function updateCompareBar() {
+  const bar = document.getElementById('compare-bar');
+  bar.classList.toggle('show', compareItems.length > 0);
+  for(let i=0;i<3;i++){
+    const slot = document.getElementById('slot-'+i);
+    const item = compareItems[i] ? ALL_LISTINGS.find(l=>l.id===compareItems[i]) : null;
+    slot.textContent = item ? item.emoji : '➕';
+    slot.classList.toggle('filled', !!item);
+  }
+  document.getElementById('compare-count-label').textContent = `Добавлено: ${compareItems.length}/3`;
+}
+function clearCompare() { compareItems=[]; updateCompareBar(); }
+function goCompare() { alert('📊 Страница сравнения откроется!\n\nВыбрано товаров: ' + compareItems.length); }
+
+// ── OPEN LISTING ──
+function openListing(id) {
+  window.location.href = `listing.html?id=${id}`;
+}
+function contactSeller(id) {
+  alert('💬 Открываем чат с продавцом!\n\nВ реальном сайте здесь откроется окно сообщений.');
+}
+
+// ── SEARCH ──
+function setSearch(q) {
+  document.getElementById('main-search').value = q;
+  applyAllFilters();
+}
+function doSearch() { applyAllFilters(); }
+document.getElementById('main-search').addEventListener('keydown', e => { if(e.key==='Enter') applyAllFilters(); });
+
+// ── FILTER BLOCKS TOGGLE ──
+function toggleBlock(head) {
+  const body = head.nextElementSibling;
+  const arrow = head.querySelector('.fb-arrow');
+  const isOpen = arrow.classList.contains('open');
+  body.style.maxHeight = isOpen ? '0' : body.scrollHeight + 'px';
+  arrow.classList.toggle('open', !isOpen);
+  setTimeout(() => { if(!isOpen) body.style.maxHeight = 'none'; }, 300);
+}
+
+// ── MOBILE FILTERS ──
+function openFilters() {
+  document.getElementById('filters-panel').classList.add('open');
+  document.getElementById('filter-overlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function closeFilters() {
+  document.getElementById('filters-panel').classList.remove('open');
+  document.getElementById('filter-overlay').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+// ── MAP TOGGLE ──
+function toggleMap() { alert('🗺️ Карта объявлений\n\nЗдесь будет интерактивная карта Таджикистана с метками объявлений.'); }
+
+// ── BRAND SEARCH ──
+function filterBrands(q) {
+  document.querySelectorAll('#brand-list .check-item').forEach(item => {
+    item.style.display = item.textContent.toLowerCase().includes(q.toLowerCase()) ? 'flex' : 'none';
+  });
+}
+
+// ── PAGINATION ──
+function goPage(n) {
+  document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ── INIT ──
+// Open all filter blocks
+document.querySelectorAll('.fb-body').forEach(b => b.style.maxHeight = 'none');
+renderListings(ALL_LISTINGS);
+
+// Filter by initial search query
+const initQ = new URLSearchParams(location.search).get('q');
+if(initQ) { document.getElementById('main-search').value = initQ; applyAllFilters(); }
+</script>
+</body>
+</html>

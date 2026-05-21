@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0f2d1a">
+<title>AgroTJ</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --gd:#0f2d1a; --gm:#1a5c30; --gl:#2d8a4e; --gp:#e8f5ec; --gp2:#d4edda;
+  --amb:#e8920a; --ambl:#fdf3e0; --ambd:#b86e00;
+  --cream:#faf8f3; --bg:#f0f4f1;
+  --td:#111c14; --tm:#3d5440; --tmut:#6b7f6e;
+  --bdr:#d0e4d2; --wh:#ffffff; --red:#c0392b;
+  --nav-h:68px; --top-h:60px;
+  --r:14px; --r-sm:10px;
+  --sh:0 2px 12px rgba(15,45,26,0.09);
+  --sh2:0 8px 32px rgba(15,45,26,0.16);
+}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:'Nunito',sans-serif;
+  background:var(--bg);
+  color:var(--td);
+  display:flex;
+  flex-direction:column;
+  max-width:430px;
+  margin:0 auto;
+  position:relative;
+  box-shadow:0 0 60px rgba(0,0,0,0.2);
+}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;font-family:inherit;border:none;background:none}
+input,select,textarea{font-family:inherit}
+
+/* ══════════════════════
+   SCROLL CONTAINER
+══════════════════════ */
+.app-body{
+  flex:1;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  scroll-behavior:smooth;
+  padding-bottom:calc(var(--nav-h) + 8px);
+}
+.screen{display:none;min-height:100%}
+.screen.active{display:block}
+
+/* ══════════════════════
+   TOP BAR
+══════════════════════ */
+.topbar{
+  background:var(--gd);
+  height:var(--top-h);
+  display:flex;
+  align-items:center;
+  padding:0 16px;
+  gap:12px;
+  flex-shrink:0;
+  position:relative;
+  z-index:100;
+}
+.topbar.transparent{background:transparent;position:absolute;top:0;left:0;right:0}
+.tb-logo{display:flex;align-items:center;gap:8px}
+.tb-logo-icon{width:32px;height:32px;background:var(--amb);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.tb-logo-text{font-size:18px;font-weight:900;color:#fff}
+.tb-logo-text span{color:var(--amb)}
+.tb-spacer{flex:1}
+.tb-btn{width:36px;height:36px;background:rgba(255,255,255,.12);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff;position:relative;border:none;cursor:pointer;transition:background .15s}
+.tb-btn:active{background:rgba(255,255,255,.22)}
+.tb-notif-dot{position:absolute;top:6px;right:6px;width:8px;height:8px;background:var(--amb);border-radius:50%;border:2px solid var(--gd)}
+
+/* ══════════════════════
+   BOTTOM NAV
+══════════════════════ */
+.bottom-nav{
+  height:var(--nav-h);
+  background:var(--wh);
+  border-top:1px solid var(--bdr);
+  display:flex;
+  align-items:center;
+  padding:0 4px;
+  flex-shrink:0;
+  box-shadow:0 -4px 20px rgba(15,45,26,0.10);
+  position:relative;
+  z-index:100;
+}
+.nav-item{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:3px;
+  padding:8px 4px;
+  border-radius:12px;
+  cursor:pointer;
+  transition:all .2s;
+  position:relative;
+}
+.nav-item:active{transform:scale(0.92)}
+.nav-icon{font-size:22px;transition:transform .2s}
+.nav-label{font-size:10px;font-weight:700;color:var(--tmut);letter-spacing:0.2px}
+.nav-item.active .nav-icon{transform:scale(1.1)}
+.nav-item.active .nav-label{color:var(--gm)}
+.nav-badge{position:absolute;top:6px;right:calc(50% - 18px);background:var(--amb);color:#fff;font-size:9px;font-weight:800;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center;border:2px solid var(--wh);padding:0 3px}
+
+/* ── FAB ── */
+.fab{
+  width:52px;height:52px;
+  background:linear-gradient(135deg,var(--gl),var(--gm));
+  border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;
+  box-shadow:0 4px 16px rgba(26,92,48,.4);
+  cursor:pointer;
+  border:none;
+  margin:0 -6px;
+  transition:all .2s;
+  flex-shrink:0;
+  position:relative;
+  top:-10px;
+}
+.fab:active{transform:scale(0.92);box-shadow:0 2px 8px rgba(26,92,48,.3)}
+
+/* ══════════════════════
+   ── HOME SCREEN ──
+══════════════════════ */
+
+/* HERO CARD */
+.hero-card{
+  background:linear-gradient(160deg, var(--gd) 0%, #1a5c30 55%, #2d8a4e 100%);
+  padding:72px 20px 32px;
+  position:relative;
+  overflow:hidden;
+}
+.hero-card::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 85% 15%, rgba(232,146,10,.18) 0%, transparent 55%),
+             radial-gradient(circle at 15% 85%, rgba(45,138,78,.25) 0%, transparent 50%);
+}
+.hero-dots{position:absolute;top:0;left:0;right:0;bottom:0;opacity:.05;background-image:radial-gradient(circle,#fff 1px,transparent 1px);background-size:24px 24px}
+.hero-inner{position:relative;z-index:1}
+.hero-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(232,146,10,.25);border:1px solid rgba(232,146,10,.4);color:#f5c56a;font-size:11px;font-weight:800;padding:5px 12px;border-radius:100px;margin-bottom:14px;letter-spacing:.5px}
+.hero-title{font-family:'Merriweather',serif;font-size:24px;font-weight:700;color:#fff;line-height:1.25;margin-bottom:10px}
+.hero-title span{color:var(--amb)}
+.hero-sub{font-size:13px;color:rgba(255,255,255,.68);margin-bottom:20px;line-height:1.6}
+
+/* SEARCH BOX */
+.search-box{
+  background:#fff;
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 10px 10px 14px;
+  box-shadow:0 8px 32px rgba(0,0,0,.2);
+}
+.sb-input{flex:1;border:none;outline:none;font-family:inherit;font-size:14px;font-weight:600;color:var(--td);background:transparent;min-width:0}
+.sb-input::placeholder{color:var(--tmut);font-weight:500}
+.sb-btn{background:var(--amb);color:#fff;border:none;width:38px;height:38px;border-radius:10px;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.sb-btn:active{background:var(--ambd);transform:scale(.95)}
+
+/* HERO TAGS */
+.hero-tags{display:flex;gap:7px;margin-top:14px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.hero-tags::-webkit-scrollbar{display:none}
+.htag{background:rgba(255,255,255,.14);color:rgba(255,255,255,.85);font-size:12px;font-weight:700;padding:6px 13px;border-radius:100px;white-space:nowrap;border:1px solid rgba(255,255,255,.15);cursor:pointer;transition:all .15s;flex-shrink:0}
+.htag:active{background:rgba(255,255,255,.25);color:#fff}
+
+/* HERO STATS */
+.hero-stats{display:flex;gap:0;margin-top:24px;background:rgba(255,255,255,.08);border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.12)}
+.hstat{flex:1;text-align:center;padding:12px 8px;position:relative}
+.hstat+.hstat::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:1px;background:rgba(255,255,255,.15)}
+.hstat-num{font-size:18px;font-weight:900;color:var(--amb);display:block;line-height:1}
+.hstat-label{font-size:10px;color:rgba(255,255,255,.5);font-weight:600;margin-top:3px}
+
+/* SECTION */
+.section{padding:20px 16px}
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.sec-title{font-size:16px;font-weight:800;color:var(--td)}
+.sec-all{font-size:13px;font-weight:700;color:var(--gl);display:flex;align-items:center;gap:2px}
+
+/* CAT SCROLL */
+.cat-scroll{display:flex;gap:10px;overflow-x:auto;padding:0 16px 4px;margin:0 -16px;scrollbar-width:none}
+.cat-scroll::-webkit-scrollbar{display:none}
+.cat-card{display:flex;flex-direction:column;align-items:center;gap:7px;flex-shrink:0;cursor:pointer}
+.cat-icon-wrap{width:60px;height:60px;border-radius:16px;background:var(--wh);border:1.5px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:26px;transition:all .2s;box-shadow:var(--sh)}
+.cat-card.active .cat-icon-wrap,.cat-card:active .cat-icon-wrap{background:var(--gp);border-color:var(--gl)}
+.cat-name{font-size:10px;font-weight:700;color:var(--tm);text-align:center;line-height:1.2;max-width:60px}
+
+/* LISTING CARDS - HORIZONTAL SCROLL */
+.h-scroll{display:flex;gap:12px;overflow-x:auto;padding:0 16px 8px;margin:0 -16px;scrollbar-width:none}
+.h-scroll::-webkit-scrollbar{display:none}
+
+/* LISTING CARD SMALL */
+.lcard-sm{
+  width:200px;flex-shrink:0;
+  background:var(--wh);border:1.5px solid var(--bdr);
+  border-radius:var(--r);overflow:hidden;cursor:pointer;
+  transition:all .2s;
+  box-shadow:var(--sh);
+}
+.lcard-sm:active{transform:scale(.97)}
+.lcs-img{height:130px;background:var(--gp);display:flex;align-items:center;justify-content:center;font-size:56px;position:relative}
+.lcs-badge{position:absolute;top:8px;left:8px;font-size:9px;font-weight:800;padding:3px 7px;border-radius:5px;letter-spacing:.5px;text-transform:uppercase}
+.badge-top{background:var(--amb);color:#fff}
+.badge-new{background:var(--gm);color:#fff}
+.badge-hot{background:var(--red);color:#fff}
+.lcs-fav{position:absolute;top:6px;right:6px;background:rgba(255,255,255,.9);border:none;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px}
+.lcs-body{padding:10px 12px}
+.lcs-cat{font-size:10px;font-weight:800;color:var(--gl);text-transform:uppercase;letter-spacing:.7px;margin-bottom:3px}
+.lcs-title{font-size:13px;font-weight:700;color:var(--td);line-height:1.3;margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.lcs-price{font-size:15px;font-weight:900;color:var(--gm)}
+.lcs-footer{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.lcs-loc{font-size:10px;color:var(--tmut)}
+.lcs-views{font-size:10px;color:var(--tmut)}
+
+/* LISTING CARD FULL WIDTH */
+.lcard-full{
+  background:var(--wh);border:1.5px solid var(--bdr);
+  border-radius:var(--r);overflow:hidden;cursor:pointer;
+  transition:all .2s;margin-bottom:12px;
+  display:flex;gap:0;
+  box-shadow:var(--sh);
+}
+.lcard-full:active{transform:scale(.98)}
+.lcf-img{width:110px;flex-shrink:0;background:var(--gp);display:flex;align-items:center;justify-content:center;font-size:48px;position:relative}
+.lcf-body{padding:12px;flex:1;min-width:0}
+.lcf-cat{font-size:10px;font-weight:800;color:var(--gl);text-transform:uppercase;letter-spacing:.7px;margin-bottom:3px}
+.lcf-title{font-size:14px;font-weight:700;color:var(--td);line-height:1.3;margin-bottom:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.lcf-spec{font-size:11px;color:var(--tmut);margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.lcf-price{font-size:16px;font-weight:900;color:var(--gm)}
+.lcf-footer{display:flex;justify-content:space-between;margin-top:6px}
+.lcf-loc{font-size:10px;color:var(--tmut)}
+.lcf-date{font-size:10px;color:var(--tmut)}
+
+/* BANNER */
+.promo-banner{
+  background:linear-gradient(100deg,var(--gd) 0%,#1a5c30 100%);
+  border-radius:16px;
+  padding:18px;
+  margin:0 16px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(232,146,10,.25);
+}
+.promo-banner::after{content:'🌾';position:absolute;right:-10px;bottom:-14px;font-size:80px;opacity:.08}
+.pb-text h4{font-size:15px;font-weight:800;color:#fff;margin-bottom:3px}
+.pb-text p{font-size:12px;color:rgba(255,255,255,.68);line-height:1.4}
+.pb-btn{background:var(--amb);color:#fff;border:none;border-radius:9px;padding:9px 16px;font-size:12px;font-weight:800;white-space:nowrap;flex-shrink:0;cursor:pointer;transition:all .15s}
+.pb-btn:active{background:var(--ambd)}
+
+/* ══════════════════════
+   ── SEARCH SCREEN ──
+══════════════════════ */
+.search-screen-top{
+  background:var(--gd);
+  padding:12px 16px 16px;
+}
+.search-bar-full{
+  display:flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:12px;
+  padding:10px 14px;
+}
+.sbf-back{color:#fff;font-size:20px;cursor:pointer;flex-shrink:0}
+.sbf-input{flex:1;background:transparent;border:none;outline:none;color:#fff;font-size:15px;font-weight:600}
+.sbf-input::placeholder{color:rgba(255,255,255,.5)}
+.sbf-clear{color:rgba(255,255,255,.6);font-size:18px;cursor:pointer}
+
+/* FILTER ROW */
+.filter-row{display:flex;gap:8px;padding:12px 16px;overflow-x:auto;background:var(--wh);border-bottom:1px solid var(--bdr);scrollbar-width:none}
+.filter-row::-webkit-scrollbar{display:none}
+.fchip{display:flex;align-items:center;gap:5px;border:1.5px solid var(--bdr);background:var(--cream);border-radius:100px;padding:6px 12px;font-size:12px;font-weight:700;color:var(--tm);white-space:nowrap;cursor:pointer;flex-shrink:0;transition:all .15s}
+.fchip.active{background:var(--gd);color:#fff;border-color:var(--gd)}
+.fchip-icon{font-size:14px}
+
+/* RESULTS LIST */
+.results-list{padding:12px 16px}
+.results-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.results-count{font-size:13px;font-weight:700;color:var(--tmut)}
+.sort-btn{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--gm);cursor:pointer}
+
+/* ══════════════════════
+   ── LISTING DETAIL ──
+══════════════════════ */
+.detail-screen{}
+.detail-img-wrap{position:relative;background:var(--gp);height:260px;display:flex;align-items:center;justify-content:center;font-size:110px;overflow:hidden}
+.detail-img-wrap::before{content:attr(data-emoji);position:absolute;font-size:200px;opacity:.07}
+.detail-dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:5px}
+.dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.5)}
+.dot.active{background:#fff;width:16px;border-radius:3px}
+.back-btn{position:absolute;top:12px;left:12px;background:rgba(255,255,255,.9);width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.detail-fav-btn{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.9);width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.detail-share-btn{position:absolute;top:56px;right:12px;background:rgba(255,255,255,.9);width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+
+.detail-body{padding:18px 16px;background:var(--wh);border-radius:20px 20px 0 0;margin-top:-16px;position:relative}
+.detail-badges{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.detail-badge{font-size:11px;font-weight:800;padding:4px 10px;border-radius:6px}
+.db-cat{background:var(--gp);color:var(--gm)}
+.db-cond{background:var(--ambl);color:var(--ambd)}
+.detail-title{font-size:20px;font-weight:900;color:var(--td);line-height:1.25;margin-bottom:6px}
+.detail-price{font-size:28px;font-weight:900;color:var(--gm);margin-bottom:14px}
+.detail-price .det-cur{font-size:16px;font-weight:700}
+.detail-price .det-neg{font-size:13px;font-weight:700;color:var(--tmut);margin-left:8px}
+
+/* SPECS GRID */
+.specs-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;background:var(--bg);border-radius:12px;padding:14px}
+.spec-item{}
+.spec-key{font-size:11px;font-weight:700;color:var(--tmut);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.spec-val{font-size:13px;font-weight:700;color:var(--td)}
+
+/* SELLER CARD */
+.seller-card{
+  background:var(--bg);border-radius:12px;padding:14px;
+  display:flex;align-items:center;gap:12px;cursor:pointer;
+  margin-bottom:16px;transition:all .15s;
+}
+.seller-card:active{transform:scale(.98)}
+.seller-av{width:48px;height:48px;background:linear-gradient(135deg,var(--gm),var(--gl));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.seller-name{font-size:15px;font-weight:800;color:var(--td)}
+.seller-meta{font-size:12px;color:var(--tmut);margin-top:2px}
+.seller-rating{font-size:12px;font-weight:700;color:var(--amb);margin-top:3px}
+.seller-verified{display:inline-flex;align-items:center;gap:4px;background:var(--gp);color:var(--gm);font-size:10px;font-weight:800;padding:2px 7px;border-radius:5px;margin-top:4px}
+.seller-arrow{font-size:18px;color:var(--bdr);margin-left:auto}
+
+/* DESCRIPTION */
+.desc-text{font-size:14px;color:var(--tm);line-height:1.7;margin-bottom:6px}
+.desc-text.collapsed{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.desc-more{font-size:13px;font-weight:700;color:var(--gl);cursor:pointer;margin-bottom:16px}
+
+/* DETAIL BOTTOM BAR */
+.detail-bottom{
+  position:sticky;bottom:0;background:var(--wh);
+  border-top:1px solid var(--bdr);padding:12px 16px;
+  display:flex;gap:10px;z-index:50;
+  box-shadow:0 -4px 20px rgba(15,45,26,.08);
+}
+.dbb-call{width:48px;height:48px;border:2px solid var(--gm);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;cursor:pointer;transition:all .15s}
+.dbb-call:active{background:var(--gp)}
+.dbb-msg{flex:1;background:var(--gm);color:#fff;border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.dbb-msg:active{background:var(--gd)}
+
+/* ══════════════════════
+   ── MESSAGES SCREEN ──
+══════════════════════ */
+.chat-list{padding:0}
+.chat-item{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 16px;border-bottom:1px solid var(--bdr);
+  cursor:pointer;transition:background .15s;
+  background:var(--wh);
+}
+.chat-item:active{background:var(--gp)}
+.chat-av{width:48px;height:48px;background:var(--gp);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;position:relative}
+.chat-online{position:absolute;bottom:0;right:0;width:12px;height:12px;background:#22c55e;border-radius:50%;border:2px solid var(--wh)}
+.chat-info{flex:1;min-width:0}
+.chat-name{font-size:14px;font-weight:800;color:var(--td);margin-bottom:2px}
+.chat-preview{font-size:12px;color:var(--tmut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-preview.unread{color:var(--td);font-weight:700}
+.chat-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
+.chat-time{font-size:11px;color:var(--tmut)}
+.chat-unread-badge{background:var(--amb);color:#fff;font-size:10px;font-weight:800;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+
+/* CHAT WINDOW */
+.chat-window{display:flex;flex-direction:column;height:calc(100vh - 60px)}
+.chat-header{background:var(--gd);padding:12px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.ch-back{color:#fff;font-size:22px;cursor:pointer}
+.ch-av{width:36px;height:36px;background:rgba(255,255,255,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.ch-name{font-size:15px;font-weight:800;color:#fff}
+.ch-status{font-size:11px;color:rgba(255,255,255,.6);margin-top:1px}
+.ch-call{color:rgba(255,255,255,.8);font-size:20px;cursor:pointer;margin-left:auto}
+
+.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
+.msg-bubble{max-width:80%;padding:10px 13px;border-radius:14px;font-size:13px;line-height:1.55;position:relative}
+.msg-in{background:var(--wh);border:1px solid var(--bdr);align-self:flex-start;border-radius:4px 14px 14px 14px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.msg-out{background:var(--gm);color:#fff;align-self:flex-end;border-radius:14px 4px 14px 14px}
+.msg-meta{font-size:10px;opacity:.55;margin-top:4px;display:block}
+.msg-listing-preview{background:var(--gp);border:1px solid var(--bdr);border-radius:10px;padding:8px;display:flex;gap:8px;align-items:center;margin-bottom:4px;font-size:12px}
+
+.chat-input-bar{background:var(--wh);border-top:1px solid var(--bdr);padding:10px 12px;display:flex;gap:8px;align-items:flex-end;flex-shrink:0}
+.cib-input{flex:1;border:1.5px solid var(--bdr);border-radius:12px;padding:10px 14px;font-size:14px;outline:none;font-family:inherit;resize:none;max-height:100px;transition:border-color .15s;background:var(--cream)}
+.cib-input:focus{border-color:var(--gl)}
+.cib-send{width:42px;height:42px;background:var(--gm);color:#fff;border:none;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;flex-shrink:0;transition:all .15s}
+.cib-send:active{background:var(--gd)}
+
+/* ══════════════════════
+   ── PROFILE SCREEN ──
+══════════════════════ */
+.profile-hero{background:linear-gradient(160deg,var(--gd),#1a5c30);padding:70px 20px 24px;text-align:center}
+.profile-av-wrap{position:relative;display:inline-block;margin-bottom:12px}
+.profile-av{width:80px;height:80px;background:linear-gradient(135deg,#2d8a4e,var(--amb));border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto;border:3px solid rgba(255,255,255,.25)}
+.profile-edit-av{position:absolute;bottom:-4px;right:-4px;background:var(--amb);width:24px;height:24px;border-radius:50%;border:2px solid var(--gd);display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer}
+.profile-name{font-size:20px;font-weight:900;color:#fff;margin-bottom:3px}
+.profile-type{font-size:13px;color:rgba(255,255,255,.65)}
+.profile-verified{display:inline-flex;align-items:center;gap:4px;background:rgba(45,138,78,.3);border:1px solid rgba(45,138,78,.5);color:#7fe0a0;font-size:11px;font-weight:800;padding:4px 12px;border-radius:100px;margin-top:8px}
+.profile-stats{display:flex;gap:0;margin-top:20px;background:rgba(255,255,255,.08);border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.1)}
+.ps-item{flex:1;text-align:center;padding:12px 6px}
+.ps-item+.ps-item{border-left:1px solid rgba(255,255,255,.1)}
+.ps-num{font-size:18px;font-weight:900;color:var(--amb);display:block}
+.ps-label{font-size:10px;color:rgba(255,255,255,.5);font-weight:700;margin-top:2px}
+
+.menu-list{background:var(--wh)}
+.menu-section-label{font-size:10px;font-weight:800;color:var(--tmut);letter-spacing:1.5px;text-transform:uppercase;padding:14px 16px 6px;background:var(--bg)}
+.menu-item{display:flex;align-items:center;gap:14px;padding:15px 16px;border-bottom:1px solid var(--bdr);cursor:pointer;background:var(--wh);transition:background .15s;width:100%;text-align:left}
+.menu-item:active{background:var(--gp)}
+.mi-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.mi-green{background:var(--gp)}
+.mi-amber{background:var(--ambl)}
+.mi-red{background:#fff0f0}
+.mi-label{font-size:14px;font-weight:700;color:var(--td);flex:1}
+.mi-badge{background:var(--amb);color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:100px}
+.mi-arrow{color:var(--bdr);font-size:16px}
+
+/* ══════════════════════
+   ── FILTER SHEET ──
+══════════════════════ */
+.sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:400;display:none;animation:fadeIn .2s ease}
+.sheet-overlay.show{display:block}
+.bottom-sheet{
+  position:fixed;bottom:0;left:0;right:0;max-width:430px;margin:0 auto;
+  background:var(--wh);border-radius:22px 22px 0 0;z-index:401;
+  padding:0 0 32px;
+  transform:translateY(100%);transition:transform .35s cubic-bezier(0.32,0.72,0,1);
+  max-height:85vh;overflow-y:auto;
+}
+.bottom-sheet.open{transform:translateY(0)}
+.sheet-handle{width:36px;height:4px;background:var(--bdr);border-radius:2px;margin:12px auto 0}
+.sheet-header{padding:14px 20px 16px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--wh);z-index:1}
+.sheet-title{font-size:17px;font-weight:900;color:var(--td)}
+.sheet-close{font-size:22px;color:var(--tmut);cursor:pointer;background:var(--bg);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.sheet-body{padding:16px 20px}
+.sf-label{font-size:12px;font-weight:800;color:var(--tmut);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;margin-top:16px}
+.sf-label:first-child{margin-top:0}
+
+/* RANGE SLIDER */
+.range-wrap{padding:4px 0}
+.range-row{display:flex;gap:10px;margin-bottom:10px}
+.range-input{flex:1;border:1.5px solid var(--bdr);border-radius:10px;padding:10px 12px;font-size:14px;font-weight:700;color:var(--td);background:var(--cream);outline:none;text-align:center}
+.range-input:focus{border-color:var(--gl)}
+
+/* PILL OPTIONS */
+.pill-row{display:flex;gap:7px;flex-wrap:wrap}
+.pill-opt{border:1.5px solid var(--bdr);background:var(--cream);border-radius:100px;padding:8px 14px;font-size:13px;font-weight:700;color:var(--tm);cursor:pointer;transition:all .18s}
+.pill-opt.active{background:var(--gd);color:#fff;border-color:var(--gd)}
+
+/* SHEET FOOTER */
+.sheet-footer{padding:0 20px 12px;display:flex;gap:10px;position:sticky;bottom:0;background:var(--wh);padding-top:12px;border-top:1px solid var(--bdr)}
+.sf-reset{flex:1;border:2px solid var(--bdr);background:transparent;border-radius:12px;padding:13px;font-size:14px;font-weight:800;color:var(--tm);cursor:pointer}
+.sf-apply{flex:2;background:var(--gm);color:#fff;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:800;cursor:pointer;transition:background .15s}
+.sf-apply:active{background:var(--gd)}
+
+/* ══════════════════════
+   ── POST AD SCREEN ──
+══════════════════════ */
+.post-steps{display:flex;gap:0;background:var(--wh);border-bottom:1px solid var(--bdr);padding:0 16px}
+.ps-step{flex:1;padding:12px 8px;text-align:center;border-bottom:3px solid transparent;font-size:12px;font-weight:800;color:var(--tmut);cursor:pointer;transition:all .2s}
+.ps-step.active{color:var(--gm);border-bottom-color:var(--gm)}
+.ps-step.done{color:var(--gl)}
+
+.post-content{padding:16px}
+.pc-section{background:var(--wh);border-radius:14px;padding:16px;margin-bottom:12px;border:1px solid var(--bdr)}
+.pc-section-title{font-size:14px;font-weight:800;color:var(--td);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.form-group{margin-bottom:14px}
+.fl{display:block;font-size:11px;font-weight:800;color:var(--tmut);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.fi{width:100%;border:1.5px solid var(--bdr);border-radius:10px;padding:12px 14px;font-size:14px;font-weight:600;color:var(--td);background:var(--cream);outline:none;transition:border-color .18s;font-family:inherit}
+.fi:focus{border-color:var(--gl);background:#fff}
+.fi::placeholder{color:var(--tmut);font-weight:500}
+.fsel{width:100%;border:1.5px solid var(--bdr);border-radius:10px;padding:12px 36px 12px 14px;font-size:14px;font-weight:600;color:var(--td);background:var(--cream) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236b7f6e' fill='none' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 12px center;outline:none;appearance:none;cursor:pointer;font-family:inherit}
+
+.upload-area{border:2px dashed var(--bdr);border-radius:12px;padding:28px 16px;text-align:center;cursor:pointer;transition:all .2s;background:var(--cream)}
+.upload-area:active{border-color:var(--gl);background:var(--gp)}
+.upload-icon{font-size:36px;margin-bottom:8px}
+.upload-text{font-size:14px;font-weight:700;color:var(--tm)}
+.upload-hint{font-size:12px;color:var(--tmut);margin-top:3px}
+
+.photo-thumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.photo-thumb{width:70px;height:60px;background:var(--gp);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:28px;position:relative;border:1.5px solid var(--bdr)}
+.thumb-remove{position:absolute;top:-6px;right:-6px;background:var(--red);color:#fff;width:18px;height:18px;border-radius:50%;font-size:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:900}
+
+.post-btn-row{display:flex;gap:10px;padding:16px;background:var(--wh);border-top:1px solid var(--bdr);position:sticky;bottom:0}
+.btn-draft{flex:1;border:2px solid var(--bdr);background:transparent;border-radius:12px;padding:13px;font-size:14px;font-weight:800;color:var(--tm);cursor:pointer}
+.btn-publish{flex:2;background:var(--gm);color:#fff;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-publish:active{background:var(--gd)}
+
+/* ══════════════════════
+   ── MISC ──
+══════════════════════ */
+.divider-label{text-align:center;font-size:11px;font-weight:800;color:var(--tmut);text-transform:uppercase;letter-spacing:1px;padding:8px 16px;display:flex;align-items:center;gap:10px}
+.divider-label::before,.divider-label::after{content:'';flex:1;height:1px;background:var(--bdr)}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:calc(var(--nav-h) + 16px);left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--gd);color:#fff;font-size:13px;font-weight:700;
+  padding:11px 20px;border-radius:100px;white-space:nowrap;z-index:500;
+  box-shadow:0 4px 20px rgba(0,0,0,.3);opacity:0;transition:all .3s;pointer-events:none;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* SKELETON */
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skel{background:linear-gradient(90deg,#e8f0ea 25%,#d4edda 50%,#e8f0ea 75%);background-size:200%;animation:shimmer 1.4s infinite;border-radius:8px}
+
+/* ANIMATIONS */
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.lcard-sm,.lcard-full{animation:slideUp .3s ease both}
+
+/* SWIPE INDICATOR */
+.swipe-hint{text-align:center;font-size:11px;color:var(--tmut);padding:4px;font-weight:600}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════
+     TOPBAR (dynamic)
+════════════════════════════════ -->
+<div class="topbar" id="topbar">
+  <div class="tb-logo" id="tb-logo">
+    <div class="tb-logo-icon">🌾</div>
+    <div class="tb-logo-text">Agro<span>TJ</span></div>
+  </div>
+  <div id="tb-center" style="flex:1"></div>
+  <div style="display:flex;gap:8px" id="tb-actions">
+    <button class="tb-btn" onclick="showToast('🔔 Уведомлений нет')">🔔<span class="tb-notif-dot"></span></button>
+    <button class="tb-btn" onclick="showScreen('profile')">👤</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     APP BODY
+════════════════════════════════ -->
+<div class="app-body" id="app-body">
+
+  <!-- ── HOME ── -->
+  <div class="screen active" id="screen-home">
+
+    <!-- Hero -->
+    <div class="hero-card">
+      <div class="hero-dots"></div>
+      <div class="hero-inner">
+        <div class="hero-chip">🇹🇯 Платформа №1 в Таджикистане</div>
+        <h1 class="hero-title">Купи и продай<br><span>агротехнику</span></h1>
+        <p class="hero-sub">Тракторы, насосы, семена и всё для вашего хозяйства</p>
+        <div class="search-box" onclick="showScreen('search')">
+          <span style="font-size:18px">🔍</span>
+          <div class="sb-input" style="color:var(--tmut);font-weight:500;font-size:14px">Трактор, насос, семена...</div>
+          <div class="sb-btn">→</div>
+        </div>
+        <div class="hero-tags">
+          <span class="htag" onclick="searchFor('МТЗ-82')">🚜 МТЗ-82</span>
+          <span class="htag" onclick="searchFor('Мотоблок')">⚙️ Мотоблок</span>
+          <span class="htag" onclick="searchFor('Насос')">💧 Насос</span>
+          <span class="htag" onclick="searchFor('Дрон')">🛸 Дрон</span>
+          <span class="htag" onclick="searchFor('Семена')">🌱 Семена</span>
+          <span class="htag" onclick="searchFor('Комбайн')">🌾 Комбайн</span>
+        </div>
+        <div class="hero-stats">
+          <div class="hstat"><span class="hstat-num">3 124</span><span class="hstat-label">Объявлений</span></div>
+          <div class="hstat"><span class="hstat-num">847</span><span class="hstat-label">Продавцов</span></div>
+          <div class="hstat"><span class="hstat-num">8</span><span class="hstat-label">Регионов</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="section" style="padding-bottom:8px">
+      <div class="sec-head">
+        <span class="sec-title">📂 Категории</span>
+        <span class="sec-all" onclick="showScreen('search')">Все →</span>
+      </div>
+    </div>
+    <div class="cat-scroll" id="cat-scroll">
+      <div class="cat-card active" onclick="filterByCat(this,'Все')"><div class="cat-icon-wrap">🌿</div><div class="cat-name">Все</div></div>
+      <div class="cat-card" onclick="filterByCat(this,'Тракторы')"><div class="cat-icon-wrap">🚜</div><div class="cat-name">Тракторы</div></div>
+      <div class="cat-card" onclick="filterByCat(this,'Комбайны')"><div class="cat-icon-wrap">🌾</div><div class="cat-name">Комбайны</div></div>
+      <div class="cat-card" onclick="filterByCat(this,'Ирригация')"><div class="cat-icon-wrap">💧</div><div class="cat-name">Ирригация</div></div>
+      <div class="cat-card" onclick="filterByCat(this,'Семена')"><div class="cat-icon-wrap">🌱</div><div class="cat-name">Семена</div></div>
+      <div class="cat-card" onclick="filterByCat(this,'Мотоблоки')"><div class="cat-icon-wrap">⚙️</div><div class="cat-name">Мотоблоки</div></div>
+      <div class="cat-card" onclick="filterByCat(this,'Дроны')"><div class="cat-icon-wrap">🛸</div><div class="cat-name">Дроны</div></div>
+      <div class="cat-card" onclick="filterByCat(this,'Запчасти')"><div class="cat-icon-wrap">🛠️</div><div class="cat-name">Запчасти</div></div>
+      <div class="cat-card" onclick="filterByCat(this,'Удобрения')"><div class="cat-icon-wrap">🧪</div><div class="cat-name">Удобрения</div></div>
+    </div>
+
+    <!-- Hot deals -->
+    <div class="section" style="padding-bottom:8px">
+      <div class="sec-head">
+        <span class="sec-title">🔥 Горячие предложения</span>
+        <span class="sec-all" onclick="showScreen('search')">Все →</span>
+      </div>
+    </div>
+    <div class="h-scroll" id="hot-scroll"></div>
+
+    <!-- Promo banner -->
+    <div style="padding:16px 0">
+      <div class="promo-banner" onclick="showScreen('post')">
+        <div style="font-size:36px;flex-shrink:0">📢</div>
+        <div class="pb-text" style="flex:1">
+          <h4>Разместите бесплатно!</h4>
+          <p>Первые 30 дней без комиссии. 3000+ покупателей ждут.</p>
+        </div>
+        <button class="pb-btn">Подать</button>
+      </div>
+    </div>
+
+    <!-- New listings -->
+    <div class="section" style="padding-bottom:8px">
+      <div class="sec-head">
+        <span class="sec-title">🆕 Новые объявления</span>
+        <span class="sec-all" onclick="showScreen('search')">Все →</span>
+      </div>
+    </div>
+    <div id="new-list" style="padding:0 16px 8px"></div>
+    <div class="swipe-hint" style="padding-bottom:8px">— Конец списка —</div>
+
+  </div><!-- /screen-home -->
+
+  <!-- ── SEARCH ── -->
+  <div class="screen" id="screen-search">
+    <div class="search-screen-top">
+      <div class="search-bar-full">
+        <span class="sbf-back" onclick="showScreen('home')">←</span>
+        <input class="sbf-input" id="search-input" type="text" placeholder="Поиск по всей базе..." oninput="liveSearch(this.value)" autofocus>
+        <span class="sbf-clear" onclick="clearSearch()">✕</span>
+      </div>
+    </div>
+
+    <div class="filter-row">
+      <button class="fchip active" onclick="setFilter(this,'all')">🌿 Все</button>
+      <button class="fchip" onclick="setFilter(this,'Тракторы')">🚜 Тракторы</button>
+      <button class="fchip" onclick="setFilter(this,'Ирригация')">💧 Ирригация</button>
+      <button class="fchip" onclick="setFilter(this,'Семена')">🌱 Семена</button>
+      <button class="fchip" onclick="setFilter(this,'Комбайны')">🌾 Комбайны</button>
+      <button class="fchip" onclick="setFilter(this,'Дроны')">🛸 Дроны</button>
+      <button class="fchip" onclick="openSheet()">🎛️ Фильтры</button>
+    </div>
+
+    <div class="results-list">
+      <div class="results-meta">
+        <span class="results-count" id="search-count">Найдено: 18 объявлений</span>
+        <span class="sort-btn" onclick="openSortSheet()">↕ Сортировка</span>
+      </div>
+      <div id="search-results"></div>
+    </div>
+  </div>
+
+  <!-- ── DETAIL ── -->
+  <div class="screen" id="screen-detail">
+    <div id="detail-content"></div>
+  </div>
+
+  <!-- ── MESSAGES ── -->
+  <div class="screen" id="screen-messages">
+    <div class="chat-list" id="chat-list-view">
+      <div class="chat-item" onclick="openChat(0)">
+        <div class="chat-av">🧑<div class="chat-online"></div></div>
+        <div class="chat-info">
+          <div class="chat-name">Алишер К.</div>
+          <div class="chat-preview unread">Насчёт трактора — когда можно посмотреть?</div>
+        </div>
+        <div class="chat-right">
+          <span class="chat-time">10:32</span>
+          <span class="chat-unread-badge">2</span>
+        </div>
+      </div>
+      <div class="chat-item" onclick="openChat(1)">
+        <div class="chat-av">👨</div>
+        <div class="chat-info">
+          <div class="chat-name">Фаррух М.</div>
+          <div class="chat-preview">Ещё продаётся мотоблок?</div>
+        </div>
+        <div class="chat-right"><span class="chat-time">09:14</span></div>
+      </div>
+      <div class="chat-item" onclick="openChat(2)">
+        <div class="chat-av">🏢</div>
+        <div class="chat-info">
+          <div class="chat-name">АгроПром ТД</div>
+          <div class="chat-preview unread">Готовы оптом, звоните нам</div>
+        </div>
+        <div class="chat-right">
+          <span class="chat-time">Вчера</span>
+          <span class="chat-unread-badge">3</span>
+        </div>
+      </div>
+      <div class="chat-item" onclick="openChat(3)">
+        <div class="chat-av">👩</div>
+        <div class="chat-info">
+          <div class="chat-name">Санавбар Р.</div>
+          <div class="chat-preview">Спасибо, трактор в отличном состоянии!</div>
+        </div>
+        <div class="chat-right"><span class="chat-time">Пн</span></div>
+      </div>
+      <div class="divider-label" style="margin-top:8px">Нет других диалогов</div>
+    </div>
+
+    <!-- Chat window (hidden by default) -->
+    <div id="chat-window-view" style="display:none">
+      <div class="chat-window">
+        <div class="chat-header">
+          <span class="ch-back" onclick="closeChatWindow()">←</span>
+          <div class="ch-av" id="chat-win-av">🧑</div>
+          <div>
+            <div class="ch-name" id="chat-win-name">Алишер К.</div>
+            <div class="ch-status" id="chat-win-status">🟢 Онлайн</div>
+          </div>
+          <span class="ch-call" onclick="showToast('📞 Звоним...')">📞</span>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+          <div class="msg-bubble msg-in">
+            <div class="msg-listing-preview">🚜 <span>Трактор МТЗ-82.1 · 85 000 TJS</span></div>
+            Салом! Видел ваш трактор. Ещё продаётся?
+            <span class="msg-meta">10:15</span>
+          </div>
+          <div class="msg-bubble msg-out">
+            Салом! Да, ещё в продаже. Состояние отличное 👍
+            <span class="msg-meta">10:18 ✓✓</span>
+          </div>
+          <div class="msg-bubble msg-in">
+            Есть ли возможность посмотреть вживую? Когда удобно?
+            <span class="msg-meta">10:28</span>
+          </div>
+          <div class="msg-bubble msg-out">
+            Можем немного подвинуться по цене. Я в Душанбе — приезжайте в любой день!
+            <span class="msg-meta">10:30 ✓✓</span>
+          </div>
+          <div class="msg-bubble msg-in">
+            Насчёт трактора — когда можно посмотреть?
+            <span class="msg-meta">10:32</span>
+          </div>
+        </div>
+        <div class="chat-input-bar">
+          <textarea class="cib-input" id="chat-text-input" placeholder="Написать сообщение..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMsg()}"></textarea>
+          <button class="cib-send" onclick="sendChatMsg()">↑</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── POST AD ── -->
+  <div class="screen" id="screen-post">
+    <div class="post-steps">
+      <div class="ps-step done" id="pstep-1">1. Фото</div>
+      <div class="ps-step active" id="pstep-2">2. Описание</div>
+      <div class="ps-step" id="pstep-3">3. Контакты</div>
+    </div>
+    <div class="post-content">
+
+      <div class="pc-section">
+        <div class="pc-section-title">📸 Фотографии</div>
+        <div class="upload-area" onclick="addPhotos()">
+          <div class="upload-icon">📷</div>
+          <div class="upload-text">Добавить фото</div>
+          <div class="upload-hint">До 10 фото · JPG, PNG</div>
+        </div>
+        <div class="photo-thumbs" id="photo-thumbs">
+          <div class="photo-thumb">🚜<span class="thumb-remove" onclick="this.parentElement.remove()">×</span></div>
+        </div>
+      </div>
+
+      <div class="pc-section">
+        <div class="pc-section-title">📋 Основное</div>
+        <div class="form-group">
+          <label class="fl">Категория *</label>
+          <select class="fsel"><option>🚜 Тракторы</option><option>💧 Ирригация</option><option>🌱 Семена</option><option>⚙️ Мотоблоки</option><option>🛸 Дроны</option><option>🛠️ Запчасти</option></select>
+        </div>
+        <div class="form-group">
+          <label class="fl">Название *</label>
+          <input class="fi" type="text" placeholder="Напр: Трактор МТЗ-82.1, 2021 г.">
+        </div>
+        <div class="form-group">
+          <label class="fl">Описание *</label>
+          <textarea class="fi" style="min-height:100px;resize:none" placeholder="Подробно опишите товар: характеристики, состояние, комплектация..."></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="form-group">
+            <label class="fl">Состояние</label>
+            <select class="fsel"><option>Новое</option><option>Б/У отл.</option><option>Б/У хор.</option><option>Б/У удовл.</option></select>
+          </div>
+          <div class="form-group">
+            <label class="fl">Год</label>
+            <input class="fi" type="number" placeholder="2021" min="1990" max="2026">
+          </div>
+        </div>
+      </div>
+
+      <div class="pc-section">
+        <div class="pc-section-title">💰 Цена</div>
+        <div class="form-group">
+          <label class="fl">Цена (TJS) *</label>
+          <input class="fi" type="number" placeholder="85 000">
+        </div>
+        <div class="pill-row" style="margin-bottom:12px">
+          <button class="pill-opt active">Фиксированная</button>
+          <button class="pill-opt" onclick="togglePill(this)">Торг уместен</button>
+          <button class="pill-opt" onclick="togglePill(this)">Обмен</button>
+        </div>
+      </div>
+
+      <div class="pc-section">
+        <div class="pc-section-title">📍 Местоположение</div>
+        <div class="form-group">
+          <label class="fl">Регион *</label>
+          <select class="fsel"><option>Душанбе</option><option>Согд</option><option>Хатлон</option><option>ГБАО</option><option>РРП</option><option>Куляб</option></select>
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="fl">Телефон *</label>
+          <input class="fi" type="tel" placeholder="+992 XX XXX XXXX" value="+992 ">
+        </div>
+      </div>
+
+      <!-- Promotion -->
+      <div class="pc-section">
+        <div class="pc-section-title">🚀 Продвижение</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="border:2px solid var(--gm);border-radius:12px;padding:12px;background:var(--gp);display:flex;align-items:center;gap:10px">
+            <span style="font-size:20px">📌</span>
+            <div style="flex:1"><div style="font-weight:800;font-size:14px">Стандарт</div><div style="font-size:12px;color:var(--tmut)">Обычное размещение</div></div>
+            <span style="font-weight:900;color:var(--gm)">Бесплатно</span>
+          </div>
+          <div style="border:1.5px solid var(--bdr);border-radius:12px;padding:12px;display:flex;align-items:center;gap:10px;cursor:pointer" onclick="selectPromo(this)">
+            <span style="font-size:20px">⭐</span>
+            <div style="flex:1"><div style="font-weight:800;font-size:14px">ТОП объявление</div><div style="font-size:12px;color:var(--tmut)">В 5× больше просмотров</div></div>
+            <span style="font-weight:900;color:var(--ambd)">25 TJS</span>
+          </div>
+          <div style="border:1.5px solid var(--bdr);border-radius:12px;padding:12px;display:flex;align-items:center;gap:10px;cursor:pointer" onclick="selectPromo(this)">
+            <span style="font-size:20px">🏆</span>
+            <div style="flex:1"><div style="font-weight:800;font-size:14px">Премиум</div><div style="font-size:12px;color:var(--tmut)">Баннер + ТОП позиция</div></div>
+            <span style="font-weight:900;color:var(--gm)">75 TJS</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="post-btn-row">
+      <button class="btn-draft" onclick="showToast('💾 Черновик сохранён!')">💾 Черновик</button>
+      <button class="btn-publish" onclick="publishAd()">🚀 Опубликовать</button>
+    </div>
+  </div>
+
+  <!-- ── PROFILE ── -->
+  <div class="screen" id="screen-profile">
+    <div class="profile-hero">
+      <div class="profile-av-wrap">
+        <div class="profile-av">👨‍🌾</div>
+        <div class="profile-edit-av">✏️</div>
+      </div>
+      <div class="profile-name">Рустам Ёров</div>
+      <div class="profile-type">🏢 Продавец · Душанбе</div>
+      <div class="profile-verified">✓ Верифицирован</div>
+      <div class="profile-stats">
+        <div class="ps-item"><span class="ps-num">12</span><span class="ps-label">Объявлений</span></div>
+        <div class="ps-item"><span class="ps-num">4.9⭐</span><span class="ps-label">Рейтинг</span></div>
+        <div class="ps-item"><span class="ps-num">1247</span><span class="ps-label">Просмотров</span></div>
+        <div class="ps-item"><span class="ps-num">47</span><span class="ps-label">Отзывов</span></div>
+      </div>
+    </div>
+
+    <div class="menu-list">
+      <div class="menu-section-label">Мои объявления</div>
+      <button class="menu-item" onclick="showToast('📢 Мои объявления')">
+        <div class="mi-icon mi-green">📢</div>
+        <span class="mi-label">Активные объявления</span>
+        <span class="mi-badge">12</span>
+        <span class="mi-arrow">›</span>
+      </button>
+      <button class="menu-item" onclick="showToast('❤️ Избранное')">
+        <div class="mi-icon mi-amber">❤️</div>
+        <span class="mi-label">Избранное</span>
+        <span class="mi-badge" style="background:var(--tmut)">8</span>
+        <span class="mi-arrow">›</span>
+      </button>
+      <button class="menu-item" onclick="showToast('📊 Статистика')">
+        <div class="mi-icon mi-green">📊</div>
+        <span class="mi-label">Статистика просмотров</span>
+        <span class="mi-arrow">›</span>
+      </button>
+
+      <div class="menu-section-label">Аккаунт</div>
+      <button class="menu-item">
+        <div class="mi-icon mi-amber">👤</div>
+        <span class="mi-label">Редактировать профиль</span>
+        <span class="mi-arrow">›</span>
+      </button>
+      <button class="menu-item" onclick="showToast('🔔 Настройки уведомлений')">
+        <div class="mi-icon mi-green">🔔</div>
+        <span class="mi-label">Уведомления</span>
+        <span class="mi-badge">3</span>
+        <span class="mi-arrow">›</span>
+      </button>
+      <button class="menu-item" onclick="showToast('🛡️ Безопасность')">
+        <div class="mi-icon mi-green">🛡️</div>
+        <span class="mi-label">Безопасность</span>
+        <span class="mi-arrow">›</span>
+      </button>
+
+      <div class="menu-section-label">Тарифный план</div>
+      <button class="menu-item" onclick="showToast('📦 Базовый план · 18 дней бесплатно')">
+        <div class="mi-icon mi-amber">📦</div>
+        <span class="mi-label">Базовый план</span>
+        <span style="font-size:11px;color:var(--ambd);font-weight:800">18 дней</span>
+        <span class="mi-arrow">›</span>
+      </button>
+      <button class="menu-item" onclick="showToast('🚀 Улучшить тарифный план')">
+        <div class="mi-icon" style="background:linear-gradient(135deg,var(--gm),var(--gl))">⭐</div>
+        <span class="mi-label" style="color:var(--gm)">Улучшить до Про</span>
+        <span style="font-size:11px;font-weight:800;color:var(--ambd)">149 TJS/мес</span>
+        <span class="mi-arrow">›</span>
+      </button>
+
+      <div class="menu-section-label">Другое</div>
+      <button class="menu-item" onclick="showToast('ℹ️ О приложении AgroTJ v1.0')">
+        <div class="mi-icon" style="background:#f0f0f0">ℹ️</div>
+        <span class="mi-label">О приложении</span>
+        <span class="mi-arrow">›</span>
+      </button>
+      <button class="menu-item" onclick="confirmLogout()">
+        <div class="mi-icon mi-red">🚪</div>
+        <span class="mi-label" style="color:var(--red)">Выйти из аккаунта</span>
+        <span class="mi-arrow">›</span>
+      </button>
+    </div>
+  </div>
+
+</div><!-- /app-body -->
+
+<!-- ════════════════════════════════
+     BOTTOM NAV
+════════════════════════════════ -->
+<nav class="bottom-nav">
+  <div class="nav-item active" id="nav-home" onclick="showScreen('home')">
+    <span class="nav-icon">🏠</span>
+    <span class="nav-label">Главная</span>
+  </div>
+  <div class="nav-item" id="nav-search" onclick="showScreen('search')">
+    <span class="nav-icon">🔍</span>
+    <span class="nav-label">Поиск</span>
+  </div>
+  <button class="fab" onclick="showScreen('post')">➕</button>
+  <div class="nav-item" id="nav-messages" onclick="showScreen('messages')">
+    <span class="nav-icon">💬</span>
+    <span class="nav-label">Чаты</span>
+    <span class="nav-badge">5</span>
+  </div>
+  <div class="nav-item" id="nav-profile" onclick="showScreen('profile')">
+    <span class="nav-icon">👤</span>
+    <span class="nav-label">Профиль</span>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════
+     FILTER BOTTOM SHEET
+════════════════════════════════ -->
+<div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()"></div>
+<div class="bottom-sheet" id="filter-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <span class="sheet-title">🎛️ Фильтры</span>
+    <button class="sheet-close" onclick="closeSheet()">✕</button>
+  </div>
+  <div class="sheet-body">
+    <div class="sf-label">Цена (TJS)</div>
+    <div class="range-row">
+      <input class="range-input" type="number" placeholder="От" id="f-price-min">
+      <input class="range-input" type="number" placeholder="До" id="f-price-max">
+    </div>
+    <div class="pill-row" style="margin-bottom:4px">
+      <button class="pill-opt" onclick="togglePill(this);setFPrice(0,10000)">до 10К</button>
+      <button class="pill-opt" onclick="togglePill(this);setFPrice(10000,50000)">10–50К</button>
+      <button class="pill-opt" onclick="togglePill(this);setFPrice(50000,200000)">50–200К</button>
+      <button class="pill-opt" onclick="togglePill(this);setFPrice(200000,0)">200К+</button>
+    </div>
+
+    <div class="sf-label">Состояние</div>
+    <div class="pill-row">
+      <button class="pill-opt active" onclick="togglePill(this)">✨ Новое</button>
+      <button class="pill-opt" onclick="togglePill(this)">⭐ Отличное Б/У</button>
+      <button class="pill-opt" onclick="togglePill(this)">👍 Хорошее</button>
+      <button class="pill-opt" onclick="togglePill(this)">👌 Удовл.</button>
+    </div>
+
+    <div class="sf-label">Регион</div>
+    <select class="fsel" style="width:100%">
+      <option value="">Все регионы</option>
+      <option>🏙️ Душанбе</option>
+      <option>🌄 Согд</option>
+      <option>🌾 Хатлон</option>
+      <option>⛰️ ГБАО</option>
+      <option>🏞️ РРП</option>
+      <option>🌿 Куляб</option>
+      <option>🌊 Вахш</option>
+    </select>
+
+    <div class="sf-label">Год выпуска</div>
+    <div class="range-row">
+      <input class="range-input" type="number" placeholder="От" min="1990" max="2026" id="f-year-from">
+      <input class="range-input" type="number" placeholder="До" min="1990" max="2026" id="f-year-to">
+    </div>
+    <div class="pill-row">
+      <button class="pill-opt" onclick="togglePill(this);setFYear(2022,2026)">2022+</button>
+      <button class="pill-opt" onclick="togglePill(this);setFYear(2018,2021)">2018–21</button>
+      <button class="pill-opt" onclick="togglePill(this);setFYear(2010,2017)">2010–17</button>
+      <button class="pill-opt" onclick="togglePill(this);setFYear(1990,2009)">до 2010</button>
+    </div>
+
+    <div class="sf-label">Дополнительно</div>
+    <div class="pill-row">
+      <button class="pill-opt" onclick="togglePill(this)">📸 С фото</button>
+      <button class="pill-opt" onclick="togglePill(this)">💬 Торг</button>
+      <button class="pill-opt" onclick="togglePill(this)">✅ Верифицирован</button>
+      <button class="pill-opt" onclick="togglePill(this)">🚚 Доставка</button>
+    </div>
+  </div>
+  <div class="sheet-footer">
+    <button class="sf-reset" onclick="resetFilters()">Сбросить</button>
+    <button class="sf-apply" onclick="applySheetFilters()">Показать результаты ✓</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     TOAST
+════════════════════════════════ -->
+<div class="toast" id="toast"></div>
+
+<!-- ════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════ -->
+<script>
+// ── DATA ──
+const LISTINGS = [
+  {id:1,  emoji:'🚜',cat:'Тракторы',   title:'Трактор МТЗ-82.1 Беларус',         spec:'82 л.с. · 2021 г. · 1200 м/ч',     price:85000,  region:'Душанбе', cond:'excellent',year:2021,badge:'top',views:342,seller:'🏢',sellerName:'АгроПром ТД',rating:4.9},
+  {id:2,  emoji:'💧',cat:'Ирригация',  title:'Насос Grundfos SP 17-2',            spec:'17 м³/ч · Глубина 80м · Нержавейка',price:12500,  region:'Хатлон',  cond:'new',      year:2023,badge:'new',views:89, seller:'🏢',sellerName:'Техника Согд',rating:4.8},
+  {id:3,  emoji:'🌾',cat:'Комбайны',   title:'Комбайн CLAAS Tucano 450',          spec:'335 л.с. · 2019 г. · GPS автопилот', price:620000, region:'Согд',    cond:'good',     year:2019,badge:'top',views:412,seller:'🏢',sellerName:'АгроПром ТД',rating:5.0},
+  {id:4,  emoji:'⚙️',cat:'Мотоблоки',  title:'Мотоблок Caiman Vario 70S',         spec:'7 л.с. · Дизельный · Фреза в компл.',price:4800,   region:'Куляб',   cond:'new',      year:2024,badge:'hot',views:201,seller:'👨‍🌾',sellerName:'Рустам Ёров',rating:4.3},
+  {id:5,  emoji:'🛸',cat:'Дроны',      title:'Агро-дрон XAG P100 Pro',            spec:'40 л бака · 16 га/ч · GPS',          price:58000,  region:'Душанбе', cond:'new',      year:2023,badge:'new',views:456,seller:'🏢',sellerName:'ДронТех',rating:4.9},
+  {id:6,  emoji:'🌱',cat:'Семена',     title:'Семена пшеницы Карабалинская-3',    spec:'Элита · 1 тонна · Сертификат',       price:3200,   region:'Вахш',    cond:'new',      year:2024,badge:'',  views:156,seller:'👨‍🌾',sellerName:'Семена Вахш',rating:4.6},
+  {id:7,  emoji:'🚜',cat:'Тракторы',   title:'Трактор Fendt 516 Vario',           spec:'155 л.с. · 2017 г. · Автопилот',     price:890000, region:'Душанбе', cond:'excellent',year:2017,badge:'top',views:523,seller:'🏢',sellerName:'АгроПром ТД',rating:5.0},
+  {id:8,  emoji:'🔧',cat:'Запчасти',   title:'Двигатель Д-240 для МТЗ-80/82',    spec:'Новый в упаковке · Гарантия 1 год',  price:22000,  region:'Душанбе', cond:'new',      year:2024,badge:'',  views:98, seller:'🏢',sellerName:'Запчасти ТД',rating:4.7},
+  {id:9,  emoji:'💧',cat:'Ирригация',  title:'Система капельного полива 5 га',   spec:'Израильская технология · Таймер',    price:15000,  region:'Вахш',    cond:'new',      year:2024,badge:'new',views:178,seller:'🏢',sellerName:'ИрриТех',rating:4.8},
+  {id:10, emoji:'🌾',cat:'Комбайны',   title:'Жатка зерновая ЖКН-4',             spec:'4 м · Б/У хорошее · 2016 г.',        price:28000,  region:'Согд',    cond:'good',     year:2016,badge:'',  views:89, seller:'👨‍🌾',sellerName:'Фаррух М.',rating:4.3},
+  {id:11, emoji:'🧪',cat:'Удобрения',  title:'Аммиачная селитра 1 тонна',         spec:'N-34.4% · Мешки по 50 кг',           price:2800,   region:'Хатлон',  cond:'new',      year:2024,badge:'hot',views:312,seller:'🏢',sellerName:'АгроХим',rating:4.6},
+  {id:12, emoji:'🛸',cat:'Дроны',      title:'Дрон DJI Agras T40',               spec:'40 кг · 43 га/ч · Radar',            price:120000, region:'Душанбе', cond:'new',      year:2023,badge:'top',views:634,seller:'🏢',sellerName:'ДронТех',rating:5.0},
+];
+
+let currentFilter = 'all';
+let currentSort = 'date';
+let favItems = new Set();
+
+// ── SCREENS ──
+const screens = ['home','search','detail','messages','post','profile'];
+const navMap  = {'home':'nav-home','search':'nav-search','messages':'nav-messages','profile':'nav-profile'};
+const topbarTitles = {home:'',search:'Поиск',detail:'',messages:'Сообщения',post:'Подать объявление',profile:'Мой профиль'};
+
+function showScreen(name) {
+  screens.forEach(s => {
+    document.getElementById('screen-'+s)?.classList.remove('active');
+    if(navMap[s]) document.getElementById(navMap[s])?.classList.remove('active');
+  });
+  document.getElementById('screen-'+name)?.classList.add('active');
+  if(navMap[name]) document.getElementById(navMap[name])?.classList.add('active');
+  document.getElementById('app-body').scrollTop = 0;
+
+  // Topbar
+  const tb = document.getElementById('topbar');
+  const tbLogo = document.getElementById('tb-logo');
+  const tbActions = document.getElementById('tb-actions');
+
+  if(name === 'home') {
+    tb.style.background = 'var(--gd)';
+    tbLogo.style.display = 'flex';
+    tbActions.innerHTML = `<button class="tb-btn" onclick="showToast('🔔 Уведомлений нет')">🔔<span class="tb-notif-dot"></span></button><button class="tb-btn" onclick="showScreen('profile')">👤</button>`;
+  } else if(name === 'search') {
+    tb.style.display = 'none';
+  } else if(name === 'detail') {
+    tb.style.display = 'none';
+  } else {
+    tb.style.display = 'flex';
+    tb.style.background = 'var(--gd)';
+    tbLogo.style.display = 'none';
+    tbActions.innerHTML = ``;
+    document.getElementById('tb-center').innerHTML = `<span style="font-size:16px;font-weight:800;color:#fff">${topbarTitles[name]||''}</span>`;
+  }
+  if(name !== 'search' && name !== 'detail') tb.style.display = 'flex';
+
+  if(name === 'messages') {
+    document.getElementById('chat-list-view').style.display = 'block';
+    document.getElementById('chat-window-view').style.display = 'none';
+    tbLogo.style.display='none';
+    document.getElementById('tb-center').innerHTML = `<span style="font-size:16px;font-weight:800;color:#fff">Сообщения</span>`;
+  }
+}
+
+// ── RENDER LISTINGS ──
+function renderSmCard(l,delay=0) {
+  const badge = l.badge==='top'?'<span class="lcs-badge badge-top">ТОП</span>':l.badge==='new'?'<span class="lcs-badge badge-new">НОВОЕ</span>':l.badge==='hot'?'<span class="lcs-badge badge-hot">АКЦИЯ</span>':'';
+  const fav = favItems.has(l.id) ? '❤️' : '🤍';
+  return `<div class="lcard-sm" style="animation-delay:${delay}s" onclick="openDetail(${l.id})">
+    <div class="lcs-img">${badge}<span class="emoji-main" style="font-size:60px">${l.emoji}</span><button class="lcs-fav" onclick="event.stopPropagation();toggleFav(this,${l.id})">${fav}</button></div>
+    <div class="lcs-body">
+      <div class="lcs-cat">${l.emoji} ${l.cat}</div>
+      <div class="lcs-title">${l.title}</div>
+      <div class="lcs-price">TJS ${l.price.toLocaleString('ru')}</div>
+      <div class="lcs-footer"><span class="lcs-loc">📍 ${l.region}</span><span class="lcs-views">👁️ ${l.views}</span></div>
+    </div>
+  </div>`;
+}
+
+function renderFullCard(l,delay=0) {
+  const badge = l.badge==='top'?'<span class="lcs-badge badge-top" style="position:absolute;top:8px;left:8px;font-size:9px;font-weight:800;padding:3px 7px;border-radius:5px">ТОП</span>':l.badge==='new'?'<span class="lcs-badge badge-new" style="position:absolute;top:8px;left:8px;font-size:9px;font-weight:800;padding:3px 7px;border-radius:5px">НОВОЕ</span>':l.badge==='hot'?'<span class="lcs-badge badge-hot" style="position:absolute;top:8px;left:8px;font-size:9px;font-weight:800;padding:3px 7px;border-radius:5px">АКЦИЯ</span>':'';
+  return `<div class="lcard-full" style="animation-delay:${delay}s" onclick="openDetail(${l.id})">
+    <div class="lcf-img" style="position:relative">${badge}<span style="font-size:48px">${l.emoji}</span></div>
+    <div class="lcf-body">
+      <div class="lcf-cat">${l.emoji} ${l.cat}</div>
+      <div class="lcf-title">${l.title}</div>
+      <div class="lcf-spec">${l.spec}</div>
+      <div class="lcf-price">TJS ${l.price.toLocaleString('ru')}</div>
+      <div class="lcf-footer"><span class="lcf-loc">📍 ${l.region}</span><span class="lcf-date">👁️ ${l.views}</span></div>
+    </div>
+  </div>`;
+}
+
+// ── INIT HOME ──
+function initHome() {
+  // Hot scroll (horizontal)
+  const hotScroll = document.getElementById('hot-scroll');
+  hotScroll.innerHTML = LISTINGS.filter(l=>l.badge).slice(0,6).map((l,i)=>renderSmCard(l,i*0.05)).join('');
+
+  // New list (vertical)
+  const newList = document.getElementById('new-list');
+  newList.innerHTML = LISTINGS.slice(0,6).map((l,i)=>renderFullCard(l,i*0.05)).join('');
+}
+
+// ── SEARCH ──
+function initSearch(query='', cat='all') {
+  let results = [...LISTINGS];
+  if(cat !== 'all') results = results.filter(l=>l.cat===cat);
+  if(query) results = results.filter(l=>
+    l.title.toLowerCase().includes(query.toLowerCase()) ||
+    l.cat.toLowerCase().includes(query.toLowerCase()) ||
+    l.spec.toLowerCase().includes(query.toLowerCase())
+  );
+  if(currentSort==='price_asc') results.sort((a,b)=>a.price-b.price);
+  else if(currentSort==='price_desc') results.sort((a,b)=>b.price-a.price);
+  else if(currentSort==='views') results.sort((a,b)=>b.views-a.views);
+  document.getElementById('search-results').innerHTML = results.length
+    ? results.map((l,i)=>renderFullCard(l,i*0.04)).join('')
+    : `<div style="text-align:center;padding:48px 16px;color:var(--tmut)"><div style="font-size:48px;margin-bottom:12px">🔍</div><div style="font-size:16px;font-weight:800;color:var(--tm);margin-bottom:6px">Ничего не найдено</div><p style="font-size:13px">Попробуйте другой запрос</p></div>`;
+  document.getElementById('search-count').textContent = `Найдено: ${results.length} объявлений`;
+}
+
+function liveSearch(q) { initSearch(q, currentFilter); }
+function clearSearch() { document.getElementById('search-input').value=''; initSearch('',currentFilter); }
+function searchFor(q) { showScreen('search'); setTimeout(()=>{document.getElementById('search-input').value=q;initSearch(q,currentFilter);},100); }
+
+function setFilter(btn, cat) {
+  document.querySelectorAll('.fchip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  currentFilter = cat;
+  initSearch(document.getElementById('search-input').value, cat);
+}
+
+// ── CATEGORY (home) ──
+function filterByCat(el, cat) {
+  document.querySelectorAll('.cat-card').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  const newList = document.getElementById('new-list');
+  let results = cat==='Все' ? LISTINGS : LISTINGS.filter(l=>l.cat===cat);
+  newList.innerHTML = results.slice(0,6).map((l,i)=>renderFullCard(l,i*0.04)).join('');
+}
+
+// ── DETAIL ──
+function openDetail(id) {
+  const l = LISTINGS.find(x=>x.id===id);
+  if(!l) return;
+  const fav = favItems.has(l.id)?'❤️':'🤍';
+  const html = `
+    <div class="detail-img-wrap" data-emoji="${l.emoji}">
+      <span style="font-size:110px;position:relative;z-index:1">${l.emoji}</span>
+      <button class="back-btn" onclick="goBack()">←</button>
+      <button class="detail-fav-btn" onclick="toggleFavDetail(this,${l.id})">${fav}</button>
+      <button class="detail-share-btn" onclick="showToast('🔗 Ссылка скопирована!')">↗</button>
+      <div class="detail-dots"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-badges">
+        <span class="detail-badge db-cat">${l.emoji} ${l.cat}</span>
+        <span class="detail-badge db-cond">${l.cond==='new'?'✨ Новое':l.cond==='excellent'?'⭐ Отличное':l.cond==='good'?'👍 Хорошее':'👌 Удовл.'}</span>
+        ${l.badge==='top'?'<span class="detail-badge" style="background:#fff3cd;color:#856404">🏆 ТОП</span>':''}
+      </div>
+      <div class="detail-title">${l.title}</div>
+      <div class="detail-price">
+        <span class="det-cur">TJS </span>${l.price.toLocaleString('ru')}
+        <span class="det-neg">• Торг уместен</span>
+      </div>
+      <div class="specs-grid">
+        <div class="spec-item"><div class="spec-key">Год</div><div class="spec-val">${l.year}</div></div>
+        <div class="spec-item"><div class="spec-key">Регион</div><div class="spec-val">${l.region}</div></div>
+        <div class="spec-item"><div class="spec-key">Состояние</div><div class="spec-val">${l.cond==='new'?'Новое':l.cond==='excellent'?'Отличное':'Хорошее'}</div></div>
+        <div class="spec-item"><div class="spec-key">Просмотры</div><div class="spec-val">👁️ ${l.views}</div></div>
+      </div>
+      <div class="seller-card" onclick="showToast('👤 Профиль: ${l.sellerName}')">
+        <div class="seller-av">${l.seller}</div>
+        <div>
+          <div class="seller-name">${l.sellerName}</div>
+          <div class="seller-meta">📍 ${l.region} · На AgroTJ с 2024</div>
+          <div class="seller-rating">⭐ ${l.rating} рейтинг</div>
+          <div class="seller-verified">✓ Верифицирован</div>
+        </div>
+        <span class="seller-arrow">›</span>
+      </div>
+      <div style="font-size:14px;font-weight:800;color:var(--td);margin-bottom:10px">Описание</div>
+      <div class="desc-text collapsed" id="desc-txt">${l.spec}. Отличное техническое состояние. Регулярно проходил техническое обслуживание. Все документы в порядке. Продаю в связи с обновлением парка техники. Возможен торг при осмотре. Доставка по договорённости.</div>
+      <div class="desc-more" onclick="expandDesc()">Читать полностью ↓</div>
+      <div style="font-size:14px;font-weight:800;color:var(--td);margin-bottom:10px">Похожие объявления</div>
+      <div style="display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;margin-bottom:80px">
+        ${LISTINGS.filter(x=>x.cat===l.cat&&x.id!==l.id).slice(0,3).map(x=>`
+          <div style="width:140px;flex-shrink:0;background:var(--bg);border-radius:10px;overflow:hidden;cursor:pointer;border:1px solid var(--bdr)" onclick="openDetail(${x.id})">
+            <div style="height:90px;background:var(--gp);display:flex;align-items:center;justify-content:center;font-size:40px">${x.emoji}</div>
+            <div style="padding:8px">
+              <div style="font-size:11px;font-weight:700;color:var(--td);margin-bottom:3px;line-height:1.3">${x.title.substring(0,30)}...</div>
+              <div style="font-size:12px;font-weight:900;color:var(--gm)">TJS ${x.price.toLocaleString('ru')}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>
+    <div class="detail-bottom">
+      <button class="dbb-call" onclick="showToast('📞 +992 93 500 5050')">📞</button>
+      <button class="dbb-msg" onclick="showScreen('messages');showToast('💬 Чат открыт!')">💬 Написать продавцу</button>
+    </div>`;
+  document.getElementById('detail-content').innerHTML = html;
+  showScreen('detail');
+  document.getElementById('app-body').scrollTop = 0;
+}
+
+function goBack() {
+  document.getElementById('app-body').scrollTop=0;
+  history.back ? window.history.back() : showScreen('home');
+  // Simple fallback
+  showScreen('search');
+}
+function expandDesc() {
+  document.getElementById('desc-txt')?.classList.remove('collapsed');
+  event.target.style.display='none';
+}
+function toggleFavDetail(btn,id) {
+  if(favItems.has(id)){favItems.delete(id);btn.textContent='🤍';showToast('💔 Удалено из избранного');}
+  else{favItems.add(id);btn.textContent='❤️';showToast('❤️ Добавлено в избранное!');}
+}
+
+// ── MESSAGES ──
+const chatData = [
+  {avatar:'🧑',name:'Алишер К.',status:'🟢 Онлайн'},
+  {avatar:'👨',name:'Фаррух М.',status:'⚪ Был час назад'},
+  {avatar:'🏢',name:'АгроПром ТД',status:'🟢 Онлайн'},
+  {avatar:'👩',name:'Санавбар Р.',status:'⚪ Была вчера'},
+];
+function openChat(idx) {
+  const c = chatData[idx];
+  document.getElementById('chat-win-av').textContent = c.avatar;
+  document.getElementById('chat-win-name').textContent = c.name;
+  document.getElementById('chat-win-status').textContent = c.status;
+  document.getElementById('chat-list-view').style.display='none';
+  document.getElementById('chat-window-view').style.display='flex';
+  document.getElementById('tb-center').innerHTML = `<div style="text-align:center"><div style="font-size:14px;font-weight:800;color:#fff">${c.name}</div><div style="font-size:11px;color:rgba(255,255,255,.6)">${c.status}</div></div>`;
+  document.getElementById('tb-actions').innerHTML = `<button class="tb-btn" onclick="showToast('📞 Звоним...')">📞</button>`;
+  // Scroll to bottom
+  const msgs = document.getElementById('chat-messages');
+  setTimeout(()=>msgs.scrollTop=msgs.scrollHeight,100);
+}
+function closeChatWindow() {
+  document.getElementById('chat-list-view').style.display='block';
+  document.getElementById('chat-window-view').style.display='none';
+  document.getElementById('tb-center').innerHTML='<span style="font-size:16px;font-weight:800;color:#fff">Сообщения</span>';
+  document.getElementById('tb-actions').innerHTML='';
+}
+function sendChatMsg() {
+  const input = document.getElementById('chat-text-input');
+  const text = input.value.trim();
+  if(!text) return;
+  const msgs = document.getElementById('chat-messages');
+  const now = new Date().toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'});
+  const bubble = document.createElement('div');
+  bubble.className='msg-bubble msg-out';
+  bubble.innerHTML=`${text}<span class="msg-meta">${now} ✓</span>`;
+  msgs.appendChild(bubble);
+  msgs.scrollTop=msgs.scrollHeight;
+  input.value='';
+  input.style.height='auto';
+  // Simulate reply
+  setTimeout(()=>{
+    const replies=['Хорошо, понял! Свяжусь с вами.','Отлично! Договорились.','Ок, скоро отвечу.'];
+    const rb=document.createElement('div');
+    rb.className='msg-bubble msg-in';
+    rb.innerHTML=replies[Math.floor(Math.random()*replies.length)]+'<span class="msg-meta">'+new Date().toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'})+'</span>';
+    msgs.appendChild(rb);
+    msgs.scrollTop=msgs.scrollHeight;
+  },1200);
+}
+
+// ── FAV ──
+function toggleFav(btn,id) {
+  if(favItems.has(id)){favItems.delete(id);btn.textContent='🤍';showToast('💔 Удалено из избранного');}
+  else{favItems.add(id);btn.textContent='❤️';showToast('❤️ Добавлено в избранное!');}
+}
+
+// ── FILTER SHEET ──
+function openSheet() {
+  document.getElementById('sheet-overlay').classList.add('show');
+  setTimeout(()=>document.getElementById('filter-sheet').classList.add('open'),10);
+}
+function closeSheet() {
+  document.getElementById('filter-sheet').classList.remove('open');
+  setTimeout(()=>document.getElementById('sheet-overlay').classList.remove('show'),300);
+}
+function togglePill(btn) {
+  btn.classList.toggle('active');
+}
+function setFPrice(min,max) {
+  document.getElementById('f-price-min').value=min||'';
+  document.getElementById('f-price-max').value=max||'';
+}
+function setFYear(from,to) {
+  document.getElementById('f-year-from').value=from;
+  document.getElementById('f-year-to').value=to;
+}
+function resetFilters() {
+  document.querySelectorAll('.pill-opt').forEach(p=>p.classList.remove('active'));
+  document.getElementById('f-price-min').value='';
+  document.getElementById('f-price-max').value='';
+  document.getElementById('f-year-from').value='';
+  document.getElementById('f-year-to').value='';
+}
+function applySheetFilters() {
+  closeSheet();
+  initSearch(document.getElementById('search-input').value||'', currentFilter);
+  showToast('✅ Фильтры применены');
+}
+
+// SORT SHEET
+function openSortSheet() {
+  const opts=[['date','По дате ↓'],['price_asc','Цена ↑'],['price_desc','Цена ↓'],['views','Популярные']];
+  const btns=opts.map(([val,label])=>`<button class="menu-item" onclick="setSortClose('${val}')" style="border-bottom:1px solid var(--bdr)"><span class="mi-label">${label}</span>${currentSort===val?'<span style="color:var(--gm);font-size:16px">✓</span>':''}</button>`).join('');
+  const sheet=document.createElement('div');
+  sheet.innerHTML=`<div class="sheet-overlay show" onclick="this.parentElement.remove()" style="display:block"><div class="bottom-sheet open" style="max-height:60vh" onclick="event.stopPropagation()"><div class="sheet-handle"></div><div class="sheet-header"><span class="sheet-title">Сортировка</span><button class="sheet-close" onclick="this.closest('.sheet-overlay').remove()">✕</button></div><div class="menu-list">${btns}</div></div></div>`;
+  document.body.appendChild(sheet);
+}
+function setSortClose(val) {
+  currentSort=val;
+  document.querySelectorAll('.sheet-overlay').forEach(e=>e.remove());
+  initSearch(document.getElementById('search-input')?.value||'',currentFilter);
+  showToast('✓ Сортировка изменена');
+}
+
+// ── POST AD ──
+function addPhotos() {
+  const thumbs=document.getElementById('photo-thumbs');
+  const emojis=['💧','🌾','⚙️','🛸'];
+  if(thumbs.children.length<4){
+    const d=document.createElement('div');
+    d.className='photo-thumb';
+    d.innerHTML=emojis[thumbs.children.length]+'<span class="thumb-remove" onclick="this.parentElement.remove()">×</span>';
+    thumbs.appendChild(d);
+    showToast('📷 Фото добавлено!');
+  } else showToast('⚠️ Максимум 10 фотографий');
+}
+function selectPromo(el) {
+  document.querySelectorAll('[onclick="selectPromo(this)"]').forEach(e=>{e.style.borderColor='var(--bdr)';e.style.background='';});
+  el.style.borderColor='var(--amb)';el.style.background='var(--ambl)';
+}
+function publishAd() {
+  showToast('🚀 Объявление отправлено на проверку!');
+  setTimeout(()=>showScreen('home'),1500);
+}
+
+// ── UTILS ──
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer=setTimeout(()=>t.classList.remove('show'),2500);
+}
+function confirmLogout() {
+  if(confirm('Выйти из аккаунта?')) window.location.href='auth.html';
+}
+
+// Auto-resize textarea
+document.getElementById('chat-text-input')?.addEventListener('input',function(){
+  this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px';
+});
+
+// ── INIT ──
+initHome();
+initSearch();
+</script>
+</body>
+</html>

@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgroTJ — Вход и Регистрация</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green-dark:#0f2d1a;--green-mid:#1a5c30;--green-light:#2d8a4e;
+  --green-pale:#e8f5ec;--amber:#e8920a;--amber-dark:#b86e00;
+  --cream:#faf8f3;--text-dark:#111c14;--text-mid:#3d5440;
+  --text-muted:#6b7f6e;--border:#c8dcc9;--white:#fff;
+  --red:#c0392b;--radius:14px;
+  --shadow:0 8px 40px rgba(15,45,26,0.13);
+}
+body{font-family:'Montserrat',sans-serif;background:var(--cream);color:var(--text-dark);min-height:100vh;display:flex;flex-direction:column}
+a{text-decoration:none;color:inherit}
+input,select,textarea,button{font-family:inherit}
+
+/* HEADER */
+.header{background:var(--green-dark);padding:0 2rem;box-shadow:0 2px 16px rgba(0,0,0,0.22)}
+.header-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;height:64px;gap:1.5rem}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:38px;height:38px;background:var(--amber);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.logo-text{font-size:20px;font-weight:900;color:#fff}
+.logo-text span{color:var(--amber)}
+.header-back{margin-left:auto;color:rgba(255,255,255,0.7);font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;transition:color 0.15s}
+.header-back:hover{color:#fff}
+
+/* LAYOUT */
+.page{flex:1;display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 64px)}
+
+/* LEFT PANEL */
+.panel-left{background:linear-gradient(155deg,var(--green-dark) 0%,#1a5c30 60%,#2d8a4e 100%);padding:60px 56px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+.panel-left::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 80% 20%,rgba(232,146,10,0.15) 0%,transparent 50%),radial-gradient(circle at 20% 80%,rgba(45,138,78,0.2) 0%,transparent 50%)}
+.panel-left-inner{position:relative;z-index:1}
+.panel-tagline{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-bottom:20px}
+.panel-title{font-family:'Merriweather',serif;font-size:2.2rem;font-weight:700;color:#fff;line-height:1.25;margin-bottom:20px}
+.panel-title span{color:var(--amber)}
+.panel-desc{font-size:15px;color:rgba(255,255,255,0.68);line-height:1.7;margin-bottom:40px}
+.panel-perks{display:flex;flex-direction:column;gap:16px}
+.perk{display:flex;align-items:flex-start;gap:14px}
+.perk-icon{width:42px;height:42px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.perk-text strong{display:block;font-size:14px;font-weight:700;color:#fff;margin-bottom:2px}
+.perk-text span{font-size:13px;color:rgba(255,255,255,0.6)}
+.panel-stats{display:flex;gap:2rem;margin-top:48px;padding-top:32px;border-top:1px solid rgba(255,255,255,0.12)}
+.p-stat{text-align:center}
+.p-stat-num{font-size:1.6rem;font-weight:900;color:var(--amber);display:block}
+.p-stat-label{font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px}
+
+/* RIGHT PANEL — FORM */
+.panel-right{background:var(--white);padding:60px 56px;display:flex;flex-direction:column;justify-content:center;overflow-y:auto}
+.panel-right-inner{max-width:420px;width:100%}
+
+/* TABS */
+.auth-tabs{display:flex;background:var(--cream);border-radius:12px;padding:4px;margin-bottom:36px;border:1.5px solid var(--border)}
+.auth-tab{flex:1;padding:10px;text-align:center;font-size:14px;font-weight:700;color:var(--text-muted);border-radius:9px;cursor:pointer;transition:all 0.22s;border:none;background:transparent}
+.auth-tab.active{background:var(--white);color:var(--green-dark);box-shadow:0 2px 8px rgba(15,45,26,0.1)}
+
+/* FORMS */
+.form-title{font-family:'Merriweather',serif;font-size:1.7rem;font-weight:700;color:var(--text-dark);margin-bottom:6px}
+.form-subtitle{font-size:14px;color:var(--text-muted);margin-bottom:28px;line-height:1.5}
+.form-subtitle a{color:var(--green-light);font-weight:700}
+
+.form-group{margin-bottom:18px}
+.form-label{display:block;font-size:13px;font-weight:700;color:var(--text-mid);margin-bottom:7px}
+.form-label .req{color:var(--amber)}
+.form-input{width:100%;padding:13px 16px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;color:var(--text-dark);background:var(--cream);outline:none;transition:all 0.18s}
+.form-input:focus{border-color:var(--green-light);background:#fff;box-shadow:0 0 0 3px rgba(45,138,78,0.1)}
+.form-input::placeholder{color:var(--text-muted)}
+.form-input.error{border-color:var(--red);background:#fff8f8}
+.form-error{font-size:12px;color:var(--red);margin-top:5px;display:none}
+.form-error.show{display:block}
+
+.input-icon-wrap{position:relative}
+.input-icon-wrap .form-input{padding-left:44px}
+.input-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:18px;pointer-events:none}
+.input-toggle{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:18px;color:var(--text-muted)}
+
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+.form-select{width:100%;padding:13px 16px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;color:var(--text-mid);background:var(--cream);outline:none;cursor:pointer;transition:border-color 0.18s;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7f6e' fill='none' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.form-select:focus{border-color:var(--green-light)}
+
+.account-type{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.acc-type-btn{border:1.5px solid var(--border);background:var(--cream);border-radius:10px;padding:14px 12px;text-align:center;cursor:pointer;transition:all 0.2s}
+.acc-type-btn:hover{border-color:var(--green-light);background:var(--green-pale)}
+.acc-type-btn.selected{border-color:var(--green-mid);background:var(--green-pale);box-shadow:0 0 0 3px rgba(26,92,48,0.1)}
+.acc-type-icon{font-size:28px;display:block;margin-bottom:6px}
+.acc-type-label{font-size:13px;font-weight:700;color:var(--text-dark)}
+.acc-type-desc{font-size:11px;color:var(--text-muted);margin-top:2px}
+
+.checkbox-wrap{display:flex;align-items:flex-start;gap:10px;margin-bottom:20px}
+.checkbox-wrap input[type=checkbox]{width:18px;height:18px;margin-top:2px;accent-color:var(--green-mid);cursor:pointer;flex-shrink:0}
+.checkbox-wrap label{font-size:13px;color:var(--text-muted);line-height:1.5;cursor:pointer}
+.checkbox-wrap label a{color:var(--green-light);font-weight:600}
+
+.btn-primary{width:100%;background:var(--green-mid);color:#fff;border:none;padding:15px;border-radius:11px;font-size:16px;font-weight:700;cursor:pointer;transition:all 0.2s;letter-spacing:0.3px}
+.btn-primary:hover{background:var(--green-dark);transform:translateY(-1px);box-shadow:0 6px 20px rgba(15,45,26,0.25)}
+.btn-primary:active{transform:translateY(0)}
+
+.btn-amber{width:100%;background:var(--amber);color:#fff;border:none;padding:15px;border-radius:11px;font-size:16px;font-weight:700;cursor:pointer;transition:all 0.2s}
+.btn-amber:hover{background:var(--amber-dark);transform:translateY(-1px)}
+
+.divider{display:flex;align-items:center;gap:12px;margin:20px 0}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.divider span{font-size:12px;color:var(--text-muted);font-weight:600;white-space:nowrap}
+
+.social-btns{display:flex;gap:10px}
+.social-btn{flex:1;border:1.5px solid var(--border);background:#fff;border-radius:10px;padding:11px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;font-weight:600;color:var(--text-mid);cursor:pointer;transition:all 0.18s}
+.social-btn:hover{border-color:var(--green-light);background:var(--green-pale)}
+
+/* PASSWORD STRENGTH */
+.pw-strength{margin-top:8px}
+.pw-strength-bar{height:4px;background:var(--border);border-radius:4px;overflow:hidden}
+.pw-strength-fill{height:100%;border-radius:4px;transition:all 0.3s;width:0}
+.pw-strength-label{font-size:11px;margin-top:4px}
+
+/* PHONE INPUT */
+.phone-wrap{display:flex;gap:8px}
+.phone-code{border:1.5px solid var(--border);border-radius:10px;padding:13px 12px;font-size:14px;font-weight:700;color:var(--text-mid);background:var(--cream);outline:none;width:96px;flex-shrink:0;text-align:center}
+.phone-code:focus{border-color:var(--green-light)}
+
+/* STEP INDICATOR */
+.steps-indicator{display:flex;align-items:center;gap:6px;margin-bottom:28px}
+.step-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:all 0.25s}
+.step-dot.active{width:24px;border-radius:4px;background:var(--green-mid)}
+.step-dot.done{background:var(--green-light)}
+.step-label{font-size:12px;color:var(--text-muted);margin-left:8px;font-weight:600}
+
+/* VERIFICATION */
+.otp-wrap{display:flex;gap:10px;justify-content:center;margin:16px 0}
+.otp-input{width:54px;height:58px;border:2px solid var(--border);border-radius:10px;font-size:24px;font-weight:700;text-align:center;outline:none;transition:all 0.18s;color:var(--text-dark);background:var(--cream)}
+.otp-input:focus{border-color:var(--green-mid);background:#fff;box-shadow:0 0 0 3px rgba(45,138,78,0.12)}
+
+/* SUCCESS */
+.success-state{text-align:center;padding:20px 0}
+.success-icon{font-size:64px;display:block;margin-bottom:16px;animation:pop 0.4s cubic-bezier(0.34,1.56,0.64,1)}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+.success-title{font-family:'Merriweather',serif;font-size:1.5rem;font-weight:700;color:var(--text-dark);margin-bottom:8px}
+.success-desc{font-size:14px;color:var(--text-muted);margin-bottom:28px;line-height:1.6}
+
+/* FORGOT PASSWORD */
+.forgot-link{display:block;text-align:right;font-size:12px;font-weight:700;color:var(--green-light);margin-top:-10px;margin-bottom:18px}
+.forgot-link:hover{color:var(--green-dark)}
+
+/* PANELS */
+.form-panel{display:none}
+.form-panel.active{display:block}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .page{grid-template-columns:1fr}
+  .panel-left{display:none}
+  .panel-right{padding:40px 24px}
+}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+.form-panel.active{animation:slideIn 0.28s ease}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">🌾</div>
+      <div class="logo-text">Agro<span>TJ</span></div>
+    </a>
+    <a href="index.html" class="header-back">← Вернуться на главную</a>
+  </div>
+</header>
+
+<div class="page">
+
+  <!-- LEFT: PROMO -->
+  <div class="panel-left">
+    <div class="panel-left-inner">
+      <div class="panel-tagline">🇹🇯 Платформа №1 в Таджикистане</div>
+      <h1 class="panel-title">Ваш агробизнес<br>на <span>новом уровне</span></h1>
+      <p class="panel-desc">Присоединяйтесь к тысячам фермеров и компаний, которые уже продают и покупают технику на AgroTJ.</p>
+      <div class="panel-perks">
+        <div class="perk">
+          <div class="perk-icon">🆓</div>
+          <div class="perk-text">
+            <strong>Бесплатно на 30 дней</strong>
+            <span>Размещайте объявления без комиссии первый месяц</span>
+          </div>
+        </div>
+        <div class="perk">
+          <div class="perk-icon">👁️</div>
+          <div class="perk-text">
+            <strong>3 000+ покупателей ежедневно</strong>
+            <span>Ваши объявления видят реальные фермеры по всей стране</span>
+          </div>
+        </div>
+        <div class="perk">
+          <div class="perk-icon">🛡️</div>
+          <div class="perk-text">
+            <strong>Верификация и защита</strong>
+            <span>Система рейтингов и отзывов для безопасных сделок</span>
+          </div>
+        </div>
+        <div class="perk">
+          <div class="perk-icon">📱</div>
+          <div class="perk-text">
+            <strong>Управление с телефона</strong>
+            <span>Мобильный сайт работает на любом устройстве</span>
+          </div>
+        </div>
+      </div>
+      <div class="panel-stats">
+        <div class="p-stat"><span class="p-stat-num">3 124</span><span class="p-stat-label">Объявлений</span></div>
+        <div class="p-stat"><span class="p-stat-num">847</span><span class="p-stat-label">Продавцов</span></div>
+        <div class="p-stat"><span class="p-stat-num">8</span><span class="p-stat-label">Регионов</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: FORM -->
+  <div class="panel-right">
+    <div class="panel-right-inner">
+
+      <!-- TABS -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="showTab('login')">Войти</button>
+        <button class="auth-tab" onclick="showTab('register')">Регистрация</button>
+      </div>
+
+      <!-- ════════════════════
+           LOGIN PANEL
+      ════════════════════ -->
+      <div class="form-panel active" id="panel-login">
+        <h2 class="form-title">С возвращением! 👋</h2>
+        <p class="form-subtitle">Нет аккаунта? <a href="#" onclick="showTab('register')">Зарегистрируйтесь бесплатно</a></p>
+
+        <div class="form-group">
+          <label class="form-label">Телефон или Email</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon">📱</span>
+            <input class="form-input" type="text" id="login-phone" placeholder="+992 XX XXX XXXX или email@mail.com">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Пароль</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon">🔒</span>
+            <input class="form-input" type="password" id="login-password" placeholder="Введите пароль">
+            <button class="input-toggle" onclick="togglePw('login-password',this)">👁️</button>
+          </div>
+        </div>
+
+        <a href="#" class="forgot-link" onclick="showPanel('forgot')">Забыли пароль?</a>
+
+        <div class="checkbox-wrap">
+          <input type="checkbox" id="remember" checked>
+          <label for="remember">Запомнить меня на этом устройстве</label>
+        </div>
+
+        <button class="btn-primary" onclick="doLogin()">Войти в аккаунт</button>
+
+        <div class="divider"><span>или войти через</span></div>
+
+        <div class="social-btns">
+          <button class="social-btn">📲 Telegram</button>
+          <button class="social-btn">☎️ WhatsApp</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════
+           REGISTER PANEL
+      ════════════════════ -->
+      <div class="form-panel" id="panel-register">
+
+        <!-- Step indicator -->
+        <div class="steps-indicator">
+          <div class="step-dot active" id="sd1"></div>
+          <div class="step-dot" id="sd2"></div>
+          <div class="step-dot" id="sd3"></div>
+          <span class="step-label" id="step-label">Шаг 1 из 3</span>
+        </div>
+
+        <!-- STEP 1: Account Type -->
+        <div class="form-panel active" id="reg-step-1">
+          <h2 class="form-title">Создать аккаунт</h2>
+          <p class="form-subtitle">Выберите тип аккаунта</p>
+
+          <div class="account-type">
+            <div class="acc-type-btn selected" id="type-buyer" onclick="selectType('buyer')">
+              <span class="acc-type-icon">👨‍🌾</span>
+              <div class="acc-type-label">Покупатель</div>
+              <div class="acc-type-desc">Ищу технику и товары</div>
+            </div>
+            <div class="acc-type-btn" id="type-seller" onclick="selectType('seller')">
+              <span class="acc-type-icon">🏢</span>
+              <div class="acc-type-label">Продавец</div>
+              <div class="acc-type-desc">Продаю технику / товары</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Имя <span class="req">*</span></label>
+            <div class="input-icon-wrap">
+              <span class="input-icon">👤</span>
+              <input class="form-input" type="text" id="reg-name" placeholder="Ваше имя">
+            </div>
+            <div class="form-error" id="err-name">Введите ваше имя</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Номер телефона <span class="req">*</span></label>
+            <div class="phone-wrap">
+              <input class="phone-code" type="text" value="🇹🇯 +992" readonly>
+              <input class="form-input" type="tel" id="reg-phone" placeholder="XX XXX XXXX" style="flex:1">
+            </div>
+            <div class="form-error" id="err-phone">Введите корректный номер</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Email <span class="req">*</span></label>
+            <div class="input-icon-wrap">
+              <span class="input-icon">📧</span>
+              <input class="form-input" type="email" id="reg-email" placeholder="your@email.com">
+            </div>
+            <div class="form-error" id="err-email">Введите корректный email</div>
+          </div>
+
+          <button class="btn-primary" onclick="goStep(2)">Далее →</button>
+        </div>
+
+        <!-- STEP 2: Password + Info -->
+        <div class="form-panel" id="reg-step-2">
+          <h2 class="form-title">Придумайте пароль</h2>
+          <p class="form-subtitle">Минимум 8 символов, буквы и цифры</p>
+
+          <div class="form-group">
+            <label class="form-label">Пароль <span class="req">*</span></label>
+            <div class="input-icon-wrap">
+              <span class="input-icon">🔒</span>
+              <input class="form-input" type="password" id="reg-pw" placeholder="Придумайте надёжный пароль" oninput="checkPwStrength(this.value)">
+              <button class="input-toggle" onclick="togglePw('reg-pw',this)">👁️</button>
+            </div>
+            <div class="pw-strength" id="pw-strength-wrap" style="display:none">
+              <div class="pw-strength-bar"><div class="pw-strength-fill" id="pw-fill"></div></div>
+              <div class="pw-strength-label" id="pw-label"></div>
+            </div>
+            <div class="form-error" id="err-pw">Минимум 8 символов</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Повторите пароль <span class="req">*</span></label>
+            <div class="input-icon-wrap">
+              <span class="input-icon">🔒</span>
+              <input class="form-input" type="password" id="reg-pw2" placeholder="Повторите пароль">
+              <button class="input-toggle" onclick="togglePw('reg-pw2',this)">👁️</button>
+            </div>
+            <div class="form-error" id="err-pw2">Пароли не совпадают</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Регион</label>
+            <select class="form-select" id="reg-region">
+              <option value="">Выберите регион</option>
+              <option>Душанбе</option>
+              <option>Согд</option>
+              <option>Хатлон</option>
+              <option>ГБАО</option>
+              <option>РРП</option>
+              <option>Куляб</option>
+              <option>Хорог</option>
+              <option>Вахш</option>
+            </select>
+          </div>
+
+          <div class="checkbox-wrap">
+            <input type="checkbox" id="agree" checked>
+            <label for="agree">Я принимаю <a href="terms.html">условия использования</a> и <a href="privacy.html">политику конфиденциальности</a> AgroTJ</label>
+          </div>
+
+          <div style="display:flex;gap:10px">
+            <button class="btn-primary" style="background:var(--cream);color:var(--text-mid);border:1.5px solid var(--border);flex:0 0 auto;width:50px;font-size:18px" onclick="goStep(1)">←</button>
+            <button class="btn-primary" style="flex:1" onclick="goStep(3)">Далее →</button>
+          </div>
+        </div>
+
+        <!-- STEP 3: SMS Verify -->
+        <div class="form-panel" id="reg-step-3">
+          <h2 class="form-title">Подтвердите номер</h2>
+          <p class="form-subtitle">Мы отправили SMS-код на номер<br><strong id="phone-display" style="color:var(--green-mid)"></strong></p>
+
+          <div class="otp-wrap">
+            <input class="otp-input" type="text" maxlength="1" oninput="otpNext(this,0)">
+            <input class="otp-input" type="text" maxlength="1" oninput="otpNext(this,1)">
+            <input class="otp-input" type="text" maxlength="1" oninput="otpNext(this,2)">
+            <input class="otp-input" type="text" maxlength="1" oninput="otpNext(this,3)">
+            <input class="otp-input" type="text" maxlength="1" oninput="otpNext(this,4)">
+            <input class="otp-input" type="text" maxlength="1" oninput="otpCheck()">
+          </div>
+
+          <p style="text-align:center;font-size:13px;color:var(--text-muted);margin-bottom:24px">
+            Не получили? <a href="#" onclick="resendOTP()" style="color:var(--green-light);font-weight:700" id="resend-link">Отправить повторно (<span id="otp-timer">60</span>с)</a>
+          </p>
+
+          <button class="btn-primary" onclick="verifyOTP()">Подтвердить и создать аккаунт ✓</button>
+        </div>
+
+      </div>
+
+      <!-- ════════════════════
+           FORGOT PASSWORD
+      ════════════════════ -->
+      <div class="form-panel" id="panel-forgot">
+        <h2 class="form-title">Восстановление пароля</h2>
+        <p class="form-subtitle">Введите телефон или email — отправим код восстановления</p>
+
+        <div class="form-group">
+          <label class="form-label">Телефон или Email</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon">📱</span>
+            <input class="form-input" type="text" placeholder="+992 XX XXX XXXX">
+          </div>
+        </div>
+
+        <button class="btn-amber" onclick="sendReset()">📤 Отправить код</button>
+        <div style="text-align:center;margin-top:16px">
+          <a href="#" onclick="showPanel('login')" style="font-size:13px;color:var(--text-muted);font-weight:600">← Вернуться ко входу</a>
+        </div>
+      </div>
+
+      <!-- ════════════════════
+           SUCCESS STATE
+      ════════════════════ -->
+      <div class="form-panel" id="panel-success">
+        <div class="success-state">
+          <span class="success-icon">🎉</span>
+          <h2 class="success-title">Добро пожаловать в AgroTJ!</h2>
+          <p class="success-desc">Ваш аккаунт успешно создан. Теперь вы можете размещать объявления и находить технику по всему Таджикистану.</p>
+          <a href="dashboard.html">
+            <button class="btn-primary" style="margin-bottom:12px">Перейти в личный кабинет →</button>
+          </a>
+          <a href="index.html">
+            <button class="btn-primary" style="background:var(--cream);color:var(--text-mid);border:1.5px solid var(--border)">На главную</button>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ── TAB SWITCHING ──
+let currentPanel = 'login';
+function showTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach((t,i) => t.classList.toggle('active', (tab==='login'?i===0:i===1)));
+  showPanel(tab === 'login' ? 'login' : 'register');
+  if(tab==='register') goStep(1);
+}
+function showPanel(name) {
+  document.querySelectorAll('.form-panel[id^="panel-"]').forEach(p => p.classList.remove('active'));
+  const el = document.getElementById('panel-'+name);
+  if(el) el.classList.add('active');
+  currentPanel = name;
+}
+
+// ── REGISTER STEPS ──
+let currentStep = 1;
+function goStep(step) {
+  if(step === 2 && !validateStep1()) return;
+  if(step === 3 && !validateStep2()) return;
+  if(step === 3) {
+    document.getElementById('phone-display').textContent = '+992 ' + document.getElementById('reg-phone').value;
+    startOTPTimer();
+  }
+  document.querySelectorAll('[id^="reg-step-"]').forEach(p => p.classList.remove('active'));
+  document.getElementById('reg-step-'+step).classList.add('active');
+  currentStep = step;
+  updateStepDots();
+}
+
+function updateStepDots() {
+  for(let i=1;i<=3;i++){
+    const dot = document.getElementById('sd'+i);
+    dot.className = 'step-dot' + (i < currentStep ? ' done' : i === currentStep ? ' active' : '');
+  }
+  document.getElementById('step-label').textContent = `Шаг ${currentStep} из 3`;
+}
+
+// ── VALIDATION ──
+function validateStep1() {
+  let ok = true;
+  const name = document.getElementById('reg-name').value.trim();
+  const phone = document.getElementById('reg-phone').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  showErr('err-name', !name); if(!name) ok=false;
+  showErr('err-phone', phone.length < 7); if(phone.length < 7) ok=false;
+  showErr('err-email', !email.includes('@')); if(!email.includes('@')) ok=false;
+  return ok;
+}
+function validateStep2() {
+  let ok = true;
+  const pw = document.getElementById('reg-pw').value;
+  const pw2 = document.getElementById('reg-pw2').value;
+  showErr('err-pw', pw.length < 8); if(pw.length < 8) ok=false;
+  showErr('err-pw2', pw !== pw2); if(pw !== pw2) ok=false;
+  return ok;
+}
+function showErr(id, show) {
+  const el = document.getElementById(id);
+  el.classList.toggle('show', show);
+  const input = el.previousElementSibling?.querySelector?.('input') || el.previousElementSibling;
+  if(input) input.classList.toggle('error', show);
+}
+
+// ── ACCOUNT TYPE ──
+function selectType(type) {
+  document.getElementById('type-buyer').classList.toggle('selected', type==='buyer');
+  document.getElementById('type-seller').classList.toggle('selected', type==='seller');
+}
+
+// ── PASSWORD TOGGLE ──
+function togglePw(id, btn) {
+  const input = document.getElementById(id);
+  if(input.type === 'password') { input.type='text'; btn.textContent='🙈'; }
+  else { input.type='password'; btn.textContent='👁️'; }
+}
+
+// ── PASSWORD STRENGTH ──
+function checkPwStrength(val) {
+  const wrap = document.getElementById('pw-strength-wrap');
+  const fill = document.getElementById('pw-fill');
+  const label = document.getElementById('pw-label');
+  wrap.style.display = val.length ? 'block' : 'none';
+  let score = 0;
+  if(val.length >= 8) score++;
+  if(/[A-Z]/.test(val)) score++;
+  if(/[0-9]/.test(val)) score++;
+  if(/[^A-Za-z0-9]/.test(val)) score++;
+  const levels = [
+    {w:'20%', color:'#c0392b', text:'Слабый'},
+    {w:'40%', color:'#e8920a', text:'Средний'},
+    {w:'70%', color:'#f0c040', text:'Хороший'},
+    {w:'100%', color:'#2d8a4e', text:'Отличный'}
+  ];
+  const l = levels[Math.max(0, score-1)];
+  fill.style.width = l.w; fill.style.background = l.color;
+  label.textContent = l.text; label.style.color = l.color;
+}
+
+// ── OTP ──
+const otpInputs = () => document.querySelectorAll('.otp-input');
+function otpNext(el, idx) {
+  el.value = el.value.replace(/\D/,'');
+  const inputs = otpInputs();
+  if(el.value && idx < inputs.length-1) inputs[idx+1].focus();
+}
+function otpCheck() {
+  const code = [...otpInputs()].map(i => i.value).join('');
+  if(code.length === 6) setTimeout(() => verifyOTP(), 300);
+}
+
+let otpInterval;
+function startOTPTimer() {
+  let secs = 60;
+  document.getElementById('otp-timer').textContent = secs;
+  document.getElementById('resend-link').style.pointerEvents = 'none';
+  document.getElementById('resend-link').style.opacity = '0.5';
+  clearInterval(otpInterval);
+  otpInterval = setInterval(() => {
+    secs--;
+    document.getElementById('otp-timer').textContent = secs;
+    if(secs <= 0) {
+      clearInterval(otpInterval);
+      document.getElementById('resend-link').style.pointerEvents = '';
+      document.getElementById('resend-link').style.opacity = '1';
+    }
+  }, 1000);
+}
+function resendOTP() { startOTPTimer(); }
+function verifyOTP() {
+  // Simulated success — in real app, call backend API
+  document.getElementById('panel-register').classList.remove('active');
+  showPanel('success');
+  document.querySelectorAll('.auth-tab').forEach(t => t.style.display='none');
+}
+
+// ── LOGIN ──
+function doLogin() {
+  const phone = document.getElementById('login-phone').value.trim();
+  const pw = document.getElementById('login-password').value;
+  if(!phone || !pw) { alert('⚠️ Заполните все поля'); return; }
+  // Simulate login → redirect to dashboard
+  window.location.href = 'dashboard.html';
+}
+
+// ── FORGOT ──
+function sendReset() {
+  alert('✅ Код отправлен! Проверьте SMS или Email.');
+  showPanel('login');
+}
+</script>
+</body>
+</html>

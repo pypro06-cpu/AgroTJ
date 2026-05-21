@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgroTJ — Маркетплейс агротехники Таджикистана</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green-dark: #0f2d1a;
+    --green-mid: #1a5c30;
+    --green-light: #2d8a4e;
+    --green-pale: #e8f5ec;
+    --amber: #e8920a;
+    --amber-light: #fdf3e0;
+    --amber-dark: #b86e00;
+    --cream: #faf8f3;
+    --text-dark: #111c14;
+    --text-mid: #3d5440;
+    --text-muted: #6b7f6e;
+    --border: #c8dcc9;
+    --white: #ffffff;
+    --red: #c0392b;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 4px 20px rgba(15,45,26,0.10);
+    --shadow-lg: 0 8px 40px rgba(15,45,26,0.16);
+  }
+
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    line-height: 1.6;
+  }
+
+  a { text-decoration: none; color: inherit; }
+  img { display: block; max-width: 100%; }
+  button { cursor: pointer; font-family: inherit; }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--green-dark);
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.25);
+  }
+  .header-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    height: 68px;
+    gap: 2rem;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .logo-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--amber);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+  }
+  .logo-text {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--white);
+    letter-spacing: -0.5px;
+  }
+  .logo-text span { color: var(--amber); }
+
+  .header-nav {
+    display: flex;
+    gap: 0.25rem;
+    flex: 1;
+    align-items: center;
+  }
+  .header-nav a {
+    color: rgba(255,255,255,0.75);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 8px;
+    transition: all 0.18s;
+  }
+  .header-nav a:hover { color: #fff; background: rgba(255,255,255,0.1); }
+
+  .header-actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .btn-outline {
+    border: 1.5px solid rgba(255,255,255,0.35);
+    color: #fff;
+    background: transparent;
+    padding: 7px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.18s;
+  }
+  .btn-outline:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.6); }
+
+  .btn-amber {
+    background: var(--amber);
+    color: #fff;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    transition: all 0.18s;
+    box-shadow: 0 2px 8px rgba(232,146,10,0.4);
+  }
+  .btn-amber:hover { background: var(--amber-dark); transform: translateY(-1px); }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, var(--green-dark) 0%, #1a4a2a 60%, #2d6e3a 100%);
+    padding: 80px 2rem 100px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 80% 20%, rgba(232,146,10,0.12) 0%, transparent 50%),
+      radial-gradient(circle at 20% 80%, rgba(45,138,78,0.2) 0%, transparent 50%);
+  }
+  .hero-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-rule='evenodd'%3E%3Cpath d='M30 0l30 52H0z'/%3E%3C/g%3E%3C/svg%3E");
+  }
+  .hero-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    position: relative;
+    text-align: center;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(232,146,10,0.2);
+    border: 1px solid rgba(232,146,10,0.4);
+    color: #f5c56a;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 100px;
+    margin-bottom: 24px;
+    letter-spacing: 0.5px;
+  }
+  .hero h1 {
+    font-family: 'Merriweather', serif;
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    letter-spacing: -1px;
+  }
+  .hero h1 span { color: var(--amber); }
+  .hero p {
+    font-size: 18px;
+    color: rgba(255,255,255,0.72);
+    max-width: 580px;
+    margin: 0 auto 40px;
+    line-height: 1.7;
+  }
+
+  .search-box {
+    background: #fff;
+    border-radius: 16px;
+    padding: 8px 8px 8px 24px;
+    display: flex;
+    align-items: center;
+    max-width: 740px;
+    margin: 0 auto;
+    gap: 8px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+  }
+  .search-category {
+    border: none;
+    outline: none;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-mid);
+    background: var(--green-pale);
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .search-divider { width: 1px; height: 28px; background: var(--border); flex-shrink: 0; }
+  .search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--text-dark);
+    background: transparent;
+    min-width: 0;
+  }
+  .search-input::placeholder { color: var(--text-muted); }
+  .search-btn {
+    background: var(--amber);
+    color: #fff;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all 0.18s;
+  }
+  .search-btn:hover { background: var(--amber-dark); }
+
+  .hero-tags {
+    margin-top: 20px;
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .hero-tag {
+    background: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.8);
+    font-size: 13px;
+    padding: 5px 14px;
+    border-radius: 100px;
+    border: 1px solid rgba(255,255,255,0.15);
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .hero-tag:hover { background: rgba(255,255,255,0.2); color: #fff; }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 56px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(255,255,255,0.12);
+  }
+  .hero-stat { text-align: center; }
+  .hero-stat-num {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--amber);
+    display: block;
+    line-height: 1;
+  }
+  .hero-stat-label {
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  /* ── SECTION COMMONS ── */
+  .section { padding: 72px 2rem; }
+  .section-alt { background: var(--white); }
+  .section-inner { max-width: 1280px; margin: 0 auto; }
+  .section-header { margin-bottom: 40px; }
+  .section-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--green-light);
+    margin-bottom: 10px;
+  }
+  .section-title {
+    font-family: 'Merriweather', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    letter-spacing: -0.5px;
+  }
+  .section-subtitle {
+    font-size: 16px;
+    color: var(--text-muted);
+    margin-top: 8px;
+  }
+  .section-header-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .link-all {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--green-light);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .link-all:hover { color: var(--green-mid); }
+
+  /* ── CATEGORIES ── */
+  .cats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+  }
+  .cat-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 16px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.22s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .cat-card:hover {
+    border-color: var(--green-light);
+    background: var(--green-pale);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+  }
+  .cat-icon {
+    width: 56px;
+    height: 56px;
+    background: var(--green-pale);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    transition: background 0.22s;
+  }
+  .cat-card:hover .cat-icon { background: rgba(45,138,78,0.2); }
+  .cat-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-dark);
+    line-height: 1.3;
+  }
+  .cat-count {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* ── LISTINGS ── */
+  .listings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .listing-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: all 0.22s;
+    cursor: pointer;
+    position: relative;
+  }
+  .listing-card:hover {
+    border-color: var(--green-light);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+  }
+  .listing-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    background: var(--green-pale);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 64px;
+    color: rgba(45,138,78,0.3);
+  }
+  .listing-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: var(--amber);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .listing-fav {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255,255,255,0.92);
+    border: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: all 0.18s;
+  }
+  .listing-fav:hover { background: #fff; transform: scale(1.1); }
+  .listing-body { padding: 16px; }
+  .listing-cat {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--green-light);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .listing-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 4px;
+    line-height: 1.35;
+  }
+  .listing-spec {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+  .listing-price {
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--green-mid);
+  }
+  .listing-price .currency { font-size: 14px; font-weight: 600; }
+  .listing-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .listing-location {
+    font-size: 12px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .listing-date { font-size: 12px; color: var(--text-muted); }
+
+  /* ── HOW IT WORKS ── */
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 32px;
+    counter-reset: steps;
+  }
+  .how-card {
+    text-align: center;
+    padding: 32px 24px;
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    position: relative;
+  }
+  .how-num {
+    width: 48px;
+    height: 48px;
+    background: var(--green-dark);
+    color: var(--amber);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 900;
+    margin: 0 auto 20px;
+  }
+  .how-icon { font-size: 36px; margin-bottom: 16px; }
+  .how-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+  }
+  .how-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+
+  /* ── CTA BANNER ── */
+  .cta-section {
+    background: linear-gradient(135deg, var(--green-dark) 0%, #1a5c30 100%);
+    padding: 72px 2rem;
+    text-align: center;
+  }
+  .cta-inner { max-width: 700px; margin: 0 auto; }
+  .cta-section h2 {
+    font-family: 'Merriweather', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 16px;
+  }
+  .cta-section p { font-size: 17px; color: rgba(255,255,255,0.7); margin-bottom: 36px; }
+  .cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-cta-primary {
+    background: var(--amber);
+    color: #fff;
+    border: none;
+    padding: 14px 36px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    transition: all 0.18s;
+  }
+  .btn-cta-primary:hover { background: var(--amber-dark); transform: translateY(-2px); }
+  .btn-cta-outline {
+    background: transparent;
+    color: #fff;
+    border: 2px solid rgba(255,255,255,0.4);
+    padding: 14px 36px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    transition: all 0.18s;
+  }
+  .btn-cta-outline:hover { border-color: #fff; background: rgba(255,255,255,0.1); }
+
+  /* ── REGIONS ── */
+  .regions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+  }
+  .region-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .region-card:hover {
+    border-color: var(--green-light);
+    background: var(--green-pale);
+  }
+  .region-name { font-size: 14px; font-weight: 600; color: var(--text-dark); }
+  .region-count { font-size: 12px; color: var(--text-muted); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--green-dark);
+    color: rgba(255,255,255,0.7);
+    padding: 60px 2rem 28px;
+  }
+  .footer-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  .footer-top {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 48px;
+  }
+  .footer-brand p {
+    font-size: 14px;
+    line-height: 1.7;
+    margin-top: 16px;
+    max-width: 280px;
+  }
+  .footer-col h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 16px;
+  }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .footer-col ul a { font-size: 14px; color: rgba(255,255,255,0.6); transition: color 0.15s; }
+  .footer-col ul a:hover { color: var(--amber); }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer-bottom-links { display: flex; gap: 20px; }
+  .footer-bottom-links a { color: rgba(255,255,255,0.5); transition: color 0.15s; }
+  .footer-bottom-links a:hover { color: var(--amber); }
+
+  /* ── AD BANNER ── */
+  .ad-banner {
+    background: linear-gradient(90deg, #1a3d2b 0%, #2d6e3a 100%);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 40px;
+    border: 1px solid rgba(232,146,10,0.3);
+  }
+  .ad-banner-icon { font-size: 48px; flex-shrink: 0; }
+  .ad-banner-text { flex: 1; }
+  .ad-banner-text h3 { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .ad-banner-text p { font-size: 14px; color: rgba(255,255,255,0.7); }
+  .ad-banner-btn {
+    background: var(--amber);
+    color: #fff;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+    transition: all 0.18s;
+  }
+  .ad-banner-btn:hover { background: var(--amber-dark); }
+
+  /* ── FILTERS BAR ── */
+  .filters-bar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .filter-chip {
+    border: 1.5px solid var(--border);
+    background: var(--white);
+    color: var(--text-mid);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .filter-chip:hover, .filter-chip.active {
+    background: var(--green-dark);
+    color: #fff;
+    border-color: var(--green-dark);
+  }
+  .filter-select {
+    border: 1.5px solid var(--border);
+    background: var(--white);
+    color: var(--text-mid);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 100px;
+    cursor: pointer;
+    outline: none;
+    font-family: inherit;
+  }
+
+  /* ── TOP SELLERS ── */
+  .sellers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  .seller-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .seller-card:hover { border-color: var(--green-light); box-shadow: var(--shadow); }
+  .seller-avatar {
+    width: 52px;
+    height: 52px;
+    background: var(--green-pale);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    flex-shrink: 0;
+  }
+  .seller-name { font-size: 14px; font-weight: 700; color: var(--text-dark); }
+  .seller-loc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .seller-stats { font-size: 12px; color: var(--green-light); font-weight: 600; margin-top: 4px; }
+  .verified-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--green-pale);
+    color: var(--green-mid);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-top: 4px;
+  }
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    .header-nav { display: none; }
+    .hero { padding: 48px 1rem 64px; }
+    .hero-stats { gap: 1.5rem; }
+    .section { padding: 48px 1rem; }
+    .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .footer-brand { grid-column: span 2; }
+    .search-box { flex-wrap: wrap; padding: 12px; }
+    .search-input { width: 100%; }
+    .search-btn { width: 100%; justify-content: center; }
+    .ad-banner { flex-direction: column; text-align: center; }
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero-inner > * {
+    animation: fadeUp 0.7s ease both;
+  }
+  .hero-inner > *:nth-child(1) { animation-delay: 0.1s; }
+  .hero-inner > *:nth-child(2) { animation-delay: 0.2s; }
+  .hero-inner > *:nth-child(3) { animation-delay: 0.3s; }
+  .hero-inner > *:nth-child(4) { animation-delay: 0.4s; }
+  .hero-inner > *:nth-child(5) { animation-delay: 0.5s; }
+  .hero-inner > *:nth-child(6) { animation-delay: 0.6s; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════
+     HEADER
+══════════════════════════════ -->
+<header class="header">
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">🌾</div>
+      <div class="logo-text">Agro<span>TJ</span></div>
+    </a>
+    <nav class="header-nav">
+      <a href="listings.html">Объявления</a>
+      <a href="categories.html">Категории</a>
+      <a href="sellers.html">Продавцы</a>
+      <a href="news.html">Новости АПК</a>
+      <a href="about.html">О нас</a>
+    </nav>
+    <div class="header-actions">
+      <button class="btn-outline" onclick="openModal('login')">Войти</button>
+      <button class="btn-amber" onclick="openModal('post')">+ Подать объявление</button>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════════════════════
+     HERO
+══════════════════════════════ -->
+<section class="hero">
+  <div class="hero-pattern"></div>
+  <div class="hero-inner">
+    <div class="hero-badge">🇹🇯 №1 маркетплейс агротехники Таджикистана</div>
+    <h1>Купи и продай<br><span>агротехнику</span> легко</h1>
+    <p>Тракторы, комбайны, ирригационные системы, семена и всё для вашего хозяйства — в одном месте.</p>
+
+    <div class="search-box">
+      <select class="search-category" id="catSelect">
+        <option>Все категории</option>
+        <option>Тракторы</option>
+        <option>Комбайны</option>
+        <option>Ирригация</option>
+        <option>Семена</option>
+        <option>Удобрения</option>
+        <option>Запчасти</option>
+        <option>Животноводство</option>
+      </select>
+      <div class="search-divider"></div>
+      <input class="search-input" type="text" id="searchInput" placeholder="Например: Трактор МТЗ-82, насос, дрон...">
+      <button class="search-btn" onclick="doSearch()">🔍 Найти</button>
+    </div>
+
+    <div class="hero-tags">
+      <span class="hero-tag" onclick="setSearch('Трактор МТЗ')">Трактор МТЗ</span>
+      <span class="hero-tag" onclick="setSearch('Комбайн')">Комбайн</span>
+      <span class="hero-tag" onclick="setSearch('Мотоблок')">Мотоблок</span>
+      <span class="hero-tag" onclick="setSearch('Дрон для полива')">Агро-дрон</span>
+      <span class="hero-tag" onclick="setSearch('Семена хлопка')">Семена хлопка</span>
+      <span class="hero-tag" onclick="setSearch('Запчасти')">Запчасти</span>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-num" id="count-listings">0</span>
+        <span class="hero-stat-label">Объявлений</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-num" id="count-sellers">0</span>
+        <span class="hero-stat-label">Продавцов</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-num" id="count-regions">0</span>
+        <span class="hero-stat-label">Регионов</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-num" id="count-deals">0</span>
+        <span class="hero-stat-label">Сделок в месяц</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════
+     CATEGORIES
+══════════════════════════════ -->
+<section class="section section-alt">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-label">🌿 Категории</div>
+      <div class="section-title">Что вы ищете?</div>
+      <div class="section-subtitle">14 категорий агротехники и сельхозпродукции</div>
+    </div>
+    <div class="cats-grid">
+      <div class="cat-card" onclick="filterCat('tractors')">
+        <div class="cat-icon">🚜</div>
+        <div class="cat-name">Тракторы</div>
+        <div class="cat-count">248 объявлений</div>
+      </div>
+      <div class="cat-card" onclick="filterCat('combines')">
+        <div class="cat-icon">🌾</div>
+        <div class="cat-name">Комбайны и жатки</div>
+        <div class="cat-count">87 объявлений</div>
+      </div>
+      <div class="cat-card" onclick="filterCat('irrigation')">
+        <div class="cat-icon">💧</div>
+        <div class="cat-name">Ирригация и насосы</div>
+        <div class="cat-count">193 объявлений</div>
+      </div>
+      <div class="cat-card" onclick="filterCat('seeds')">
+        <div class="cat-icon">🌱</div>
+        <div class="cat-name">Семена</div>
+        <div class="cat-count">412 объявлений</div>
+      </div>
+      <div class="cat-card" onclick="filterCat('fertilizers')">
+        <div class="cat-icon">🧪</div>
+        <div class="cat-name">Удобрения</div>
+        <div class="cat-count">156 объявлений</div>
+      </div>
+      <div class="cat-card" onclick="filterCat('motoblock')">
+        <div class="cat-icon">⚙️</div>
+        <div class="cat-name">Мотоблоки</div>
+        <div class="cat-count">134 объявлений</div>
+      </div>
+      <div class="cat-card" onclick="filterCat('livestock')">
+        <div class="cat-icon">🐄</div>
+        <div class="cat-name">Животноводство</div>
+        <div class="cat-count">98 объявлений</div>
+      </div>
+      <div class="cat-card" onclick="filterCat('drones')">
+        <div class="cat-icon">🛸</div>
+        <div class="cat-name">Агро-дроны</div>
+        <div class="cat-count">32 объявлений</div>
+      </div>
+      <div class="cat-card" onclick="filterCat('greenhouse')">
+        <div class="cat-icon">🏡</div>
+        <div class="cat-name">Теплицы</div>
+        <div class="cat-count">74 объявлений</div>
+      </div>
+      <div class="cat-card" onclick="filterCat('tools')">
+        <div class="cat-icon">🔧</div>
+        <div class="cat-name">Инструменты</div>
+        <div class="cat-count">289 объявлений</div>
+      </div>
+      <div class="cat-card" onclick="filterCat('parts')">
+        <div class="cat-icon">🛠️</div>
+        <div class="cat-name">Запчасти</div>
+        <div class="cat-count">567 объявлений</div>
+      </div>
+      <div class="cat-card" onclick="filterCat('storage')">
+        <div class="cat-icon">🏭</div>
+        <div class="cat-name">Хранение урожая</div>
+        <div class="cat-count">45 объявлений</div>
+      </div>
+      <div class="cat-card" onclick="filterCat('land')">
+        <div class="cat-icon">🌍</div>
+        <div class="cat-name">Земельные участки</div>
+        <div class="cat-count">112 объявлений</div>
+      </div>
+      <div class="cat-card" onclick="filterCat('services')">
+        <div class="cat-icon">👨‍🌾</div>
+        <div class="cat-name">Услуги</div>
+        <div class="cat-count">203 объявлений</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════
+     FEATURED LISTINGS
+══════════════════════════════ -->
+<section class="section">
+  <div class="section-inner">
+
+    <div class="ad-banner">
+      <div class="ad-banner-icon">📢</div>
+      <div class="ad-banner-text">
+        <h3>Разместите объявление бесплатно!</h3>
+        <p>Первые 30 дней — бесплатно для всех продавцов. Достигайте тысячи покупателей по всему Таджикистану.</p>
+      </div>
+      <button class="ad-banner-btn" onclick="openModal('post')">Разместить сейчас</button>
+    </div>
+
+    <div class="section-header-row section-header">
+      <div>
+        <div class="section-label">🔥 Горячие предложения</div>
+        <div class="section-title">Свежие объявления</div>
+      </div>
+      <a href="listings.html" class="link-all">Все объявления →</a>
+    </div>
+
+    <div class="filters-bar">
+      <button class="filter-chip active" onclick="setFilter(this,'all')">Все</button>
+      <button class="filter-chip" onclick="setFilter(this,'new')">Новое</button>
+      <button class="filter-chip" onclick="setFilter(this,'used')">Б/У</button>
+      <button class="filter-chip" onclick="setFilter(this,'hot')">🔥 Акция</button>
+      <select class="filter-select" onchange="sortListings(this.value)">
+        <option>Сортировка: По дате</option>
+        <option>По цене ↑</option>
+        <option>По цене ↓</option>
+        <option>По популярности</option>
+      </select>
+    </div>
+
+    <div class="listings-grid" id="listingsGrid">
+
+      <div class="listing-card">
+        <div class="listing-img" style="font-size:80px; line-height:200px; text-align:center;">🚜</div>
+        <span class="listing-badge">ТОП</span>
+        <button class="listing-fav" onclick="toggleFav(this)">🤍</button>
+        <div class="listing-body">
+          <div class="listing-cat">🚜 Тракторы</div>
+          <div class="listing-title">Трактор МТЗ-82.1 Беларус, 2021 г.</div>
+          <div class="listing-spec">82 л.с. • 1200 мото/часов • Идеальное состояние</div>
+          <div class="listing-price"><span class="currency">TJS </span>85 000</div>
+          <div class="listing-footer">
+            <span class="listing-location">📍 Душанбе</span>
+            <span class="listing-date">Сегодня</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="listing-card">
+        <div class="listing-img" style="font-size:80px; line-height:200px; text-align:center;">💧</div>
+        <span class="listing-badge" style="background:var(--green-mid)">НОВОЕ</span>
+        <button class="listing-fav" onclick="toggleFav(this)">🤍</button>
+        <div class="listing-body">
+          <div class="listing-cat">💧 Ирригация</div>
+          <div class="listing-title">Насосная станция Grundfos SP 17-2</div>
+          <div class="listing-spec">17 м³/ч • Глубина 80м • Нержавеющая сталь</div>
+          <div class="listing-price"><span class="currency">TJS </span>12 500</div>
+          <div class="listing-footer">
+            <span class="listing-location">📍 Хатлон</span>
+            <span class="listing-date">Вчера</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="listing-card">
+        <div class="listing-img" style="font-size:80px; line-height:200px; text-align:center;">🌾</div>
+        <button class="listing-fav" onclick="toggleFav(this)">🤍</button>
+        <div class="listing-body">
+          <div class="listing-cat">🌾 Комбайны</div>
+          <div class="listing-title">Зерноуборочный комбайн CLAAS Tucano 450</div>
+          <div class="listing-spec">335 л.с. • 2019 г. • Б/У отличное</div>
+          <div class="listing-price"><span class="currency">TJS </span>620 000</div>
+          <div class="listing-footer">
+            <span class="listing-location">📍 Согд</span>
+            <span class="listing-date">2 дня назад</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="listing-card">
+        <div class="listing-img" style="font-size:80px; line-height:200px; text-align:center;">⚙️</div>
+        <span class="listing-badge" style="background:#c0392b">АКЦИЯ</span>
+        <button class="listing-fav" onclick="toggleFav(this)">🤍</button>
+        <div class="listing-body">
+          <div class="listing-cat">⚙️ Мотоблоки</div>
+          <div class="listing-title">Мотоблок Caiman Vario 70S TWK+</div>
+          <div class="listing-spec">7 л.с. • Дизельный • Роторная фреза</div>
+          <div class="listing-price"><span class="currency">TJS </span>4 800</div>
+          <div class="listing-footer">
+            <span class="listing-location">📍 Куляб</span>
+            <span class="listing-date">3 дня назад</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="listing-card">
+        <div class="listing-img" style="font-size:80px; line-height:200px; text-align:center;">🛸</div>
+        <span class="listing-badge">НОВОЕ</span>
+        <button class="listing-fav" onclick="toggleFav(this)">🤍</button>
+        <div class="listing-body">
+          <div class="listing-cat">🛸 Агро-дроны</div>
+          <div class="listing-title">Агро-дрон XAG P100 Pro — опрыскиватель</div>
+          <div class="listing-spec">40 л бака • 16 га/час • GPS автопилот</div>
+          <div class="listing-price"><span class="currency">TJS </span>58 000</div>
+          <div class="listing-footer">
+            <span class="listing-location">📍 Душанбе</span>
+            <span class="listing-date">4 дня назад</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="listing-card">
+        <div class="listing-img" style="font-size:80px; line-height:200px; text-align:center;">🌱</div>
+        <button class="listing-fav" onclick="toggleFav(this)">🤍</button>
+        <div class="listing-body">
+          <div class="listing-cat">🌱 Семена</div>
+          <div class="listing-title">Семена пшеницы «Карабалинская-3» — 1 тонна</div>
+          <div class="listing-spec">Элита • Урожайность 65 ц/га • Сертификат</div>
+          <div class="listing-price"><span class="currency">TJS </span>3 200</div>
+          <div class="listing-footer">
+            <span class="listing-location">📍 Вахш</span>
+            <span class="listing-date">5 дней назад</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════
+     HOW IT WORKS
+══════════════════════════════ -->
+<section class="section section-alt">
+  <div class="section-inner">
+    <div class="section-header" style="text-align:center;">
+      <div class="section-label">📖 Как работает</div>
+      <div class="section-title">Просто. Быстро. Безопасно.</div>
+      <div class="section-subtitle">Три шага до успешной сделки</div>
+    </div>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-num">1</div>
+        <div class="how-icon">📝</div>
+        <div class="how-title">Разместите объявление</div>
+        <div class="how-desc">Зарегистрируйтесь, добавьте фото и описание вашей техники или товара. Это займёт 5 минут.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">2</div>
+        <div class="how-icon">🤝</div>
+        <div class="how-title">Найдите покупателя</div>
+        <div class="how-desc">Тысячи фермеров и агрокомпаний видят ваше объявление. Договоритесь напрямую через чат.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">3</div>
+        <div class="how-icon">✅</div>
+        <div class="how-title">Завершите сделку</div>
+        <div class="how-desc">Встретьтесь, проверьте товар и проведите безопасную сделку. Оставьте отзыв продавцу.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">4</div>
+        <div class="how-icon">⭐</div>
+        <div class="how-title">Растите вместе с нами</div>
+        <div class="how-desc">Рейтинговая система, верифицированные продавцы и поддержка 24/7 — для вашего спокойствия.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════
+     TOP SELLERS
+══════════════════════════════ -->
+<section class="section">
+  <div class="section-inner">
+    <div class="section-header-row section-header">
+      <div>
+        <div class="section-label">⭐ Продавцы</div>
+        <div class="section-title">Проверенные продавцы</div>
+      </div>
+      <a href="sellers.html" class="link-all">Все продавцы →</a>
+    </div>
+    <div class="sellers-grid">
+      <div class="seller-card">
+        <div class="seller-avatar">🏢</div>
+        <div>
+          <div class="seller-name">АгроПром Таджикистан</div>
+          <div class="seller-loc">📍 Душанбе</div>
+          <div class="seller-stats">47 объявлений • ⭐ 4.9</div>
+          <div class="verified-badge">✓ Верифицирован</div>
+        </div>
+      </div>
+      <div class="seller-card">
+        <div class="seller-avatar">👨‍🌾</div>
+        <div>
+          <div class="seller-name">Рустам Ёров</div>
+          <div class="seller-loc">📍 Куляб</div>
+          <div class="seller-stats">23 объявления • ⭐ 4.7</div>
+          <div class="verified-badge">✓ Верифицирован</div>
+        </div>
+      </div>
+      <div class="seller-card">
+        <div class="seller-avatar">🏭</div>
+        <div>
+          <div class="seller-name">Техника Согд ООО</div>
+          <div class="seller-loc">📍 Худжанд</div>
+          <div class="seller-stats">89 объявлений • ⭐ 4.8</div>
+          <div class="verified-badge">✓ Верифицирован</div>
+        </div>
+      </div>
+      <div class="seller-card">
+        <div class="seller-avatar">🌿</div>
+        <div>
+          <div class="seller-name">Семена Вахш</div>
+          <div class="seller-loc">📍 Вахш</div>
+          <div class="seller-stats">31 объявление • ⭐ 4.6</div>
+          <div class="verified-badge">✓ Верифицирован</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════
+     REGIONS
+══════════════════════════════ -->
+<section class="section section-alt">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-label">📍 По регионам</div>
+      <div class="section-title">Найдите в своём регионе</div>
+    </div>
+    <div class="regions-grid">
+      <div class="region-card"><span class="region-name">🏙️ Душанбе</span><span class="region-count">842</span></div>
+      <div class="region-card"><span class="region-name">🌄 Согд</span><span class="region-count">617</span></div>
+      <div class="region-card"><span class="region-name">🌾 Хатлон</span><span class="region-count">589</span></div>
+      <div class="region-card"><span class="region-name">⛰️ ГБАО</span><span class="region-count">143</span></div>
+      <div class="region-card"><span class="region-name">🏞️ РРП</span><span class="region-count">378</span></div>
+      <div class="region-card"><span class="region-name">🌿 Куляб</span><span class="region-count">245</span></div>
+      <div class="region-card"><span class="region-name">🏔️ Хорог</span><span class="region-count">112</span></div>
+      <div class="region-card"><span class="region-name">🌊 Вахш</span><span class="region-count">198</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════
+     CTA
+══════════════════════════════ -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <h2>Готовы начать продавать?</h2>
+    <p>Бесплатная регистрация. Первые 30 дней — без комиссии. Тысячи покупателей ждут вас прямо сейчас.</p>
+    <div class="cta-btns">
+      <button class="btn-cta-primary" onclick="openModal('post')">📢 Разместить объявление</button>
+      <button class="btn-cta-outline" onclick="openModal('login')">Войти в аккаунт</button>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════
+     FOOTER
+══════════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="logo">
+          <div class="logo-icon">🌾</div>
+          <div class="logo-text">Agro<span>TJ</span></div>
+        </a>
+        <p>Первый специализированный маркетплейс агротехники и сельскохозяйственной продукции Таджикистана. Связываем фермеров и бизнес по всей стране.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Маркетплейс</h4>
+        <ul>
+          <li><a href="listings.html">Все объявления</a></li>
+          <li><a href="categories.html">Категории</a></li>
+          <li><a href="sellers.html">Продавцы</a></li>
+          <li><a href="map.html">Карта объявлений</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Для бизнеса</h4>
+        <ul>
+          <li><a href="post.html">Подать объявление</a></li>
+          <li><a href="premium.html">Премиум-размещение</a></li>
+          <li><a href="banner.html">Баннерная реклама</a></li>
+          <li><a href="api.html">API для партнёров</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Компания</h4>
+        <ul>
+          <li><a href="about.html">О нас</a></li>
+          <li><a href="news.html">Новости АПК</a></li>
+          <li><a href="contact.html">Контакты</a></li>
+          <li><a href="terms.html">Правила сайта</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2025 AgroTJ. Все права защищены. 🇹🇯 Таджикистан</div>
+      <div class="footer-bottom-links">
+        <a href="privacy.html">Конфиденциальность</a>
+        <a href="terms.html">Условия</a>
+        <a href="sitemap.html">Карта сайта</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ══════════════════════════════
+     MODALS (базовые)
+══════════════════════════════ -->
+<div id="modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:1000; align-items:center; justify-content:center;">
+  <div style="background:#fff; border-radius:20px; padding:40px; max-width:480px; width:90%; position:relative; animation: fadeUp 0.3s ease;">
+    <button onclick="closeModal()" style="position:absolute; top:16px; right:16px; background:none; border:none; font-size:24px; cursor:pointer; color:#999;">✕</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     JAVASCRIPT
+══════════════════════════════ -->
+<script>
+  // ── Animated counters ──
+  function animateCount(id, target, suffix) {
+    const el = document.getElementById(id);
+    let start = 0;
+    const duration = 1800;
+    const step = target / (duration / 16);
+    const timer = setInterval(() => {
+      start = Math.min(start + step, target);
+      el.textContent = (suffix === 'K' ? Math.round(start/1000) + 'K+' : Math.round(start) + '+');
+      if (start >= target) clearInterval(timer);
+    }, 16);
+  }
+
+  window.addEventListener('load', () => {
+    animateCount('count-listings', 3124, 'K');
+    animateCount('count-sellers', 847, '');
+    animateCount('count-regions', 8, '');
+    animateCount('count-deals', 420, '');
+  });
+
+  // ── Search ──
+  function setSearch(text) {
+    document.getElementById('searchInput').value = text;
+    document.getElementById('searchInput').focus();
+  }
+  function doSearch() {
+    const q = document.getElementById('searchInput').value.trim();
+    const cat = document.getElementById('catSelect').value;
+    if (q || cat !== 'Все категории') {
+      alert('🔍 Поиск: "' + q + '" в категории: ' + cat + '\n\n[Здесь будет страница результатов]');
+    }
+  }
+
+  // ── Filters ──
+  function setFilter(btn, type) {
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  function sortListings(val) { console.log('Sort by:', val); }
+  function filterCat(cat) {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('catSelect').value = 'Все категории';
+    alert('📂 Категория: ' + cat + '\n\n[Здесь будет страница категории]');
+  }
+
+  // ── Favourites ──
+  function toggleFav(btn) {
+    btn.textContent = btn.textContent === '🤍' ? '❤️' : '🤍';
+  }
+
+  // ── Modal ──
+  const modals = {
+    login: `
+      <h2 style="font-family:'Merriweather',serif; font-size:1.6rem; margin-bottom:8px; color:#0f2d1a;">Вход в аккаунт</h2>
+      <p style="color:#6b7f6e; margin-bottom:24px; font-size:14px;">Нет аккаунта? <a href="register.html" style="color:#2d8a4e; font-weight:700;">Зарегистрируйтесь</a></p>
+      <input type="text" placeholder="Телефон или Email" style="width:100%; padding:12px 16px; border:1.5px solid #c8dcc9; border-radius:10px; font-family:inherit; font-size:15px; margin-bottom:12px; outline:none;">
+      <input type="password" placeholder="Пароль" style="width:100%; padding:12px 16px; border:1.5px solid #c8dcc9; border-radius:10px; font-family:inherit; font-size:15px; margin-bottom:20px; outline:none;">
+      <button onclick="closeModal()" style="width:100%; background:#e8920a; color:#fff; border:none; padding:14px; border-radius:10px; font-size:16px; font-weight:700; font-family:inherit; cursor:pointer;">Войти</button>
+    `,
+    post: `
+      <h2 style="font-family:'Merriweather',serif; font-size:1.6rem; margin-bottom:8px; color:#0f2d1a;">Подать объявление</h2>
+      <p style="color:#6b7f6e; margin-bottom:24px; font-size:14px;">Заполните форму — займёт 5 минут!</p>
+      <select style="width:100%; padding:12px 16px; border:1.5px solid #c8dcc9; border-radius:10px; font-family:inherit; font-size:14px; margin-bottom:12px; outline:none; color:#3d5440;">
+        <option>Выберите категорию</option>
+        <option>🚜 Тракторы</option>
+        <option>🌾 Комбайны</option>
+        <option>💧 Ирригация</option>
+        <option>🌱 Семена</option>
+      </select>
+      <input type="text" placeholder="Название товара" style="width:100%; padding:12px 16px; border:1.5px solid #c8dcc9; border-radius:10px; font-family:inherit; font-size:15px; margin-bottom:12px; outline:none;">
+      <input type="text" placeholder="Цена (TJS)" style="width:100%; padding:12px 16px; border:1.5px solid #c8dcc9; border-radius:10px; font-family:inherit; font-size:15px; margin-bottom:20px; outline:none;">
+      <button onclick="closeModal()" style="width:100%; background:#1a5c30; color:#fff; border:none; padding:14px; border-radius:10px; font-size:16px; font-weight:700; font-family:inherit; cursor:pointer;">Далее →</button>
+    `
+  };
+
+  function openModal(type) {
+    document.getElementById('modal-content').innerHTML = modals[type] || '';
+    const overlay = document.getElementById('modal-overlay');
+    overlay.style.display = 'flex';
+  }
+  function closeModal() {
+    document.getElementById('modal-overlay').style.display = 'none';
+  }
+  document.getElementById('modal-overlay').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+</script>
+</body>
+</html>
