@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Трактор МТЗ-82.1 Беларус — AgroTJ</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;900&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gd:#0f2d1a;--gm:#1a5c30;--gl:#2d8a4e;--gp:#e8f5ec;--gp2:#d4edda;
+  --amb:#e8920a;--ambl:#fdf3e0;--ambd:#b86e00;
+  --cream:#faf8f3;--bg:#f0f4f1;--td:#111c14;--tm:#3d5440;--tmut:#6b7f6e;
+  --bdr:#c8dcc9;--wh:#fff;--red:#c0392b;
+  --r:14px;--r-sm:10px;
+  --sh:0 2px 14px rgba(15,45,26,0.09);
+  --sh2:0 8px 36px rgba(15,45,26,0.14);
+}
+body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--td);min-height:100vh}
+a{text-decoration:none;color:inherit}
+button,input,select,textarea{font-family:inherit;cursor:pointer}
+
+/* ── HEADER ── */
+.header{background:var(--gd);padding:0 2rem;position:sticky;top:0;z-index:200;box-shadow:0 2px 16px rgba(0,0,0,.22)}
+.hinner{max-width:1280px;margin:0 auto;display:flex;align-items:center;height:64px;gap:1.5rem}
+.logo{display:flex;align-items:center;gap:9px;flex-shrink:0}
+.li{width:36px;height:36px;background:var(--amb);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.lt{font-size:19px;font-weight:900;color:#fff}.lt span{color:var(--amb)}
+.hnav{display:flex;gap:.2rem;flex:1}
+.hnav a{color:rgba(255,255,255,.72);font-size:14px;font-weight:600;padding:6px 13px;border-radius:8px;transition:all .15s}
+.hnav a:hover{color:#fff;background:rgba(255,255,255,.1)}
+.hsearch{display:flex;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:10px;overflow:hidden;max-width:320px;flex:1}
+.hsearch input{flex:1;background:transparent;border:none;outline:none;padding:8px 14px;color:#fff;font-size:14px}
+.hsearch input::placeholder{color:rgba(255,255,255,.45)}
+.hsearch button{background:var(--amb);border:none;padding:0 14px;color:#fff;font-size:15px}
+.hbtn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:7px 16px;border-radius:8px;font-size:13px;font-weight:600;transition:all .15s}
+.hbtn:hover{background:rgba(255,255,255,.18)}
+.hbtn.amb{background:var(--amb);border-color:var(--amb)}
+.hbtn.amb:hover{background:var(--ambd)}
+
+/* ── BREADCRUMB ── */
+.breadcrumb{background:var(--wh);border-bottom:1px solid var(--bdr);padding:0 2rem}
+.breadcrumb-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;height:44px;gap:6px;font-size:13px;color:var(--tmut);flex-wrap:wrap}
+.breadcrumb-inner a{color:var(--gl);font-weight:600;transition:color .15s}
+.breadcrumb-inner a:hover{color:var(--gm)}
+.bc-sep{color:var(--bdr)}
+.bc-current{color:var(--td);font-weight:600}
+
+/* ── MAIN LAYOUT ── */
+.page{max-width:1280px;margin:0 auto;padding:28px 2rem 64px;display:grid;grid-template-columns:1fr 380px;gap:28px;align-items:start}
+
+/* ── LEFT COLUMN ── */
+.left-col{}
+
+/* GALLERY */
+.gallery{background:var(--wh);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;margin-bottom:24px;box-shadow:var(--sh)}
+.gallery-main{position:relative;height:420px;background:var(--gp);display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:zoom-in}
+.gallery-main-emoji{font-size:160px;position:relative;z-index:1;transition:transform .3s;user-select:none}
+.gallery-main:hover .gallery-main-emoji{transform:scale(1.05)}
+.gallery-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:320px;opacity:.05;pointer-events:none}
+.gallery-badge{position:absolute;top:16px;left:16px;font-size:12px;font-weight:800;padding:5px 12px;border-radius:8px;letter-spacing:.5px;text-transform:uppercase}
+.gb-top{background:var(--amb);color:#fff}
+.gb-new{background:var(--gm);color:#fff}
+.gallery-actions{position:absolute;top:14px;right:14px;display:flex;gap:8px}
+.ga-btn{background:rgba(255,255,255,.92);border:none;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 2px 10px rgba(0,0,0,.12);transition:all .18s}
+.ga-btn:hover{background:#fff;transform:scale(1.08)}
+.gallery-prev,.gallery-next{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.9);border:none;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 2px 12px rgba(0,0,0,.15);transition:all .18s;z-index:2}
+.gallery-prev{left:14px}
+.gallery-next{right:14px}
+.gallery-prev:hover,.gallery-next:hover{background:#fff;transform:translateY(-50%) scale(1.05)}
+.gallery-counter{position:absolute;bottom:14px;right:14px;background:rgba(0,0,0,.5);color:#fff;font-size:12px;font-weight:700;padding:4px 10px;border-radius:100px}
+.gallery-dots{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:6px}
+.gdot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.5);cursor:pointer;transition:all .2s}
+.gdot.active{background:#fff;width:20px;border-radius:3px}
+.gallery-thumbs{display:flex;gap:8px;padding:12px;overflow-x:auto;background:var(--cream);scrollbar-width:none}
+.gallery-thumbs::-webkit-scrollbar{display:none}
+.gthumb{width:80px;height:68px;border-radius:8px;border:2px solid var(--bdr);background:var(--gp);display:flex;align-items:center;justify-content:center;font-size:32px;cursor:pointer;transition:all .18s;flex-shrink:0}
+.gthumb:hover,.gthumb.active{border-color:var(--gm);background:var(--gp2)}
+
+/* TITLE BLOCK */
+.title-block{background:var(--wh);border:1px solid var(--bdr);border-radius:var(--r);padding:24px;margin-bottom:20px;box-shadow:var(--sh)}
+.listing-badges{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.lb{font-size:11px;font-weight:700;padding:4px 11px;border-radius:6px}
+.lb-cat{background:var(--gp);color:var(--gm)}
+.lb-cond{background:var(--ambl);color:var(--ambd)}
+.lb-top{background:#fff3cd;color:#856404}
+.lb-verify{background:#e8f4fd;color:#0c5460}
+.listing-title{font-family:'Merriweather',serif;font-size:24px;font-weight:700;color:var(--td);line-height:1.3;margin-bottom:14px}
+.listing-meta-row{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.lmeta{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--tmut)}
+.lmeta strong{color:var(--td);font-weight:600}
+.listing-id{font-size:12px;color:var(--tmut);margin-top:10px}
+
+/* PRICE BLOCK */
+.price-block{background:var(--wh);border:1px solid var(--bdr);border-radius:var(--r);padding:24px;margin-bottom:20px;box-shadow:var(--sh)}
+.price-main{font-size:36px;font-weight:900;color:var(--gm);line-height:1;margin-bottom:6px}
+.price-main .cur{font-size:20px;font-weight:700}
+.price-neg{font-size:14px;color:var(--tmut);margin-bottom:18px;display:flex;align-items:center;gap:6px}
+.price-neg .neg-badge{background:var(--gp);color:var(--gm);font-size:11px;font-weight:700;padding:3px 8px;border-radius:5px}
+.price-actions{display:flex;gap:10px;margin-bottom:16px}
+.btn-contact{flex:1;background:var(--gm);color:#fff;border:none;border-radius:11px;padding:14px 20px;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .18s}
+.btn-contact:hover{background:var(--gd);transform:translateY(-2px);box-shadow:0 6px 20px rgba(15,45,26,.25)}
+.btn-call{background:var(--gp);color:var(--gm);border:2px solid var(--gp2);border-radius:11px;padding:14px 20px;font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px;transition:all .18s}
+.btn-call:hover{background:var(--gp2);border-color:var(--gl)}
+.btn-call.reveal{background:var(--gm);color:#fff;border-color:var(--gm)}
+.price-secondary{display:flex;gap:10px}
+.btn-fav{flex:1;border:1.5px solid var(--bdr);background:var(--cream);border-radius:10px;padding:11px;font-size:13px;font-weight:700;color:var(--tm);display:flex;align-items:center;justify-content:center;gap:7px;transition:all .18s}
+.btn-fav:hover,.btn-fav.active{border-color:var(--red);color:var(--red);background:#fff5f5}
+.btn-compare{flex:1;border:1.5px solid var(--bdr);background:var(--cream);border-radius:10px;padding:11px;font-size:13px;font-weight:700;color:var(--tm);display:flex;align-items:center;justify-content:center;gap:7px;transition:all .18s}
+.btn-compare:hover{border-color:var(--gm);color:var(--gm);background:var(--gp)}
+.btn-share{flex:1;border:1.5px solid var(--bdr);background:var(--cream);border-radius:10px;padding:11px;font-size:13px;font-weight:700;color:var(--tm);display:flex;align-items:center;justify-content:center;gap:7px;transition:all .18s}
+.btn-share:hover{border-color:var(--gm);color:var(--gm);background:var(--gp)}
+
+/* SAFETY TIP */
+.safety-tip{background:var(--ambl);border:1px solid rgba(232,146,10,.25);border-radius:10px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;font-size:12px;color:var(--ambd);line-height:1.5;margin-top:14px}
+
+/* SPECS */
+.section-card{background:var(--wh);border:1px solid var(--bdr);border-radius:var(--r);padding:24px;margin-bottom:20px;box-shadow:var(--sh)}
+.sc-title{font-size:16px;font-weight:700;color:var(--td);margin-bottom:18px;display:flex;align-items:center;gap:8px;padding-bottom:14px;border-bottom:1px solid var(--bdr)}
+.specs-table{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.spec-row{display:grid;grid-template-columns:1fr 1fr;padding:10px 0;border-bottom:1px solid var(--bg)}
+.spec-row:last-child{border-bottom:none}
+.spec-key{font-size:13px;color:var(--tmut);font-weight:500}
+.spec-val{font-size:13px;color:var(--td);font-weight:700}
+.spec-val.green{color:var(--gm)}
+.specs-wrap{display:flex;flex-direction:column}
+
+/* DESCRIPTION */
+.desc-text{font-size:14px;color:var(--tm);line-height:1.8}
+.desc-text p{margin-bottom:12px}
+.desc-text p:last-child{margin-bottom:0}
+.desc-toggle{color:var(--gl);font-size:14px;font-weight:700;cursor:pointer;margin-top:12px;display:inline-flex;align-items:center;gap:4px;transition:color .15s}
+.desc-toggle:hover{color:var(--gm)}
+.desc-collapsed{display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden}
+
+/* MAP */
+.map-placeholder{background:var(--gp);border-radius:10px;height:200px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;font-size:14px;color:var(--gl);font-weight:600;cursor:pointer;transition:background .18s}
+.map-placeholder:hover{background:var(--gp2)}
+.map-placeholder span{font-size:40px}
+
+/* REVIEWS */
+.reviews-summary{display:flex;gap:28px;align-items:center;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--bdr)}
+.rating-big{text-align:center}
+.rating-num-big{font-size:3.5rem;font-weight:900;color:var(--td);line-height:1}
+.stars-row{color:var(--amb);font-size:22px;letter-spacing:2px;margin:6px 0}
+.rating-count{font-size:13px;color:var(--tmut)}
+.rating-bars{flex:1}
+.rbar-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.rbar-label{font-size:12px;font-weight:600;color:var(--tmut);width:16px;text-align:right}
+.rbar-track{flex:1;height:7px;background:var(--bg);border-radius:4px;overflow:hidden}
+.rbar-fill{height:100%;background:var(--amb);border-radius:4px;transition:width .8s ease}
+.rbar-count{font-size:12px;color:var(--tmut);width:28px}
+
+.review-item{padding:18px 0;border-bottom:1px solid var(--bdr)}
+.review-item:last-child{border-bottom:none}
+.review-top{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.rev-avatar{width:40px;height:40px;background:var(--gp);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.rev-name{font-size:14px;font-weight:700;color:var(--td)}
+.rev-date{font-size:12px;color:var(--tmut)}
+.rev-stars{color:var(--amb);font-size:14px;letter-spacing:1px;margin-top:2px}
+.rev-text{font-size:13px;color:var(--tm);line-height:1.6}
+.rev-verified{font-size:11px;font-weight:700;color:var(--gm);background:var(--gp);padding:2px 8px;border-radius:4px;margin-left:auto;flex-shrink:0}
+
+/* SIMILAR LISTINGS */
+.similar-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.sim-card{background:var(--wh);border:1.5px solid var(--bdr);border-radius:var(--r-sm);overflow:hidden;cursor:pointer;transition:all .2s}
+.sim-card:hover{border-color:var(--gl);transform:translateY(-3px);box-shadow:var(--sh2)}
+.sim-img{height:130px;background:var(--gp);display:flex;align-items:center;justify-content:center;font-size:52px}
+.sim-body{padding:10px 12px}
+.sim-title{font-size:13px;font-weight:700;color:var(--td);line-height:1.3;margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sim-price{font-size:15px;font-weight:900;color:var(--gm)}
+.sim-loc{font-size:11px;color:var(--tmut);margin-top:4px}
+
+/* ── RIGHT COLUMN (STICKY) ── */
+.right-col{position:sticky;top:92px;display:flex;flex-direction:column;gap:16px}
+
+/* SELLER CARD */
+.seller-card{background:var(--wh);border:1px solid var(--bdr);border-radius:var(--r);padding:20px;box-shadow:var(--sh)}
+.seller-head{display:flex;gap:14px;align-items:center;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--bdr)}
+.seller-av{width:60px;height:60px;background:linear-gradient(135deg,var(--gm),var(--gl));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.seller-name{font-size:16px;font-weight:800;color:var(--td);margin-bottom:3px}
+.seller-type{font-size:12px;color:var(--tmut);margin-bottom:5px}
+.seller-verified-badge{display:inline-flex;align-items:center;gap:4px;background:var(--gp);color:var(--gm);font-size:11px;font-weight:700;padding:3px 8px;border-radius:5px}
+.seller-stats-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
+.sstat{text-align:center;background:var(--bg);border-radius:8px;padding:10px 6px}
+.sstat-num{font-size:17px;font-weight:900;color:var(--td);display:block;line-height:1}
+.sstat-label{font-size:10px;color:var(--tmut);font-weight:600;margin-top:3px}
+.seller-rating-row{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.seller-stars{color:var(--amb);font-size:16px;letter-spacing:1px}
+.seller-rating-num{font-size:14px;font-weight:700;color:var(--td)}
+.seller-rating-count{font-size:12px;color:var(--tmut)}
+.seller-joined{font-size:12px;color:var(--tmut);margin-bottom:14px}
+.btn-view-seller{width:100%;border:1.5px solid var(--bdr);background:var(--cream);border-radius:9px;padding:10px;font-size:13px;font-weight:700;color:var(--tm);transition:all .15s}
+.btn-view-seller:hover{border-color:var(--gm);color:var(--gm);background:var(--gp)}
+
+/* CHAT WIDGET */
+.chat-widget{background:var(--wh);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}
+.cw-header{background:var(--gm);padding:14px 16px;display:flex;align-items:center;gap:10px}
+.cw-title{font-size:14px;font-weight:700;color:#fff}
+.cw-online{font-size:12px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:5px}
+.cw-dot{width:7px;height:7px;background:#4ade80;border-radius:50%}
+.cw-messages{padding:14px;height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;background:#fafffe}
+.cw-bubble{max-width:82%;padding:9px 12px;border-radius:12px;font-size:13px;line-height:1.5}
+.cw-in{background:#fff;border:1px solid var(--bdr);align-self:flex-start;border-radius:4px 12px 12px 12px;color:var(--td)}
+.cw-out{background:var(--gm);color:#fff;align-self:flex-end;border-radius:12px 4px 12px 12px}
+.cw-meta{font-size:10px;opacity:.55;margin-top:3px;display:block}
+.cw-quick{display:flex;gap:6px;padding:8px 14px;overflow-x:auto;background:var(--cream);border-top:1px solid var(--bdr);scrollbar-width:none}
+.cw-quick::-webkit-scrollbar{display:none}
+.cw-qbtn{border:1px solid var(--bdr);background:#fff;border-radius:100px;padding:5px 11px;font-size:12px;font-weight:600;color:var(--tm);white-space:nowrap;flex-shrink:0;transition:all .15s}
+.cw-qbtn:hover{border-color:var(--gl);color:var(--gm)}
+.cw-input-row{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--bdr);background:#fff}
+.cw-input{flex:1;border:1.5px solid var(--bdr);border-radius:9px;padding:9px 12px;font-size:13px;outline:none;transition:border-color .15s;background:var(--cream)}
+.cw-input:focus{border-color:var(--gl);background:#fff}
+.cw-send{background:var(--gm);color:#fff;border:none;border-radius:9px;width:38px;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .15s}
+.cw-send:hover{background:var(--gd)}
+
+/* STATS WIDGET */
+.stats-widget{background:var(--wh);border:1px solid var(--bdr);border-radius:var(--r);padding:18px;box-shadow:var(--sh)}
+.sw-title{font-size:13px;font-weight:700;color:var(--td);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.sw-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sw-item{background:var(--bg);border-radius:8px;padding:10px;text-align:center}
+.sw-num{font-size:18px;font-weight:900;color:var(--td);display:block;line-height:1}
+.sw-label{font-size:10px;color:var(--tmut);font-weight:600;margin-top:3px}
+
+/* REPORT / TOOLS */
+.tools-row{display:flex;gap:8px}
+.tool-btn{flex:1;border:1px solid var(--bdr);background:var(--cream);border-radius:8px;padding:8px;font-size:12px;font-weight:600;color:var(--tmut);display:flex;align-items:center;justify-content:center;gap:5px;transition:all .15s}
+.tool-btn:hover{border-color:var(--bdr);color:var(--tm);background:var(--wh)}
+.tool-btn.report:hover{border-color:var(--red);color:var(--red)}
+
+/* TABS */
+.tabs-nav{display:flex;border-bottom:2px solid var(--bdr);margin-bottom:20px;gap:0}
+.tab-btn{padding:11px 20px;font-size:14px;font-weight:700;color:var(--tmut);border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .18s}
+.tab-btn.active{color:var(--gm);border-bottom-color:var(--gm)}
+.tab-btn:hover:not(.active){color:var(--tm)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* BREADCRUMB TOP */
+.bc-breadcrumb{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--tmut);margin-bottom:20px;flex-wrap:wrap}
+.bc-breadcrumb a{color:var(--gl);font-weight:600}
+
+/* RESPONSIVE */
+@media(max-width:1100px){.page{grid-template-columns:1fr 340px}}
+@media(max-width:900px){
+  .page{grid-template-columns:1fr;padding:16px 1rem}
+  .right-col{position:static}
+  .similar-grid{grid-template-columns:1fr 1fr}
+  .specs-table{grid-template-columns:1fr}
+  .hnav{display:none}
+}
+@media(max-width:600px){
+  .similar-grid{grid-template-columns:1fr}
+  .price-actions{flex-direction:column}
+  .gallery-main{height:280px}
+  .gallery-main-emoji{font-size:100px}
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.left-col>*{animation:fadeUp .35s ease both}
+.left-col>*:nth-child(1){animation-delay:.05s}
+.left-col>*:nth-child(2){animation-delay:.1s}
+.left-col>*:nth-child(3){animation-delay:.15s}
+.left-col>*:nth-child(4){animation-delay:.2s}
+.right-col>*{animation:fadeUp .35s ease both}
+.right-col>*:nth-child(1){animation-delay:.1s}
+.right-col>*:nth-child(2){animation-delay:.18s}
+.right-col>*:nth-child(3){animation-delay:.25s}
+
+/* PRINT */
+@media print{.right-col,.header,.breadcrumb{display:none}.page{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════
+     HEADER
+══════════════════════════════ -->
+<header class="header">
+  <div class="hinner">
+    <a href="index.html" class="logo">
+      <div class="li">🌾</div>
+      <div class="lt">Agro<span>TJ</span></div>
+    </a>
+    <nav class="hnav">
+      <a href="search.html">Объявления</a>
+      <a href="search.html">Категории</a>
+      <a href="#">Продавцы</a>
+      <a href="#">Новости</a>
+    </nav>
+    <div class="hsearch">
+      <input type="text" placeholder="Поиск техники..." id="header-search">
+      <button onclick="doSearch()">🔍</button>
+    </div>
+    <a href="auth.html"><button class="hbtn">Войти</button></a>
+    <a href="auth.html"><button class="hbtn amb">+ Объявление</button></a>
+  </div>
+</header>
+
+<!-- ══════════════════════════════
+     BREADCRUMB
+══════════════════════════════ -->
+<div class="breadcrumb">
+  <div class="breadcrumb-inner">
+    <a href="index.html">Главная</a><span class="bc-sep">›</span>
+    <a href="search.html">Объявления</a><span class="bc-sep">›</span>
+    <a href="search.html?cat=tractors">Тракторы</a><span class="bc-sep">›</span>
+    <span class="bc-current">Трактор МТЗ-82.1 Беларус, 2021 г.</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     MAIN PAGE
+══════════════════════════════ -->
+<div class="page">
+
+  <!-- ════════════════
+       LEFT COLUMN
+  ════════════════ -->
+  <div class="left-col">
+
+    <!-- GALLERY -->
+    <div class="gallery">
+      <div class="gallery-main" id="gallery-main">
+        <div class="gallery-bg" id="gallery-bg">🚜</div>
+        <span class="gallery-main-emoji" id="gallery-emoji">🚜</span>
+        <span class="gallery-badge gb-top">ТОП объявление</span>
+        <div class="gallery-actions">
+          <button class="ga-btn" onclick="toggleFav(this)" title="В избранное">🤍</button>
+          <button class="ga-btn" onclick="sharelisting()" title="Поделиться">↗</button>
+          <button class="ga-btn" onclick="window.print()" title="Печать">🖨️</button>
+        </div>
+        <button class="gallery-prev" onclick="prevPhoto()">‹</button>
+        <button class="gallery-next" onclick="nextPhoto()">›</button>
+        <div class="gallery-counter" id="gallery-counter">1 / 6</div>
+        <div class="gallery-dots" id="gallery-dots"></div>
+      </div>
+      <div class="gallery-thumbs" id="gallery-thumbs"></div>
+    </div>
+
+    <!-- TITLE BLOCK -->
+    <div class="title-block">
+      <div class="listing-badges">
+        <span class="lb lb-cat">🚜 Тракторы</span>
+        <span class="lb lb-cond">⭐ Б/У — Отличное</span>
+        <span class="lb lb-top">🏆 ТОП</span>
+        <span class="lb lb-verify">✓ Верифицировано</span>
+      </div>
+      <h1 class="listing-title">Трактор МТЗ-82.1 Беларус, 2021 г.в. — идеальное состояние</h1>
+      <div class="listing-meta-row">
+        <span class="lmeta">📍 <strong>Душанбе</strong>, район Сино</span>
+        <span class="lmeta">👁️ <strong>342</strong> просмотра</span>
+        <span class="lmeta">📅 Размещено <strong>20 мая 2026</strong></span>
+        <span class="lmeta">🔄 Обновлено <strong>сегодня</strong></span>
+      </div>
+      <div class="listing-id">ID объявления: #AGT-2024-001 · <a href="#" style="color:var(--gl)">Скопировать ссылку</a></div>
+    </div>
+
+    <!-- PRICE BLOCK (mobile) -->
+    <div class="price-block" style="display:none" id="price-mobile">
+      <div class="price-main"><span class="cur">TJS </span>85 000</div>
+      <div class="price-neg">
+        <span class="neg-badge">💬 Торг уместен</span>
+        <span>≈ $7 800 USD</span>
+      </div>
+      <div class="price-actions">
+        <button class="btn-contact" onclick="scrollToChat()">💬 Написать продавцу</button>
+        <button class="btn-call" id="call-btn-m" onclick="revealPhone('call-btn-m')">📞 Показать номер</button>
+      </div>
+    </div>
+
+    <!-- TABS: Характеристики / Описание / Карта / Отзывы -->
+    <div class="section-card">
+      <div class="tabs-nav">
+        <button class="tab-btn active" onclick="switchTab(this,'specs')">📋 Характеристики</button>
+        <button class="tab-btn" onclick="switchTab(this,'desc')">📝 Описание</button>
+        <button class="tab-btn" onclick="switchTab(this,'map')">🗺️ На карте</button>
+        <button class="tab-btn" onclick="switchTab(this,'reviews')">⭐ Отзывы (47)</button>
+      </div>
+
+      <!-- SPECS TAB -->
+      <div class="tab-content active" id="tab-specs">
+        <div class="specs-wrap">
+          <div class="spec-row"><span class="spec-key">Марка / Модель</span><span class="spec-val">МТЗ-82.1 Беларус</span></div>
+          <div class="spec-row"><span class="spec-key">Год выпуска</span><span class="spec-val">2021</span></div>
+          <div class="spec-row"><span class="spec-key">Мощность двигателя</span><span class="spec-val">82 л.с. (60 кВт)</span></div>
+          <div class="spec-row"><span class="spec-key">Тип двигателя</span><span class="spec-val">Д-243 (дизель, 4 цил.)</span></div>
+          <div class="spec-row"><span class="spec-key">Наработка</span><span class="spec-val green">1 200 моточасов</span></div>
+          <div class="spec-row"><span class="spec-key">Тип привода</span><span class="spec-val">4WD (полный привод)</span></div>
+          <div class="spec-row"><span class="spec-key">КПП</span><span class="spec-val">Механическая, 18 передач</span></div>
+          <div class="spec-row"><span class="spec-key">Грузоподъёмность ЗНУ</span><span class="spec-val">2 500 кг</span></div>
+          <div class="spec-row"><span class="spec-key">Ширина колеи (передний мост)</span><span class="spec-val">1 350–1 850 мм</span></div>
+          <div class="spec-row"><span class="spec-key">Ширина колеи (задний мост)</span><span class="spec-val">1 400–2 100 мм</span></div>
+          <div class="spec-row"><span class="spec-key">Кабина</span><span class="spec-val">Закрытая, с отоплением</span></div>
+          <div class="spec-row"><span class="spec-key">Состояние</span><span class="spec-val green">Отличное (Б/У)</span></div>
+          <div class="spec-row"><span class="spec-key">Документы</span><span class="spec-val green">✓ Все в наличии</span></div>
+          <div class="spec-row"><span class="spec-key">Страна производства</span><span class="spec-val">🇧🇾 Беларусь</span></div>
+          <div class="spec-row"><span class="spec-key">Торг</span><span class="spec-val green">✓ Возможен</span></div>
+          <div class="spec-row"><span class="spec-key">Доставка</span><span class="spec-val green">✓ По договорённости</span></div>
+        </div>
+      </div>
+
+      <!-- DESC TAB -->
+      <div class="tab-content" id="tab-desc">
+        <div class="desc-text" id="desc-text">
+          <div class="desc-collapsed" id="desc-inner">
+            <p>Продаю трактор МТЗ-82.1 Беларус 2021 года выпуска в отличном состоянии. Трактор приобретался новым, использовался только в личном хозяйстве для обработки 15 га земли.</p>
+            <p>Наработка всего 1 200 моточасов — это очень мало для данной модели. Двигатель работает без замечаний, масло не гонит, расход топлива в норме. Все технические обслуживания проводились строго по регламенту.</p>
+            <p><strong>Комплектация:</strong></p>
+            <p>• Задняя навеска ЗНУ с тягово-сцепным устройством<br>• Гидросистема в отличном состоянии<br>• ВОМ 540/1000 об/мин исправен<br>• Комплект документов (техпаспорт, сервисная книжка)<br>• Запасные части на 15 000 TJS в подарок</p>
+            <p>Причина продажи: переходим на более мощную технику в связи с расширением хозяйства.</p>
+            <p>Готов к просмотру в любое время по предварительной договорённости. Возможна небольшая скидка при быстрой сделке. Торг при осмотре.</p>
+          </div>
+          <span class="desc-toggle" id="desc-toggle" onclick="expandDesc()">Читать полностью ↓</span>
+        </div>
+      </div>
+
+      <!-- MAP TAB -->
+      <div class="tab-content" id="tab-map">
+        <div style="margin-bottom:14px">
+          <div style="font-size:14px;font-weight:700;color:var(--td);margin-bottom:4px">📍 Местоположение</div>
+          <div style="font-size:13px;color:var(--tmut)">Таджикистан, Душанбе, район Сино — точный адрес после контакта с продавцом</div>
+        </div>
+        <div class="map-placeholder" onclick="openMap()">
+          <span>🗺️</span>
+          Нажмите чтобы открыть карту
+        </div>
+        <div style="margin-top:12px;font-size:12px;color:var(--tmut)">🔒 Точный адрес показывается только после начала диалога с продавцом</div>
+      </div>
+
+      <!-- REVIEWS TAB -->
+      <div class="tab-content" id="tab-reviews">
+        <div class="reviews-summary">
+          <div class="rating-big">
+            <div class="rating-num-big">4.9</div>
+            <div class="stars-row">★★★★★</div>
+            <div class="rating-count">47 отзывов</div>
+          </div>
+          <div class="rating-bars">
+            <div class="rbar-row"><span class="rbar-label">5</span><div class="rbar-track"><div class="rbar-fill" style="width:87%"></div></div><span class="rbar-count">41</span></div>
+            <div class="rbar-row"><span class="rbar-label">4</span><div class="rbar-track"><div class="rbar-fill" style="width:9%"></div></div><span class="rbar-count">4</span></div>
+            <div class="rbar-row"><span class="rbar-label">3</span><div class="rbar-track"><div class="rbar-fill" style="width:4%;background:var(--amb)"></div></div><span class="rbar-count">2</span></div>
+            <div class="rbar-row"><span class="rbar-label">2</span><div class="rbar-track"><div class="rbar-fill" style="width:0"></div></div><span class="rbar-count">0</span></div>
+            <div class="rbar-row"><span class="rbar-label">1</span><div class="rbar-track"><div class="rbar-fill" style="width:0"></div></div><span class="rbar-count">0</span></div>
+          </div>
+        </div>
+        <div id="reviews-list">
+          <div class="review-item">
+            <div class="review-top">
+              <div class="rev-avatar">🧑</div>
+              <div>
+                <div class="rev-name">Алишер К.</div>
+                <div class="rev-stars">★★★★★</div>
+              </div>
+              <div style="margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+                <span class="rev-date">18 мая 2026</span>
+                <span class="rev-verified">✓ Проверенная сделка</span>
+              </div>
+            </div>
+            <div class="rev-text">Купил трактор у Рустама в мае. Всё как на фото и в описании — состояние действительно отличное. Сделка прошла быстро, документы в порядке. Рекомендую продавца!</div>
+          </div>
+          <div class="review-item">
+            <div class="review-top">
+              <div class="rev-avatar">👩</div>
+              <div>
+                <div class="rev-name">Санавбар Р.</div>
+                <div class="rev-stars">★★★★★</div>
+              </div>
+              <div style="margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+                <span class="rev-date">2 апреля 2026</span>
+                <span class="rev-verified">✓ Проверенная сделка</span>
+              </div>
+            </div>
+            <div class="rev-text">Отличный продавец, честный и ответственный. Трактор был именно такой как описано. Приехали, осмотрели, всё понравилось. Цену немного сторговали. Спасибо!</div>
+          </div>
+          <div class="review-item">
+            <div class="review-top">
+              <div class="rev-avatar">👨</div>
+              <div>
+                <div class="rev-name">Фаррух М.</div>
+                <div class="rev-stars">★★★★☆</div>
+              </div>
+              <div style="margin-left:auto"><span class="rev-date">15 марта 2026</span></div>
+            </div>
+            <div class="rev-text">Продавец отвечает быстро, вовремя, на все вопросы ответил. Сделкой доволен, трактор работает хорошо уже второй месяц.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIMILAR LISTINGS -->
+    <div class="section-card">
+      <div class="sc-title">🚜 Похожие объявления</div>
+      <div class="similar-grid" id="similar-grid">
+        <div class="sim-card" onclick="location.href='listing.html'">
+          <div class="sim-img">🚜</div>
+          <div class="sim-body">
+            <div class="sim-title">Трактор МТЗ-1221 Беларус, 2020 г.</div>
+            <div class="sim-price">TJS 138 000</div>
+            <div class="sim-loc">📍 Хатлон</div>
+          </div>
+        </div>
+        <div class="sim-card" onclick="location.href='listing.html'">
+          <div class="sim-img">🚜</div>
+          <div class="sim-body">
+            <div class="sim-title">Трактор John Deere 5075E, 2019 г.</div>
+            <div class="sim-price">TJS 245 000</div>
+            <div class="sim-loc">📍 Согд</div>
+          </div>
+        </div>
+        <div class="sim-card" onclick="location.href='listing.html'">
+          <div class="sim-img">🚜</div>
+          <div class="sim-body">
+            <div class="sim-title">Трактор Case IH Farmall 75A</div>
+            <div class="sim-price">TJS 180 000</div>
+            <div class="sim-loc">📍 РРП</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /left-col -->
+
+  <!-- ════════════════
+       RIGHT COLUMN
+  ════════════════ -->
+  <div class="right-col">
+
+    <!-- PRICE + ACTIONS -->
+    <div class="price-block">
+      <div class="price-main"><span class="cur">TJS </span>85 000</div>
+      <div class="price-neg">
+        <span class="neg-badge">💬 Торг уместен</span>
+        <span style="color:var(--tmut);font-size:13px">≈ $7 800 USD</span>
+      </div>
+      <div class="price-actions">
+        <button class="btn-contact" onclick="scrollToChat()">💬 Написать продавцу</button>
+        <button class="btn-call" id="call-btn" onclick="revealPhone('call-btn')">📞 Показать номер</button>
+      </div>
+      <div class="price-secondary">
+        <button class="btn-fav" id="fav-btn" onclick="toggleFavBtn()">🤍 В избранное</button>
+        <button class="btn-compare" onclick="addToCompare()">⚖️ Сравнить</button>
+        <button class="btn-share" onclick="sharelisting()">↗ Поделиться</button>
+      </div>
+      <div class="safety-tip">
+        <span style="font-size:18px;flex-shrink:0">🛡️</span>
+        <span>Никогда не переводите деньги до осмотра товара. Встречайтесь лично и проверяйте документы.</span>
+      </div>
+    </div>
+
+    <!-- SELLER CARD -->
+    <div class="seller-card">
+      <div class="seller-head">
+        <div class="seller-av">👨‍🌾</div>
+        <div style="flex:1;min-width:0">
+          <div class="seller-name">Рустам Ёров</div>
+          <div class="seller-type">👨‍🌾 Частное лицо · Душанбе</div>
+          <span class="seller-verified-badge">✓ Верифицирован</span>
+        </div>
+      </div>
+      <div class="seller-rating-row">
+        <span class="seller-stars">★★★★★</span>
+        <span class="seller-rating-num">4.9</span>
+        <span class="seller-rating-count">(47 отзывов)</span>
+      </div>
+      <div class="seller-stats-grid">
+        <div class="sstat"><span class="sstat-num">12</span><span class="sstat-label">Объявлений</span></div>
+        <div class="sstat"><span class="sstat-num">98%</span><span class="sstat-label">Ответов</span></div>
+        <div class="sstat"><span class="sstat-num">&lt;1ч</span><span class="sstat-label">Ответ</span></div>
+      </div>
+      <div class="seller-joined">📅 На AgroTJ с января 2024 · 3 успешных сделки</div>
+      <button class="btn-view-seller" onclick="location.href='#'">Посмотреть все объявления →</button>
+    </div>
+
+    <!-- CHAT WIDGET -->
+    <div class="chat-widget" id="chat-widget">
+      <div class="cw-header">
+        <span style="font-size:20px">💬</span>
+        <div>
+          <div class="cw-title">Написать продавцу</div>
+          <div class="cw-online"><div class="cw-dot"></div>Онлайн сейчас</div>
+        </div>
+      </div>
+      <div class="cw-messages" id="cw-messages">
+        <div class="cw-bubble cw-in">
+          Салом! Заинтересованы в тракторе?
+          <span class="cw-meta">Рустам · 10:15</span>
+        </div>
+      </div>
+      <div class="cw-quick">
+        <button class="cw-qbtn" onclick="sendQuick('Ещё продаётся?')">Ещё продаётся?</button>
+        <button class="cw-qbtn" onclick="sendQuick('Можно посмотреть?')">Можно посмотреть?</button>
+        <button class="cw-qbtn" onclick="sendQuick('Торг возможен?')">Торг возможен?</button>
+        <button class="cw-qbtn" onclick="sendQuick('Документы в порядке?')">Документы в порядке?</button>
+      </div>
+      <div class="cw-input-row">
+        <input class="cw-input" type="text" id="cw-input" placeholder="Напишите сообщение..." onkeydown="if(event.key==='Enter')sendMsg()">
+        <button class="cw-send" onclick="sendMsg()">↑</button>
+      </div>
+    </div>
+
+    <!-- STATS WIDGET -->
+    <div class="stats-widget">
+      <div class="sw-title">📊 Статистика объявления</div>
+      <div class="sw-grid">
+        <div class="sw-item"><span class="sw-num">342</span><span class="sw-label">Просмотров</span></div>
+        <div class="sw-item"><span class="sw-num">89</span><span class="sw-label">В избранном</span></div>
+        <div class="sw-item"><span class="sw-num">24</span><span class="sw-label">Контактов</span></div>
+        <div class="sw-item"><span class="sw-num">7</span><span class="sw-label">Дней на сайте</span></div>
+      </div>
+    </div>
+
+    <!-- TOOLS -->
+    <div class="tools-row">
+      <button class="tool-btn" onclick="printListing()">🖨️ Печать</button>
+      <button class="tool-btn" onclick="copyLink()">🔗 Скопировать</button>
+      <button class="tool-btn report" onclick="reportListing()">🚩 Пожаловаться</button>
+    </div>
+
+  </div><!-- /right-col -->
+</div>
+
+<!-- ══════════════════════════════
+     JAVASCRIPT
+══════════════════════════════ -->
+<script>
+// ── GALLERY ──
+const photos = [
+  {emoji:'🚜', label:'Вид спереди'},
+  {emoji:'🚜', label:'Вид сбоку'},
+  {emoji:'🚜', label:'Кабина'},
+  {emoji:'⚙️', label:'Двигатель'},
+  {emoji:'🔧', label:'Задняя навеска'},
+  {emoji:'📋', label:'Документы'},
+];
+let currentPhoto = 0;
+
+function initGallery() {
+  const thumbsEl = document.getElementById('gallery-thumbs');
+  const dotsEl   = document.getElementById('gallery-dots');
+  thumbsEl.innerHTML = photos.map((p,i) => `
+    <div class="gthumb${i===0?' active':''}" onclick="showPhoto(${i})" title="${p.label}">
+      ${p.emoji}
+    </div>`).join('');
+  dotsEl.innerHTML = photos.map((_,i) => `
+    <div class="gdot${i===0?' active':''}" onclick="showPhoto(${i})"></div>`).join('');
+}
+
+function showPhoto(idx) {
+  currentPhoto = idx;
+  document.getElementById('gallery-emoji').textContent = photos[idx].emoji;
+  document.getElementById('gallery-bg').textContent    = photos[idx].emoji;
+  document.getElementById('gallery-counter').textContent = `${idx+1} / ${photos.length}`;
+  document.querySelectorAll('.gthumb').forEach((t,i) => t.classList.toggle('active', i===idx));
+  document.querySelectorAll('.gdot').forEach((d,i)   => d.classList.toggle('active', i===idx));
+}
+function prevPhoto() { showPhoto((currentPhoto - 1 + photos.length) % photos.length); }
+function nextPhoto() { showPhoto((currentPhoto + 1) % photos.length); }
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+  if(e.key === 'ArrowLeft')  prevPhoto();
+  if(e.key === 'ArrowRight') nextPhoto();
+});
+
+// ── TABS ──
+function switchTab(btn, tabId) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-'+tabId).classList.add('active');
+}
+
+// ── DESCRIPTION EXPAND ──
+function expandDesc() {
+  document.getElementById('desc-inner').classList.remove('desc-collapsed');
+  document.getElementById('desc-toggle').style.display = 'none';
+}
+
+// ── FAV ──
+function toggleFav(btn) {
+  btn.textContent = btn.textContent === '🤍' ? '❤️' : '🤍';
+  showToast(btn.textContent === '❤️' ? '❤️ Добавлено в избранное!' : '💔 Удалено из избранного');
+}
+function toggleFavBtn() {
+  const btn = document.getElementById('fav-btn');
+  const active = btn.classList.toggle('active');
+  btn.textContent = active ? '❤️ В избранном' : '🤍 В избранное';
+  showToast(active ? '❤️ Добавлено в избранное!' : '💔 Удалено из избранного');
+}
+
+// ── PHONE REVEAL ──
+function revealPhone(btnId) {
+  const btn = document.getElementById(btnId);
+  btn.textContent = '📞 +992 93 500 5050';
+  btn.classList.add('reveal');
+  btn.onclick = () => { window.location.href='tel:+99293500 5050'; };
+  showToast('📞 Номер показан');
+}
+
+// ── CHAT ──
+function scrollToChat() {
+  document.getElementById('chat-widget').scrollIntoView({behavior:'smooth', block:'center'});
+  document.getElementById('cw-input').focus();
+}
+
+function sendMsg() {
+  const input = document.getElementById('cw-input');
+  const text = input.value.trim();
+  if(!text) return;
+  addMessage(text, true);
+  input.value = '';
+  // Simulate reply
+  setTimeout(() => {
+    const replies = [
+      'Да, трактор ещё в продаже!',
+      'Конечно, приезжайте посмотреть в любое время.',
+      'По цене можем немного договориться.',
+      'Все документы в наличии, готовы к сделке.'
+    ];
+    addMessage(replies[Math.floor(Math.random() * replies.length)], false);
+  }, 900 + Math.random() * 600);
+}
+
+function sendQuick(text) {
+  document.getElementById('cw-input').value = text;
+  sendMsg();
+}
+
+function addMessage(text, isOut) {
+  const msgs = document.getElementById('cw-messages');
+  const now = new Date().toLocaleTimeString('ru', {hour:'2-digit', minute:'2-digit'});
+  const div = document.createElement('div');
+  div.className = 'cw-bubble ' + (isOut ? 'cw-out' : 'cw-in');
+  div.innerHTML = text + `<span class="cw-meta">${isOut ? 'Вы' : 'Рустам'} · ${now}${isOut?' ✓':''}</span>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// ── TOOLS ──
+function sharelisting() {
+  if(navigator.share) {
+    navigator.share({title:'Трактор МТЗ-82.1 — AgroTJ', url: window.location.href});
+  } else {
+    copyLink();
+  }
+}
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href).then(() => showToast('🔗 Ссылка скопирована!'));
+}
+function printListing() { window.print(); }
+function reportListing() {
+  showToast('🚩 Жалоба отправлена. Спасибо!');
+}
+function addToCompare() {
+  showToast('⚖️ Добавлено для сравнения!');
+}
+function openMap() {
+  showToast('🗺️ Карта откроется в отдельном окне');
+}
+function doSearch() {
+  const q = document.getElementById('header-search').value.trim();
+  if(q) window.location.href = `search.html?q=${encodeURIComponent(q)}`;
+}
+
+// ── TOAST ──
+let toastTimer;
+function showToast(msg) {
+  let t = document.getElementById('toast-global');
+  if(!t) {
+    t = document.createElement('div');
+    t.id = 'toast-global';
+    t.style.cssText = `
+      position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);
+      background:var(--gd);color:#fff;font-size:13px;font-weight:700;
+      padding:11px 22px;border-radius:100px;white-space:nowrap;z-index:9999;
+      box-shadow:0 4px 20px rgba(0,0,0,.3);opacity:0;
+      transition:all .3s;pointer-events:none;font-family:'Montserrat',sans-serif;
+    `;
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    t.style.opacity = '0';
+    t.style.transform = 'translateX(-50%) translateY(20px)';
+  }, 2500);
+}
+
+// ── INIT ──
+initGallery();
+
+// Animate stats bars
+setTimeout(() => {
+  document.querySelectorAll('.rbar-fill').forEach(b => {
+    const w = b.style.width;
+    b.style.width = '0';
+    setTimeout(() => b.style.width = w, 100);
+  });
+}, 300);
+</script>
+</body>
+</html>
